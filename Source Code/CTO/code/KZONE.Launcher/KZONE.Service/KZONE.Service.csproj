@@ -80,12 +80,17 @@
   <ItemGroup>
     <Compile Include="DFSService.cs" />
     <Compile Include="ECCimService.cs" />
+    <Compile Include="EIPService.cs" />
     <Compile Include="EquipmentService.cs" />
     <Compile Include="GlassTransferService.cs" />
     <Compile Include="ProcessData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EipTagLibrary\EipTagLibrary.csproj">
+      <Project>{9c2b3e12-5807-4d3a-9d42-5d6bf3a45d18}</Project>
+      <Name>EipTagLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\KZONE.EntityManager\KZONE.EntityManager.csproj">
       <Project>{3AF798BF-0431-4121-9DE7-87E25E23219B}</Project>
       <Name>KZONE.EntityManager</Name>

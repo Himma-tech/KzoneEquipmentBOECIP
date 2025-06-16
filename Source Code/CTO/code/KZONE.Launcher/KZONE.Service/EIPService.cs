@@ -1,20 +1,18 @@
-﻿using EipTagLibrary;
-using KZONE.Entity;
-using KZONE.EntityManager;
-using KZONE.PLCAgent.PLC;
-using KZONE.Work;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.ComTypes;
-using System.Runtime.Serialization;
-using System.Security.Claims;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using EipTagLibrary;
+using KZONE.Entity;
+using KZONE.EntityManager;
+using KZONE.PLCAgent.PLC;
+using KZONE.Work;
 
 namespace KZONE.Service
 {
@@ -4076,8 +4074,8 @@ namespace KZONE.Service
                 {
                     //CPCMessageDisplayCommand(eq, inputData, eBitResult.ON);
 
-                    Timermanager.CreateTimer(timerID, false, T4,
-                        new System.Timers.ElapsedEventHandler(BCMessageDisplayCommandTimeoutAction), TrackKey);
+                    //Timermanager.CreateTimer(timerID, false, T4,
+                    //    new System.Timers.ElapsedEventHandler(BCMessageDisplayCommandTimeoutAction), TrackKey);
                 }
 
                 #endregion

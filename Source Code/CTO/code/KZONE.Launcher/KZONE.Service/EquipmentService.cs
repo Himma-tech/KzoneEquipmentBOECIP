@@ -1,36 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using System.Linq;
-using System.Text;
+﻿using EipTagLibrary;
 using KZONE.ConstantParameter;
-using KZONE.MessageManager;
 using KZONE.Entity;
 using KZONE.EntityManager;
+using KZONE.MessageManager;
 using KZONE.PLCAgent;
-using KZONE.Work;
-using System.Reflection;
 using KZONE.PLCAgent.PLC;
-using System.Runtime.InteropServices;
-using System.Threading;
-using System.IO;
-using System.Collections.Concurrent;
-using Spring.Objects.Factory.Config;
-using Spring.Expressions;
-using System.Media;
-using Spring.Expressions.Parser.antlr.debug;
-using System.Net.NetworkInformation;
+using KZONE.Work;
 using OfficeOpenXml;
-using System.Drawing.Text;
-using System.Xml.Linq;
-using System.Runtime.Remoting.Services;
+using OfficeOpenXml.FormulaParsing.LexicalAnalysis.TokenSeparatorHandlers;
 using Spring.Caching;
+using Spring.Expressions;
+using Spring.Expressions.Parser.antlr.debug;
+using Spring.Objects.Factory.Config;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
+using System.Drawing.Text;
+using System.IO;
+using System.Linq;
+using System.Media;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Messaging;
+using System.Runtime.Remoting.Services;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading;
 using System.Web;
 using System.Windows.Media.Media3D;
-using System.Security.Cryptography;
-using OfficeOpenXml.FormulaParsing.LexicalAnalysis.TokenSeparatorHandlers;
-using System.Runtime.Remoting.Messaging;
-using System.Net;
+using System.Xml.Linq;
 
 namespace KZONE.Service
 {
@@ -221,7 +222,8 @@ namespace KZONE.Service
 
         public override bool Init()
         {
-          
+            //20250616
+            StartEIP();
 
             _eqAlive = new Thread(new ThreadStart(EQAlive)) { IsBackground = true };
             _eqAlive.Start();
@@ -830,119 +832,7 @@ namespace KZONE.Service
 
         #region CIM Mode Change Command
 
-        public void BCCIMModeChangeCommand(Trx inputData)
-        {
-            try
-            {
-                if (inputData.IsInitTrigger)
-                {
-                    return;
-                }
-                string eqpNo = inputData.Metadata.NodeNo;
-                string strlog = string.Empty;
-
-                Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
-                if (eq == null)
-                {
-                    throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
-                }
-
-                eBitResult bitResult = (eBitResult)int.Parse(inputData.EventGroups[0].Events[1].Items[0].Value);
-
-                string timerID = string.Format("{0}_{1}", eqpNo, CIMModeChangeCommandTimeout);
-
-                if (bitResult == eBitResult.OFF)
-                {
-                    //bit off移除本次timer
-                    if (Timermanager.IsAliveTimer(timerID))
-                    {
-                        Timermanager.TerminateTimer(timerID);
-                    }
-
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
-                        eqpNo, inputData.TrackKey));
-
-                    CPCCIMModeChangeCommandReply(eBitResult.OFF, inputData.TrackKey, "0");
-
-                    return;
-                }
-                string cIMModeCommand = inputData[0][0][0].Value.Trim();
-
-                if (cIMModeCommand != "1" && cIMModeCommand != "2")
-                {
-                    CPCCIMModeChangeCommandReply(eBitResult.ON, inputData.TrackKey, "2");
-                    LogError(MethodBase.GetCurrentMethod().Name + "()",
-                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}][{3}] Invalid.",
-                            eq.Data.NODENO, inputData.TrackKey, cIMModeCommand, cIMModeCommand == "1" ? "CIM ON" : cIMModeCommand == "2" ? "CIM OFF" : "Other"));
-                }
-                else if (cIMModeCommand == "1")
-                {
-                    if (eq.File.CIMMode == eBitResult.ON)
-                    {
-                        CPCCIMModeChangeCommandReply(eBitResult.ON, inputData.TrackKey, "2");
-                        LogWarn(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}][{3}] EQ Already CIM ON.",
-                                eq.Data.NODENO, inputData.TrackKey, cIMModeCommand, cIMModeCommand == "1" ? "CIM ON" : cIMModeCommand == "2" ? "CIM OFF" : "Other"));
-                    }
-                    else
-                    { // 切换CIM MODE
-                        CPCCIMModeChangeCommandReply(eBitResult.ON, inputData.TrackKey, "1");
-
-                        CPCCIMModeChangeCommand(eq, inputData, eBitResult.ON, cIMModeCommand);
-
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}][{3}].",
-                                eq.Data.NODENO, inputData.TrackKey, cIMModeCommand, cIMModeCommand == "1" ? "CIM ON" : cIMModeCommand == "2" ? "CIM OFF" : "Other"));
-                    }
-                }
-                else
-                {
-                    if (eq.File.CIMMode == eBitResult.OFF)
-                    {
-                        CPCCIMModeChangeCommandReply(eBitResult.ON, inputData.TrackKey, "2");
-                        LogWarn(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}][{3}] EQ Already CIM OFF.",
-                                eq.Data.NODENO, inputData.TrackKey, cIMModeCommand, cIMModeCommand == "1" ? "CIM ON" : cIMModeCommand == "2" ? "CIM OFF" : "Other"));
-                    }
-                    else
-                    { // 切换CIM MODE
-                        CPCCIMModeChangeCommandReply(eBitResult.ON, inputData.TrackKey, "1");
-
-                        CPCCIMModeChangeCommand(eq, inputData, eBitResult.ON, cIMModeCommand);
-
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}][{3}].",
-                                eq.Data.NODENO, inputData.TrackKey, cIMModeCommand, cIMModeCommand == "1" ? "CIM ON" : cIMModeCommand == "2" ? "CIM OFF" : "Other"));
-                    }
-
-                }
-
-                #region 建立timer
-
-                if (Timermanager.IsAliveTimer(timerID))
-                {
-                    Timermanager.TerminateTimer(timerID);
-                }
-                if (bitResult == eBitResult.ON)
-                {
-                    // CPCDateTimeCalibrationCommand(eq, inputData, eBitResult.ON);
-
-                    Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
-                        new System.Timers.ElapsedEventHandler(BCCIMModeChangeCommandTimeoutAction), inputData.TrackKey);
-                }
-
-                #endregion
-
-            }
-            catch (System.Exception ex)
-            {
-                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
-
-            }
-
-        }
-
+       
         private void BCCIMModeChangeCommandTimeoutAction(object subject, System.Timers.ElapsedEventArgs e)
         {
             try
@@ -960,26 +850,25 @@ namespace KZONE.Service
                 LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
             }
         }
-
-        private void CPCCIMModeChangeCommandReply(eBitResult result, string trxID, string returnCode)
+        /// <summary>
+        /// CPCCIMModeChangeCommandReply
+        /// </summary>
+        /// <param name="result"></param>
+        /// <param name="trxID"></param>
+        /// <param name="returnCode"></param>
+        /// <param name="no"></param>
+        private void CPCCIMModeChangeCommandReply(eBitResult result, string trxID, string returnCode, string no)
         {
             try
             {
-                Trx trx = null;
 
-                trx = GetServerAgent(eAgentName.PLCAgent).GetTransactionFormat("L3_CIMModeChangeCommandReply") as Trx;
-                string eqpNo = trx.Metadata.NodeNo;
+                eipTagAccess.WriteItemValue("EQToCIM_Status_05_01_00", "CIM_Mode_Change_Command_Reply_Block", "ReturnCode", int.Parse(returnCode));
+                eipTagAccess.WriteItemValue("EQToCIM_Status_05_01_00", "EAS Command Reply", "CIM_Mode_Change_Command_Reply", result == eBitResult.ON ? 1 : 0);
 
-
-                trx[0][0][0].Value = returnCode;
-                trx[0][1][0].Value = ((int)result).ToString();
-
-                trx.TrackKey = trxID;
-                SendToPLC(trx);
 
                 string timerID = string.Empty;
 
-                timerID = string.Format("{0}_{1}", eqpNo, CIMModeChangeCommandReplyTimeout);
+                timerID = string.Format("{0}_{1}", "L3", CIMModeChangeCommandReplyTimeout);
 
                 if (Timermanager.IsAliveTimer(timerID))
                 {
@@ -992,8 +881,8 @@ namespace KZONE.Service
                         new System.Timers.ElapsedEventHandler(CPCCIMModeChangeCommandReplyTimeoutAction), trxID);
                 }
                 LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                    string.Format("[EQUIPMENT={0}] [EC -> BC][{1}] SET BIT=[{2}] ReturnCode=[{3}][{4}].",
-                        eqpNo, trxID, result.ToString(), returnCode, returnCode == "1" ? "OK" : returnCode == "2" ? "NG" : returnCode == "0" ? "Reset" : "Other"));
+                    string.Format("[EQUIPMENT={0}] [EC -> BC][{1}]  SET BIT=[{2}].",
+                         "L3", trxID, result.ToString()));
             }
             catch (Exception ex)
             {
@@ -1014,7 +903,7 @@ namespace KZONE.Service
                 LogWarn(MethodBase.GetCurrentMethod().Name + "()",
                     string.Format("[EQUIPMENT={0}] [EC -> EQ][{1}] CIM Mode Change Command Reply T2 TIMEOUT, SET BIT=[OFF].", sArray[0], trackKey));
 
-                CPCCIMModeChangeCommandReply(eBitResult.OFF, trackKey, "0");
+                CPCCIMModeChangeCommandReply(eBitResult.OFF, trackKey, "0", "0");
             }
             catch (Exception ex)
             {
@@ -7353,109 +7242,7 @@ namespace KZONE.Service
 
         #region Recipe Parameter Request
 
-        public void BCRecipeParameterRequest(Trx inputData)
-        {
-            try
-            {
-                if (inputData.IsInitTrigger)
-                {
-                    return;
-                }
-                string eqpNo = inputData.Metadata.NodeNo;
-                string strlog = string.Empty;
-
-                Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
-                if (eq == null)
-                {
-                    throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
-                }
-
-                eBitResult bitResult = (eBitResult)int.Parse(inputData.EventGroups[0].Events[1].Items[0].Value);
-
-                string timerID = string.Format("{0}_{1}", eqpNo, RecipeParameterRequestTimeout);
-
-                if (bitResult == eBitResult.OFF)
-                {
-                    //bit off移除本次timer
-                    if (Timermanager.IsAliveTimer(timerID))
-                    {
-                        Timermanager.TerminateTimer(timerID);
-                    }
-
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF] Recipe Parameter Request.",
-                        eqpNo, inputData.TrackKey));
-
-                    CPCRecipeParameterRequestReply(eBitResult.OFF, inputData, "0");
-
-                    return;
-                }
-
-                #region 建立timer
-
-                if (Timermanager.IsAliveTimer(timerID))
-                {
-                    Timermanager.TerminateTimer(timerID);
-                }
-                if (bitResult == eBitResult.ON)
-                {
-                    Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
-                        new System.Timers.ElapsedEventHandler(BCRecipeParameterRequestTimeoutAction), inputData.TrackKey);
-                }
-
-                #endregion
-
-                string masterRecipeID = inputData[0][0][0].Value.Trim();//Master Recipe ID
-                string localRecipeID = inputData[0][0][1].Value.Trim();//Local Recipe ID
-                string unitNoorLocalNo = inputData[0][0][2].Value.Trim();//Unit No or Local No
-                string currentStepNumber = inputData[0][0][3].Value.Trim();//Current Step Number
-
-
-
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                       string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] Recipe Parameter MasterRecipeID=[{2}] LocalRecipeID=[{3}] UnitNoorLocalNo=[{4}] CurrentStepNumber=[{5}].",
-                     eq.Data.NODENO, inputData.TrackKey, masterRecipeID, localRecipeID, unitNoorLocalNo, currentStepNumber));
-                Dictionary<string, Dictionary<string, RecipeEntityData>> recipeDic = new Dictionary<string, Dictionary<string, RecipeEntityData>>();
-                Line line = ObjectManager.LineManager.GetLine(eqp.Data.LINEID);
-                if (line.Data.FABTYPE == "CELL")//eq.Data.LINEID == "KWF23633L"
-                {
-                    recipeDic = ObjectManager.RecipeManager.ReloadRecipeByNo();
-                }
-                else
-                {
-                    recipeDic = ObjectManager.RecipeManager.ReloadRecipe();
-                }
-
-                if (recipeDic[eq.Data.LINEID].ContainsKey(localRecipeID))
-                {
-
-                    CPCRecipeParameterRequestReply(eBitResult.ON, inputData, "1");
-
-                    RecipeParameterReport(eq, inputData, recipeDic[eq.Data.LINEID][localRecipeID], "0");
-
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                        string.Format("[EQUIPMENT={0}] [BC <- EC][{1}] BIT=[ON] Recipe Parameter Validation Command Reply OK .",
-                            eq.Data.NODENO, inputData.TrackKey));
-
-                }
-                else
-                {
-                    CPCRecipeParameterRequestReply(eBitResult.ON, inputData, "2");
-
-                    LogError(MethodBase.GetCurrentMethod().Name + "()",
-                        string.Format("[EQUIPMENT={0}] [BC <- EC][{1}] BIT=[ON] Recipe Parameter Validation Command Reply NG Local RecipeID=[{2}] Not exist.",
-                            eq.Data.NODENO, inputData.TrackKey, localRecipeID));
-                }
-
-
-            }
-            catch (System.Exception ex)
-            {
-                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
-
-            }
-
-        }
+      
         private void BCRecipeParameterRequestTimeoutAction(object subject, System.Timers.ElapsedEventArgs e)
         {
             try
@@ -7475,14 +7262,23 @@ namespace KZONE.Service
                 LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
             }
         }
-        private void CPCRecipeParameterRequestReply(eBitResult result, Trx inputData, string returnCode)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eq"></param>
+        /// <param name="result"></param>
+        /// <param name="inputData"></param>
+        /// <param name="returnCode"></param>
+        /// <param name="recipe"></param>
+        private void CPCRecipeParameterRequestReply(Equipment eq, eBitResult result, Block inputData, string returnCode, RecipeEntityData recipe)
         {
             try
             {
-                Trx trx = null;
-                trx = GetTrxValues("L3_RecipeParameterRequestCommandReply");
 
-                string eqpNo = trx.Metadata.NodeNo;
+
+                Block RecipeParameterRequestCommandReplyBlock = eipTagAccess.ReadBlockValues("SD_EQToCIM_RecipeManagement_03_01_00", "RecipeParameterRequestCommandReplyBlock");
+
+                string eqpNo = "L3";
                 string timerID = string.Empty;
                 timerID = string.Format("{0}_{1}", eqpNo, RecipeParameterRequestReplyTimeout);
                 if (Timermanager.IsAliveTimer(timerID))
@@ -7492,39 +7288,83 @@ namespace KZONE.Service
 
                 if (result == eBitResult.OFF)
                 {
-                    // trx.ClearTrxWith0();
-                    trx[0][1][0].Value = "0";
-                    if (inputData == null)
-                    {
-                        trx.TrackKey = UtilityMethod.GetAgentTrackKey();
-                    }
-                    else
-                    {
-                        trx.TrackKey = inputData.TrackKey;
-                    }
-                    SendToPLC(trx);
+
+                    eipTagAccess.WriteItemValue("SD_EQToCIM_RecipeManagement_03_01_00", "RecipeCommandReply", "RecipeParameterRequestCommandReply", false);
+
                     LogInfo(MethodBase.GetCurrentMethod().Name + "()",
                         string.Format("[EQUIPMENT={0}] [BC <- EC][{1}] BIT=[OFF] Recipe Parameter Request Reply.",
-                            eqpNo, trx.TrackKey));
+                            eqpNo, DateTime.Now.ToString("yyyyMMddHHmmss")));
 
                     return;
                 }
+                int j = 0;
+                foreach (ItemBase item in inputData.Items)
+                {
+                    RecipeParameterRequestCommandReplyBlock[j].Value = item.Value;
+                    j++;
+                }
 
-                trx[0][0]["ReturnCode"].Value = returnCode;
-                trx[0][1][0].Value = ((int)result).ToString();
-                trx.TrackKey = inputData.TrackKey;
-                SendToPLC(trx);
+                if (returnCode != "2" && recipe != null)
+                {
+                    IList<string> paramter = ObjectManager.RecipeManager.RecipeDataValues(false, recipe.FILENAME);
+
+                    if (paramter != null && paramter.Count != 0)
+                    {
+                        Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
+
+                        foreach (var data in paramter)
+                        {
+                            string[] splitc;
+                            if (!string.IsNullOrEmpty(data) && data.Contains("="))
+                            {
+                                splitc = data.Trim().Split(new string[] { "=" }, StringSplitOptions.None);
+                                if (splitc[0].Trim() != "Recipe_Verson" && splitc[0].Trim() != "Recipe_State" && splitc[0].Trim() != "Recipe_NO" && splitc[0].Trim() != "Recipe_ID")
+                                {
+                                    if (!keyValuePairs.ContainsKey(splitc[0].Trim()))
+                                    {
+                                        keyValuePairs.Add(splitc[0].Trim(), splitc[1].Trim());
+                                    }
+                                    else
+                                    {
+                                        keyValuePairs[splitc[0].Trim()] = splitc[1].Trim();
+                                    }
+                                }
+                            }
+                        }
+                        Block LC_EQToCIM_ParameterINT_01_03_00 = eipTagAccess.ReadBlockValues("LC_EQToCIM_ParameterINT_01_03_00", "ParameterINTFormatDataBlock#");
+
+                        int i = 0;
+                        foreach (string key in keyValuePairs.Keys)
+                        {
+                            LC_EQToCIM_ParameterINT_01_03_00[(i + 1) * 2 - 2].Value = i + 1;
+                            LC_EQToCIM_ParameterINT_01_03_00[(i + 1) * 2 - 1].Value = keyValuePairs[key];
+                            i++;
+                        }
+
+                        eipTagAccess.WriteBlockValues("LC_EQToCIM_ParameterINT_01_03_00", LC_EQToCIM_ParameterINT_01_03_00);
+
+                    }
+                    RecipeParameterRequestCommandReplyBlock[9].Value = returnCode;
+                }
+                else
+                {
+                    RecipeParameterRequestCommandReplyBlock[9].Value = returnCode;
+                }
+                eipTagAccess.WriteBlockValues("SD_EQToCIM_RecipeManagement_03_01_00", RecipeParameterRequestCommandReplyBlock);
+
+                eipTagAccess.WriteItemValue("SD_EQToCIM_RecipeManagement_03_01_00", "RecipeCommandReply", "RecipeParameterRequestCommandReply", true);
+
 
 
                 if (result == eBitResult.ON)
                 {
 
                     Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
-                        new System.Timers.ElapsedEventHandler(CPCRecipeParameterRequestReplyTimeoutAction), inputData.TrackKey);
+                        new System.Timers.ElapsedEventHandler(CPCRecipeParameterRequestReplyTimeoutAction), DateTime.Now.ToString("yyyyMMddHHmmss"));
                 }
                 LogInfo(MethodBase.GetCurrentMethod().Name + "()",
                     string.Format("[EQUIPMENT={0}] [EC -> BC][{1}]  SET BIT=[{2}].",
-                        eqpNo, inputData.TrackKey, result.ToString()));
+                        eqpNo, DateTime.Now.ToString("yyyyMMddHHmmss"), result.ToString()));
             }
             catch (Exception ex)
             {

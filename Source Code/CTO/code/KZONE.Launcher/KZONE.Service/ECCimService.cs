@@ -813,7 +813,7 @@ namespace KZONE.Service
 
         }
 
-        public void CPCCIMModeChangeCommand(Equipment eq, Trx inputData, eBitResult result, string cIMModeCommand)
+        public void CPCCIMModeChangeCommand(Equipment eq, string TrackKey, eBitResult result, string cIMModeCommand)
         {
             try
             {
@@ -835,26 +835,26 @@ namespace KZONE.Service
                 {
                     // trx.ClearTrxWith0();
                     trx[0][1][0].Value = "0";
-                    trx.TrackKey = inputData.TrackKey;
+                    trx.TrackKey = TrackKey;
                     SendToPLC(trx);
                     LogInfo(MethodBase.GetCurrentMethod().Name + "()",
                         string.Format("[EQUIPMENT={0}] [EQ <- EC][{1}] BIT=[OFF] CIM Mode Change Command.",
-                            eq.Data.NODENO, inputData.TrackKey));
+                            eq.Data.NODENO, TrackKey));
 
                     return;
                 }
 
                 Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T1].GetInteger(),
-                    new System.Timers.ElapsedEventHandler(CPCCIMModeChangeCommandTimeoutAction), inputData.TrackKey);
+                    new System.Timers.ElapsedEventHandler(CPCCIMModeChangeCommandTimeoutAction), TrackKey);
 
                 trx[0][0][0].Value = cIMModeCommand;
                 trx[0][1][0].Value = "1";
-                trx.TrackKey = inputData.TrackKey;
+                trx.TrackKey = TrackKey;
                 SendToPLC(trx);
 
                 LogInfo(MethodBase.GetCurrentMethod().Name + "()",
                     string.Format("[EQUIPMENT={0}] [EQ <- EC][{1}] CIM Mode Change Command =[{2}].",
-                        inputData.Metadata.NodeNo, inputData.TrackKey, cIMModeCommand));
+                        trx.Metadata.NodeNo, TrackKey, cIMModeCommand));
 
             }
             catch (System.Exception ex)
