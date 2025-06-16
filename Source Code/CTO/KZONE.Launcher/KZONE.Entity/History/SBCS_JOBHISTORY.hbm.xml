@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+	<class name="KZONE.Entity.JobHistory, KZONE.Entity" table="SBCS_JOBHISTORY">
+    <id name="ID" type="Int64" unsaved-value="null">
+      <column name="OBJECTKEY" length="8" sql-type="bigint" not-null="true" unique="true"/>
+      <generator class="native" />
+    </id>
+    <property name="UPDATETIME" type="Timestamp">
+      <column name="UPDATETIME" length="8" sql-type="datetime" not-null="false"/>
+    </property>
+    <property name="EVENTNAME" type="String">
+      <column name="EVENTNAME" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="CASSETTESEQNO" type="Int32">
+      <column name="CASSETTESEQNO" length="4" sql-type="int" not-null="false"/>
+    </property>
+    
+    <property name="CASSETTESLOTNO" type="Int32">
+      <column name="CASSETTESLOTNO" length="4" sql-type="int" not-null="false"/>
+    </property>
+    <property name="NODENO" type="String">
+      <column name="NODENO" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+   
+    <property name="UNITNO" type="String">
+      <column name="UNITNO" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="JOBID" type="String">
+      <column name="JOBID" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    
+    <property name="GroupNumber" type="String">
+      <column name="GroupNumber" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="GlassType" type="String">
+      <column name="GlassType" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="GlassJudge" type="String">
+      <column name="GlassJudge" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="ProcessSkipFlag" type="String">
+      <column name="ProcessSkipFlag" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="LastGlassFlag" type="String">
+      <column name="LastGlassFlag" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="CIMModeCreate" type="String">
+      <column name="CIMModeCreate" length="255" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="SamplingFlag" type="String">
+      <column name="SamplingFlag" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="Reserved" type="String">
+      <column name="Reserved" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="InspectionJudgeResult" type="String">
+      <column name="InspectionJudgeResult" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="InspectionReservationSignal" type="String">
+      <column name="InspectionReservationSignal" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="ProcessReservationSignal" type="String">
+      <column name="ProcessReservationSignal" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="TrackingDataHistory" type="String">
+      <column name="TrackingDataHistory" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="EquipmentSpecialFlag" type="String">
+      <column name="EquipmentSpecialFlag" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="GlassID" type="String">
+      <column name="GlassID" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="SorterGrade" type="String">
+      <column name="SorterGrade" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="GlassGrade" type="String">
+      <column name="GlassGrade" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="FromPortNo" type="String">
+      <column name="FromPortNo" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="TargetPortNo" type="String">
+      <column name="TargetPortNo" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="TargetSlotNo" type="String">
+      <column name="TargetSlotNo" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="TargetCassetteID" type="String">
+      <column name="TargetCassetteID" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="Reserve" type="String">
+      <column name="Reserve" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="PPID" type="String">
+      <column name="PPID" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+
+    
+  </class>
+</hibernate-mapping>

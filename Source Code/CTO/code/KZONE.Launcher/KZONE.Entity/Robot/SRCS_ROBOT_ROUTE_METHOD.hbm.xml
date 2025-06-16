@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+  <class name="KZONE.Entity.SRCS_ROBOT_ROUTE_METHOD, KZONE.Entity" table="SRCS_ROBOT_ROUTE_METHOD">
+    <id name="OBJECTKEY" type="Int64" unsaved-value="null">
+      <column name="OBJECTKEY" length="8" sql-type="bigint" not-null="true" unique="true"/>
+      <generator class="native" />
+    </id>
+    <property name="SERVERNAME" type="String">
+      <column name="SERVERNAME" length="100" sql-type="varchar" not-null="true" index="UK_SRCS_ROBOT_ROUTE_METHOD"/>
+    </property>
+    <property name="ROBOTNAME" type="String">
+      <column name="ROBOTNAME" length="100" sql-type="varchar" not-null="true" index="UK_SRCS_ROBOT_ROUTE_METHOD"/>
+    </property>
+    <property name="ROUTENAME" type="String">
+      <column name="ROUTENAME" length="100" sql-type="varchar" not-null="true" index="UK_SRCS_ROBOT_ROUTE_METHOD"/>
+    </property>
+    <property name="RECV_METHOD" type="String">
+      <column name="RECV_METHOD" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="SEND_METHOD" type="String">
+      <column name="SEND_METHOD" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="ARM_LOAD_METHOD" type="String">
+      <column name="ARM_LOAD_METHOD" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="ARM_UNLOAD_METHOD" type="String">
+      <column name="ARM_UNLOAD_METHOD" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+  </class>
+</hibernate-mapping>

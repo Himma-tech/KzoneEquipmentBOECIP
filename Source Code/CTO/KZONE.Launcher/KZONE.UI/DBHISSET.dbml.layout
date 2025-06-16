@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="DBHISSET">
+  <DataContextMoniker Name="/DBHISSETDataContext" />
+  <nestedChildShapes>
+    <classShape Id="1c298f58-9df9-417e-8520-df239bc8c6f3" isExpanded="false" absoluteBounds="0.75, 2, 2, 0.45">
+      <DataClassMoniker Name="/DBHISSETDataContext/SBCS_CIMMESSAGEHISTORY" />
+      <nestedChildShapes>
+        <elementListCompartment Id="95a42d19-0576-4ac0-a26b-2b041547e5ff" absoluteBounds="0.76499999999999968, 2.46, 1.9700000000000002, 1.901275634765625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="6c253b61-cd4c-405e-a9b0-9a75be70c2ce" isExpanded="false" absoluteBounds="4.875, 1.25, 2, 0.45">
+      <DataClassMoniker Name="/DBHISSETDataContext/SBCS_PROCESSDATAHISTORY" />
+      <nestedChildShapes>
+        <elementListCompartment Id="9b9c01b4-3f19-41c3-8468-0e19206662e5" absoluteBounds="4.8900000000000006, 1.71, 1.9700000000000002, 2.455657958984375" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="ebfef36e-f182-4e36-950f-ebe985160bfb" isExpanded="false" absoluteBounds="2.75, 2, 2, 0.45">
+      <DataClassMoniker Name="/DBHISSETDataContext/SBCS_UNITHISTORY" />
+      <nestedChildShapes>
+        <elementListCompartment Id="069fa13c-b3b7-4753-8b55-12a9fc01489d" absoluteBounds="2.7649999999999997, 2.46, 1.9700000000000002, 1.901275634765625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="f798965d-9b21-48d0-abc1-34f2cb5a2290" isExpanded="false" absoluteBounds="2.75, 1.25, 2, 0.45">
+      <DataClassMoniker Name="/DBHISSETDataContext/SBCS_ALARMHISTORY" />
+      <nestedChildShapes>
+        <elementListCompartment Id="448a8ea0-60b1-4411-ad05-72e83f63a022" absoluteBounds="2.765, 1.71, 1.9700000000000002, 2.270863850911458" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="e23e2cce-b0fe-4c9d-b5b3-eb7f14efae30" isExpanded="false" absoluteBounds="4.875, 2, 2, 0.45">
+      <DataClassMoniker Name="/DBHISSETDataContext/SBCS_NODEHISTORY" />
+      <nestedChildShapes>
+        <elementListCompartment Id="1c6ee07c-8e23-41b5-ae3e-8536cb51cb9a" absoluteBounds="4.89, 2.46, 1.9700000000000002, 5.4123636881510411" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="d79d6dc4-269d-4d04-966d-3fc22ae93caa" isExpanded="false" absoluteBounds="0.75, 2.75, 2, 0.45">
+      <DataClassMoniker Name="/DBHISSETDataContext/SBCS_TANKHISTORY" />
+      <nestedChildShapes>
+        <elementListCompartment Id="ec3e9814-078f-4f41-8561-c6b7a32bab34" absoluteBounds="0.76500000000000012, 3.21, 1.9700000000000002, 2.0860697428385415" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="809720c1-c5e1-4f77-b1a4-4aa42da39fae" isExpanded="false" absoluteBounds="2.875, 2.75, 2, 0.45">
+      <DataClassMoniker Name="/DBHISSETDataContext/SBCS_RECIPEHISTORY" />
+      <nestedChildShapes>
+        <elementListCompartment Id="b1c4fae0-4898-492b-9336-4ecea7be65a8" absoluteBounds="2.89, 3.21, 1.9700000000000002, 2.270863850911458" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="264540ec-82b8-4763-9990-7d72347934ff" isExpanded="false" absoluteBounds="5, 2.75, 2, 0.45">
+      <DataClassMoniker Name="/DBHISSETDataContext/SBCS_TACTDATAHISTORY" />
+      <nestedChildShapes>
+        <elementListCompartment Id="a33e8866-d38a-469f-bcf8-8bfce13d7cc3" absoluteBounds="5.015, 3.21, 1.9700000000000002, 1.901275634765625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="06c56b2b-0205-4867-9b13-8edad51d02b1" isExpanded="false" absoluteBounds="0.75, 1.25, 2, 0.45">
+      <DataClassMoniker Name="/DBHISSETDataContext/SBCS_JOBHISTORY" />
+      <nestedChildShapes>
+        <elementListCompartment Id="250d946f-4e1c-41fe-b64a-dd0a9af6a1b6" absoluteBounds="0.76500000000000012, 1.71, 1.9700000000000002, 5.781951904296875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

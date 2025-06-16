@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{02792A75-EE5D-471C-86B5-8ACC42C43675}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>KZONE.PLCAgent.PLC</RootNamespace>
+    <AssemblyName>KZONE.PLCAgent.PLC</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="KZONE.PLCAgent.Adapter\AbstractAdapter.cs" />
+    <Compile Include="KZONE.PLCAgent.Adapter\AdapterErrorConst.cs" />
+    <Compile Include="KZONE.PLCAgent.Adapter\AdapterFactory.cs" />
+    <Compile Include="KZONE.PLCAgent.Adapter\AsyncResult-TResult.cs" />
+    <Compile Include="KZONE.PLCAgent.Adapter\AsyncResultNoResult.cs" />
+    <Compile Include="KZONE.PLCAgent.Adapter\DeviceSymbol.cs" />
+    <Compile Include="KZONE.PLCAgent.Adapter\MdFuncAdapter.cs" />
+    <Compile Include="KZONE.PLCAgent.Adapter\MdFuncAPI.cs" />
+    <Compile Include="KZONE.PLCAgent.Adapter\MX3Adapter.cs" />
+    <Compile Include="KZONE.PLCAgent.Adapter\PLCAdapter.cs" />
+    <Compile Include="KZONE.PLCAgent.Adapter\PLCAdapterDebugOutEventArgs.cs" />
+    <Compile Include="KZONE.PLCAgent.Adapter\PLCAdapterDebugOutEventHandler.cs" />
+    <Compile Include="KZONE.PLCAgent.Adapter\PLCAdapterDebugOutLevel.cs" />
+    <Compile Include="KZONE.PLCAgent.Adapter\PLCBlockOp.cs" />
+    <Compile Include="KZONE.PLCAgent.Adapter\PLCOpRequest.cs" />
+    <Compile Include="KZONE.PLCAgent.Adapter\PLCOpRequestResult.cs" />
+    <Compile Include="KZONE.PLCAgent.Adapter\PLCOpResult.cs" />
+    <Compile Include="KZONE.PLCAgent.Adapter\PLCRandOp.cs" />
+    <Compile Include="KZONE.PLCAgent.Adapter\Utility.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\Event.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\EventGroup.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\EventGroupDirEnum.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\EventGroupMetadata.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\EventMetadata.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\ExpressionASCII.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\ExpressionBCD.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\ExpressionBIN.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\ExpressionBIT.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\ExpressionEXP.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\ExpressionHEX.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\ExpressionINT.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\ExpressionLONG.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\ExpressionSINT.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\ExpressionSLONG.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\Id.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\InternalFlagsEnum.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\Item.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\ItemDefine.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\ItemExpressionEnum.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\ItemGroup.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\ItemMetadata.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\LogStyleEnum.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\Mapping.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\NameObjectCollection-T.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\PLCDataModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\Trx.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\TrxCatalog.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\TrxCatalogActionEnum.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\TrxCatalogMenuCatalogEnum.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\TrxCatalogPrimaryEnum.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\TrxMetadata.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\TrxTriggerConditionEnum.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\TrxTypeEnum.cs" />
+    <Compile Include="KZONE.PLCAgent.Data\WatchData.cs" />
+    <Compile Include="KZONE.PLCAgent.Driver\DriverErrorConst.cs" />
+    <Compile Include="KZONE.PLCAgent.Driver\IPLCDriver.cs" />
+    <Compile Include="KZONE.PLCAgent.Driver\PLCConnectedEventArgs.cs" />
+    <Compile Include="KZONE.PLCAgent.Driver\PLCConnectedEventHandler.cs" />
+    <Compile Include="KZONE.PLCAgent.Driver\PLCDisconnectedEventArgs.cs" />
+    <Compile Include="KZONE.PLCAgent.Driver\PLCDisconnectedEventHandler.cs" />
+    <Compile Include="KZONE.PLCAgent.Driver\PLCDriverDebugOutEventArgs.cs" />
+    <Compile Include="KZONE.PLCAgent.Driver\PLCDriverDebugOutEventHandler.cs" />
+    <Compile Include="KZONE.PLCAgent.Driver\PLCDriverDebugOutLevel.cs" />
+    <Compile Include="KZONE.PLCAgent.Driver\PLCDriverException.cs" />
+    <Compile Include="KZONE.PLCAgent.Driver\PLCDriverFactory.cs" />
+    <Compile Include="KZONE.PLCAgent.Driver\PLCDriverRuntime.cs" />
+    <Compile Include="KZONE.PLCAgent.Driver\PLCScanBuffer.cs" />
+    <Compile Include="KZONE.PLCAgent.Driver\ReadTrxResultEventArgs.cs" />
+    <Compile Include="KZONE.PLCAgent.Driver\ReadTrxResultEventHandler.cs" />
+    <Compile Include="KZONE.PLCAgent.Driver\Transform.cs" />
+    <Compile Include="KZONE.PLCAgent.Driver\TrxTriggeredEventArgs.cs" />
+    <Compile Include="KZONE.PLCAgent.Driver\TrxTriggeredEventHandler.cs" />
+    <Compile Include="KZONE.PLCAgent.Driver\WriteTrxResultEventArgs.cs" />
+    <Compile Include="KZONE.PLCAgent.Driver\WriteTrxResultEventHandler.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="ActSupportMsgLib">
+      <Guid>{1D04DB40-F956-4DC0-A334-E7FA2E4FEF5A}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="ActUtlTypeLib">
+      <Guid>{D217E54E-4A26-4A76-B0AB-57166B90F9AF}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

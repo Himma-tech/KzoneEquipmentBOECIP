@@ -1,0 +1,631 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Btngroup" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Btngroup.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTNormal_LR" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTNormal_LR.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnImport" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnImport.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Bit_Green_64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Bit_Green_64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnRefresh1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnRefresh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Bg_Main_Left" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Bg_Main_Left.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Bit_Red" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Bit_Red.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Bg_Left" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Bg_Left.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnUtility" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnUtility.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="upload" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\upload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Layout_StageTurn_ON" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Layout_StageTurn_ON.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnEdit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnEdit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnEQPCIM" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnEQPCIM.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Dense_UC" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Dense_UC.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTMPortr_LC" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTMPortr_LC.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTWire_LC" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTWire_LC.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons8_power_off_button" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons8_power_off_button.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons8_water_64px" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons8_water_64px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnLineStatus" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnLineStatus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Layout_SingleArm" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Layout_SingleArm.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Layout_StageTurnOver_OFF" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Layout_StageTurnOver_OFF.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Layout_DispatchOff_gary" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Layout_DispatchOff_gary.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTNormal_UC" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTNormal_UC.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTTray_LC" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTTray_LC.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTWire_UC" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTWire_UC.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTNormal_LC" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTNormal_LC.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTNormal_NONE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTNormal_NONE.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Dense_LC" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Dense_LC.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Bit_Bule" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Bit_Bule.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons8_compress" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons8_compress.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UniBCM" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UniBCM.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnTimingChart" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnTimingChart.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnSave" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnSave.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons8_user" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons8_user.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ArrowLeft_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ArrowLeft_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Layout_PortUR" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Layout_PortUR.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Layout_Trolley_Track" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Layout_Trolley_Track.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="line2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\line2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnTrackout" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnTrackout.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Layout_Trolley" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Layout_Trolley.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CVtoCV" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CVtoCV.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="KZONElogin1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\KZONElogin.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTWire_NONE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTWire_NONE.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Bit_Green" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Bit_Green.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTCell_UR" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTCell_UR.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnCIMMessage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnCIMMessage.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTTray_LR" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTTray_LR.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons8_soda_bottle" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons8_soda_bottle.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTTray_UR" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTTray_UR.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnRecipePara" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnRecipePara.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BOE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BOE.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons8_order_history" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons8_order_history.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SetOne" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SetOne.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnEDC" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\btnEDC.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Layout_StageTurnOver_ON" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Layout_StageTurnOver_ON.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnIndexer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnIndexer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="user" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\user.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons8_log" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons8_log.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons8_canvas_printing" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons8_canvas_printing.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Login_UniOPI" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Login_UniOPI.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Layout_StageTurn" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Layout_StageTurn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="user_02" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\user-02.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="KZONE3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\KZONE3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnDelete" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnDelete.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Bg_Main" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Bg_Main.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="line3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\line3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="line" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\line.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Robot_DoubleArm" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Robot_DoubleArm.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Layout_PortLC" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Layout_PortLC.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Bg_BaseCaption" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Bg_BaseCaption.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnBCMessage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnBCMessage.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="New KZONE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\New KZONE.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTBuffer_UR" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTBuffer_UR.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Layout_Conveyor1_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Layout_Conveyor1_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Dense_UR" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Dense_UR.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTWire_LR" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTWire_LR.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Bg_Login" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Bg_Login.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BgLayout" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BgLayout.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnJobCount" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnJobCount.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LanguageB" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LanguageB.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ButtonShortCut" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ButtonShortCut.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnAlarmStatus" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnAlarmStatus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnSubBlock" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnSubBlock.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnRecipeID" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnRecipeID.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnBackground_Normal" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnBackground_Normal.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnExport" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnExport.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BgHeader" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BgHeader.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Layout_StageTurn_OFF" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Layout_StageTurn_OFF.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="KZONElogin" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\KZONElogin.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BgTitle" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BgTitle.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTWire_UR" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTWire_UR.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnTimeCalib" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnTimeCalib.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnHelp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnHelp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnParameter" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnParameter.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="KZONE2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\KZONE2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Layout_StageFixed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Layout_StageFixed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Layout_PortUC" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Layout_PortUC.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="HKC_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\HKC_1.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTBuffer_LR" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTBuffer_LR.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Layout_DoubleArm" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Layout_DoubleArm.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnCancel" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnCancel.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnQuery" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnQuery.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Logouttu1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Logouttu1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTNormal_UR" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTNormal_UR.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnRefresh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnRefresh.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTCell_UC" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTCell_UC.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnOperation" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnOperation.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Layout_Pallet" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Layout_Pallet .png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTBuffer_LC" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTBuffer_LC.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTMPortr_UC" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTMPortr_UC.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Laayout_StageTurn" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Laayout_StageTurn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons8_sign_out" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons8_sign_out.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTTray_UC" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTTray_UC.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="KZONE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\KZONE.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnSetting" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnSetting.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Layout_Conveyor2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Layout_Conveyor2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnLineControl" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnLineControl.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnBackground" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnBackground.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons8_help_5" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons8_help_5.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnOK" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnOK.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnUserSetting" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnUserSetting.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTCell_NONE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTCell_NONE.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Layout_VCROn" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Layout_VCROn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTMPortr_LR" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTMPortr_LR.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnAdd" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnAdd.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Layout_PortLR" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Layout_PortLR.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SetAll" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SetAll.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnMonitor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnMonitor.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="KZONE1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\KZONE1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTCell_LR" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTCell_LR.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnUserGroup" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnUserGroup.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTBuffer_UC" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTBuffer_UC.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="B_Title_Left" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\B_Title_Left.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ButtonMemu" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ButtonMemu.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTMPortr_UR" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTMPortr_UR.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTBuffer_NONE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTBuffer_NONE.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ButtonNone" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ButtonNone.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Layout_DispatchOn" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Layout_DispatchOn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Bg_LoginInfo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Bg_LoginInfo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnPortCommand" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnPortCommand.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ButtonTmp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ButtonTmp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons8_direction" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons8_direction.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Bit_Red_64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Bit_Red_64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Dense_LR" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Dense_LR.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTTray_NONE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTTray_NONE.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTCell_LC" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTCell_LC.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="csot" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\csot.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnDB" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnDB.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CSTMPortr_NONE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CSTMPortr_NONE.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnRecipeMessage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnRecipeMessage.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Layout_Conveyor2_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Layout_Conveyor2_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Layout_StageTurnOver" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Layout_StageTurnOver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="exit_02" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\exit-02.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="H" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\H.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Bit_Sliver" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Bit_Sliver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ButtonNormal" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ButtonNormal.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="login_info_bg" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\login-info-bg.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Layout_VCROff" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Layout_VCROff.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ArrowRight_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ArrowRight_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons8_james_bond" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons8_james_bond.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Bg_Login_Info" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Bg_Login_Info.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnNetAlive" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnNetAlive.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="download" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\download.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ButtonSpecial" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ButtonSpecial.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnLayout" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnLayout.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BtnHistory" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BtnHistory.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Dense_NONE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Dense_NONE.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="OPI_logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\OPI-logo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Layout_Conveyor1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Layout_Conveyor1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Visionox" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Visionox.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+</root>

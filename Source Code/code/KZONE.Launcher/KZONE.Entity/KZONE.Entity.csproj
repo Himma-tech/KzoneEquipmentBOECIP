@@ -1,0 +1,271 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D8255DBB-D5B9-4654-BD15-2A6A7130500D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>KZONE.Entity</RootNamespace>
+    <AssemblyName>KZONE.Entity</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="KZONE.ConstantParameter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DLL\KZONE.ConstantParameter.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>GlobalAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="01.CIMMessageEntity.cs" />
+    <Compile Include="01.ConstantEntity.cs" />
+    <Compile Include="06.JobCellSpecial.cs" />
+    <Compile Include="06.JobCFSpecial.cs" />
+    <Compile Include="06.JobMes.cs" />
+    <Compile Include="06.JobOffline.cs" />
+    <Compile Include="07.AlarmEntity.cs" />
+    <Compile Include="08.CassetteEntity.cs" />
+    <Compile Include="00.Entity.cs" />
+    <Compile Include="00.Enum.cs" />
+    <Compile Include="09.ProcessDataEntity.cs" />
+    <Compile Include="16.MaterialEntity.cs" />
+    <Compile Include="19.SubJobDataEntity.cs" />
+    <Compile Include="31.BatchEntityFile.cs" />
+    <Compile Include="33.EqpInterface.cs" />
+    <Compile Include="EntityData\SBRM_TACTTIME.cs" />
+    <Compile Include="EntityData\SBRM_POSITION.cs" />
+    <Compile Include="EntityData\SBRM_ALARM.cs" />
+    <Compile Include="EntityData\SBRM_CHANGEPLAN.cs" />
+    <Compile Include="EntityData\SBRM_DALIYCHECKDATA.cs" />
+    <Compile Include="06.JobEntity.cs" />
+    <Compile Include="02.LineEntity.cs" />
+    <Compile Include="03.EquipmentEntity.cs" />
+    <Compile Include="05.PortEntity.cs" />
+    <Compile Include="EntityData\SBRM_LINE.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EntityData\SBRM_LINESTATUSSPEC.cs" />
+    <Compile Include="EntityData\SBRM_NODE.cs" />
+    <Compile Include="EntityData\SBRM_PORT.cs" />
+    <Compile Include="EntityData\SBRM_PROCESSDATA.cs" />
+    <Compile Include="EntityData\SBRM_QTIME_DEF.cs" />
+    <Compile Include="EntityData\SBRM_RECIPE.cs" />
+    <Compile Include="EntityData\SBRM_RECIPEPARAMETER.cs" />
+    <Compile Include="EntityData\SBRM_RUNMODECHECKRULE.cs" />
+    <Compile Include="EntityData\SBRM_SAMPLING_DATA.cs" />
+    <Compile Include="EntityData\SBRM_SAMPLING_RATE.cs" />
+    <Compile Include="EntityData\SBRM_SECS_VARIABLEDATA.cs" />
+    <Compile Include="EntityData\SBRM_SKIPREPORT.cs" />
+    <Compile Include="EntityData\SBRM_SORTGRADERULE.cs" />
+    <Compile Include="EntityData\SBRM_SUBBLOCK_CTRL.cs" />
+    <Compile Include="EntityData\SBRM_SUBJOBDATA.cs" />
+    <Compile Include="EntityData\SBRM_UNIT.cs" />
+    <Compile Include="EntityData\SBRM_FDCDATA.cs" />
+    <Compile Include="30.BatchInformation.cs" />
+    <Compile Include="History\SBCS_ALARMHISTORY.cs" />
+    <Compile Include="History\SBCS_RECIPEVALIDATIONRESULTHISTORY.cs" />
+    <Compile Include="History\SBCS_TACTDATAHISTORY.cs" />
+    <Compile Include="History\SBCS_TANKHISTORY.cs" />
+    <Compile Include="History\SBCS_CASSETTEHISTORY.cs" />
+    <Compile Include="History\SBCS_CIMMESSAGEHISTORY.cs" />
+    <Compile Include="History\SBCS_DCRRESULTHISTORY.cs" />
+    <Compile Include="History\SBCS_DISPATCHHISTORY.cs" />
+    <Compile Include="History\SBCS_GLASSQTIMEHISTORY.cs" />
+    <Compile Include="History\SBCS_RECIPEHISTORY.cs" />
+    <Compile Include="History\SBCS_JOBHISTORY.cs" />
+    <Compile Include="06.JobQtime.cs" />
+    <Compile Include="24.PlanEntity.cs" />
+    <Compile Include="26.GroupNoCompare.cs" />
+    <Compile Include="History\SBCS_MATERIALHISTORY.cs" />
+    <Compile Include="History\SBCS_NODEHISTORY.cs" />
+    <Compile Include="History\SBCS_PORTHISTORY.cs" />
+    <Compile Include="History\SBCS_PROCESSDATAHISTORY.cs" />
+    <Compile Include="History\SBCS_TERMINALMESSAGEHISTORY.cs" />
+    <Compile Include="History\SBCS_UNITHISTORY.cs" />
+    <Compile Include="06.JobArraySpecial.cs" />
+    <Compile Include="27.NormalBufferEntity.cs" />
+    <Compile Include="29.PerformanceInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="04.UnitEntity.cs" />
+    <Compile Include="11.RecipeInfo.cs" />
+    <Compile Include="14.DailyCheckEntity.cs" />
+    <Compile Include="18.RecipeParameterEntity.cs" />
+    <Compile Include="22.SubBlockEntity.cs" />
+    <Compile Include="Robot\RobotEntityFile.cs" />
+    <Compile Include="Robot\RobotJobFile.cs" />
+    <Compile Include="Robot\SRCS_METHOD_DEF.cs" />
+    <Compile Include="Robot\SRCS_ROBOT.cs" />
+    <Compile Include="Robot\SRCS_ROBOT_ROUTE_METHOD.cs" />
+    <Compile Include="Robot\SRCS_ROUTE.cs" />
+    <Compile Include="Robot\SRCS_ROUTE_STEP.cs" />
+    <Compile Include="Robot\SRCS_ROUTE_STEP_JUMP.cs" />
+    <Compile Include="Robot\SRCS_STAGE.cs" />
+    <Compile Include="Robot\SRCS_STAGE_ROUTE_METHOD.cs" />
+    <Compile Include="28.Utility.cs" />
+    <Compile Include="32.Subscriber.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EntityData\SBRM_LINE.hbm.xml" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="23.PalletEntity.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EntityData\SBRM_FDCDATA.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="History\SBCS_ALARMHISTORY.hbm.xml" />
+    <EmbeddedResource Include="History\SBCS_TANKHISTORY.hbm.xml" />
+    <EmbeddedResource Include="History\SBCS_CASSETTEHISTORY.hbm.xml" />
+    <EmbeddedResource Include="History\SBCS_RECIPEHISTORY.hbm.xml" />
+    <EmbeddedResource Include="History\SBCS_JOBHISTORY.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="History\SBCS_MATERIALHISTORY.hbm.xml" />
+    <EmbeddedResource Include="History\SBCS_NODEHISTORY.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="History\SBCS_PORTHISTORY.hbm.xml" />
+    <EmbeddedResource Include="History\SBCS_PROCESSDATAHISTORY.hbm.xml" />
+    <EmbeddedResource Include="History\SBCS_UNITHISTORY.hbm.xml" />
+    <EmbeddedResource Include="EntityData\SBRM_ALARM.hbm.xml" />
+    <EmbeddedResource Include="EntityData\SBRM_CHANGEPLAN.hbm.xml" />
+    <EmbeddedResource Include="EntityData\SBRM_DALIYCHECKDATA.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EntityData\SBRM_LINESTATUSSPEC.hbm.xml" />
+    <EmbeddedResource Include="EntityData\SBRM_NODE.hbm.xml" />
+    <EmbeddedResource Include="EntityData\SBRM_PORT.hbm.xml" />
+    <EmbeddedResource Include="EntityData\SBRM_PROCESSDATA.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EntityData\SBRM_QTIME_DEF.hbm.xml" />
+    <EmbeddedResource Include="EntityData\SBRM_RECIPE.hbm.xml" />
+    <EmbeddedResource Include="EntityData\SBRM_RECIPEPARAMETER.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EntityData\SBRM_SECS_VARIABLEDATA.hbm.xml" />
+    <EmbeddedResource Include="EntityData\SBRM_SKIPREPORT.hbm.xml" />
+    <EmbeddedResource Include="EntityData\SBRM_SUBBLOCK_CTRL.hbm.xml" />
+    <EmbeddedResource Include="EntityData\SBRM_SUBJOBDATA.hbm.xml" />
+    <EmbeddedResource Include="EntityData\SBRM_UNIT.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Robot\SRCS_METHOD_DEF.hbm.xml" />
+    <EmbeddedResource Include="Robot\SRCS_ROBOT.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Robot\SRCS_ROBOT_ROUTE_METHOD.hbm.xml" />
+    <EmbeddedResource Include="Robot\SRCS_ROUTE.hbm.xml" />
+    <EmbeddedResource Include="Robot\SRCS_ROUTE_STEP.hbm.xml" />
+    <EmbeddedResource Include="Robot\SRCS_ROUTE_STEP_JUMP.hbm.xml" />
+    <EmbeddedResource Include="Robot\SRCS_STAGE.hbm.xml" />
+    <EmbeddedResource Include="Robot\SRCS_STAGE_ROUTE_METHOD.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EntityData\SBRM_SAMPLING_DATA.hbm.xml" />
+    <EmbeddedResource Include="EntityData\SBRM_SAMPLING_RATE.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="History\SBCS_TERMINALMESSAGEHISTORY.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="History\SBCS_CIMMESSAGEHISTORY.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EntityData\SBRM_RUNMODECHECKRULE.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EntityData\SBRM_SORTGRADERULE.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="History\SBCS_DISPATCHHISTORY.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="History\SBCS_DCRRESULTHISTORY.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="History\SBCS_GLASSQTIMEHISTORY.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EntityData\SBRM_POSITION.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EntityData\SBRM_TACTTIME.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\KZONE.PLCAgent.PLC\KZONE.PLCAgent.PLC.csproj">
+      <Project>{02792A75-EE5D-471C-86B5-8ACC42C43675}</Project>
+      <Name>KZONE.PLCAgent.PLC</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="History\SBCS_TACTDATAHISTORY.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="History\SBCS_RECIPEVALIDATIONRESULTHISTORY.hbm.xml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

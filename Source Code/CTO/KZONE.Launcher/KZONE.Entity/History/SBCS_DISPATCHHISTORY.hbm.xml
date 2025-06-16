@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+	<class name="KZONE.Entity.DispatchHistory, KZONE.Entity" table="SBCS_DISPATCHHISTORY">
+		<id name="Id" type="Int64" unsaved-value="null">
+			<column name="OBJECTKEY" length="8" sql-type="bigint" not-null="true" unique="true"/>
+			<generator class="native" />
+		</id>
+		<property name="UPDATETIME" type="Timestamp">
+			<column name="UPDATETIME" length="8" sql-type="datetime" not-null="false" index="IX_SBCS_DISPATCHHISTORY"/>
+		</property>
+		<property name="EVENTNAME" type="String">
+			<column name="EVENTNAME" length="50" sql-type="varchar" not-null="false" index="IX_SBCS_DISPATCHHISTORY"/>
+		</property>
+		<property name="CASSETTESEQNO" type="Int32">
+			<column name="CASSETTESEQNO" length="4" sql-type="int" not-null="false" index="IX_SBCS_DISPATCHHISTORY"/>
+		</property>
+		<property name="CASSETTESLOTNO" type="Int32">
+			<column name="CASSETTESLOTNO" length="4" sql-type="int" not-null="false" index="IX_SBCS_DISPATCHHISTORY"/>
+		</property>
+		<property name="GlASSID" type="String">
+			<column name="GlASSID" length="50" sql-type="varchar" not-null="false" index="IX_SBCS_DISPATCHHISTORY"/>
+		</property>
+		<property name="GROUPNO" type="Int32">
+			<column name="GROUPNO" length="4" sql-type="int" not-null="false"/>
+		</property>
+		<property name="CIMMODE" type="String">
+			<column name="CIMMODE" length="50" sql-type="varchar" not-null="false"/>
+		</property>
+		<property name="GLASSTYPE" type="String">
+			<column name="GLASSTYPE" length="50" sql-type="varchar" not-null="false"/>
+		</property>
+		<property name="GLASSJUDGE" type="String">
+			<column name="GLASSJUDGE" length="50" sql-type="varchar" not-null="false"/>
+		</property>
+		<property name="GLASSGRADE" type="String">
+			<column name="GLASSGRADE" length="50" sql-type="varchar" not-null="false"/>
+		</property>
+		<property name="PPID" type="String">
+			<column name="PPID" length="255" sql-type="varchar" not-null="false"/>
+		</property>
+		<property name="INSPECTIONRESERVATIONSIGNAL" type="String">
+			<column name="INSPECTIONRESERVATIONSIGNAL" length="50" sql-type="varchar" not-null="false"/>
+		</property>
+		<property name="PROCESSRESERVATIONSIGNAL" type="String">
+			<column name="PROCESSRESERVATIONSIGNAL" length="50" sql-type="varchar" not-null="false"/>
+		</property>
+		<property name="INSPJUDGEDRESULT" type="String">
+			<column name="INSPJUDGEDRESULT" length="50" sql-type="varchar" not-null="false"/>
+		</property>
+		<property name="TRACKINGDATAHISTORY" type="String">
+			<column name="TRACKINGDATAHISTORY" length="50" sql-type="varchar" not-null="false"/>
+		</property>
+		<property name="EQUIPMENTSPECIALFLAG" type="String">
+			<column name="EQUIPMENTSPECIALFLAG" length="50" sql-type="varchar" not-null="false"/>
+		</property>
+		<property name="DISPATCHNODENO" type="String">
+			<column name="DISPATCHNODENO" length="50" sql-type="varchar" not-null="false" index="IX_SBCS_DISPATCHHISTORY"/>
+		</property>
+		<property name="DISPATCHPOINT" type="String">
+			<column name="DISPATCHPOINT" length="50" sql-type="varchar" not-null="false"/>
+		</property>
+		<property name="DISPATCHTARGET" type="String">
+			<column name="DISPATCHTARGET" length="250" sql-type="varchar" not-null="false"/>
+		</property>
+		<property name="SAMPLINGRATE" type="String">
+			<column name="SAMPLINGRATE" length="50" sql-type="varchar" not-null="false"/>
+		</property>
+		<property name="DISPATCHRESULT" type="String">
+			<column name="DISPATCHRESULT" length="50" sql-type="varchar" not-null="false"/>
+		</property>
+		<property name="BATCHID" type="String">
+			<column name="BATCHID" length="200" sql-type="varchar" not-null="false" index="IX_SBCS_DISPATCHHISTORY"/>
+		</property>
+    <property name="NGMARK" type="String">
+      <column name="NGMARK" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="REASON" type="String">
+      <column name="REASON" length="500" sql-type="varchar" not-null="false"/>
+    </property>
+	</class>
+</hibernate-mapping>

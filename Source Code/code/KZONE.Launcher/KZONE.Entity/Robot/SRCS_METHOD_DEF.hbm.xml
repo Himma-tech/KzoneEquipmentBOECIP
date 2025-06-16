@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+  <class name="KZONE.Entity.SRCS_METHOD_DEF, KZONE.Entity" table="SRCS_METHOD_DEF">
+    <id name="OBJECTKEY" type="Int64" unsaved-value="null">
+      <column name="OBJECTKEY" length="8" sql-type="bigint" not-null="true" unique="true"/>
+      <generator class="native" />
+    </id>
+    <property name="METHODTYPE" type="String">
+      <column name="METHODTYPE" length="100" sql-type="varchar" not-null="true" index="UK_SRCS_METHOD_DEF"/>
+    </property>
+    <property name="METHODNAME" type="String">
+      <column name="METHODNAME" length="100" sql-type="varchar" not-null="true" index="UK_SRCS_METHOD_DEF"/>
+    </property>
+    <property name="DESCRIPTION" type="String">
+      <column name="DESCRIPTION" length="1000" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="FUNCKEY" type="String">
+      <column name="FUNCKEY" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+  </class>
+</hibernate-mapping>

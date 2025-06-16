@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+	<class name="KZONE.Entity.SamplingEntityData, KZONE.Entity" table="SBRM_SAMPLING_DATA">
+		<id name="Id" type="Int64" unsaved-value="null">
+			<column name="OBJECTKEY" length="8" sql-type="bigint" not-null="true" unique="true"/>
+			<generator class="native" />
+		</id>
+		<property name="SERVERNAME" type="String">
+			<column name="SERVERNAME" length="50" sql-type="varchar" not-null="true"/>
+		</property>
+		<property name="SAMPLINGINDEX" type="String">
+			<column name="SAMPLING_INDEX" length="50" sql-type="varchar" not-null="false"/>
+		</property>
+		<property name="SAMPLINGFENZI" type="String">
+			<column name="SAMPLING_FEN_ZI" length="255" sql-type="varchar" not-null="false"/>
+		</property>
+		<property name="SAMPLINGFENMU" type="String">
+			<column name="SAMPLING_FEN_MU" length="255" sql-type="varchar" not-null="false"/>
+		</property>
+		<property name="TRXDATE" type="DateTime">
+			<column name="TRXDATE" length="8" sql-type="datetime" not-null="false"/>
+		</property>
+		<property name="TRXUSERID" type="String">
+			<column name="TRXUSERID" length="50" sql-type="varchar" not-null="false"/>
+		</property>
+		<property name="TRXIP" type="String">
+			<column name="TRXIP" length="50" sql-type="varchar" not-null="false"/>
+		</property>
+		<property name="REMARK" type="String">
+			<column name="REMARK" length="255" sql-type="varchar" not-null="false"/>
+		</property>
+	</class>
+</hibernate-mapping>

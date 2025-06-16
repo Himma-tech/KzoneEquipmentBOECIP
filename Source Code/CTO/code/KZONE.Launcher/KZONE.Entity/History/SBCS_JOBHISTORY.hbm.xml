@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+	<class name="KZONE.Entity.JobHistory, KZONE.Entity" table="SBCS_JOBHISTORY">
+    <id name="ID" type="Int64" unsaved-value="null">
+      <column name="OBJECTKEY" length="8" sql-type="bigint" not-null="true" unique="true"/>
+      <generator class="native" />
+    </id>
+    <property name="UPDATETIME" type="Timestamp">
+      <column name="UPDATETIME" length="8" sql-type="datetime" not-null="false"/>
+    </property>
+    <property name="EVENTNAME" type="String">
+      <column name="EVENTNAME" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="NODENO" type="String">
+      <column name="NODENO" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+
+    <property name="UNITNO" type="String">
+      <column name="UNITNO" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    
+    <property name="Cassette_Sequence_No" type="Int32">
+      <column name="Cassette_Sequence_No" length="4" sql-type="int" not-null="false"/>
+    </property>
+    <property name="Job_Sequence_No" type="Int32">
+      <column name="Job_Sequence_No" length="4" sql-type="int" not-null="false"/>
+    </property>
+    
+    <property name="GlassID" type="String">
+      <column name="GlassID" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="Lot_ID" type="String">
+      <column name="Lot_ID" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="Product_ID" type="String">
+      <column name="Product_ID" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="Operation_ID" type="String">
+      <column name="Operation_ID" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="CST_Operation_Mode" type="String">
+      <column name="CST_Operation_Mode" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="Substrate_Type" type="String">
+      <column name="Substrate_Type" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="Product_Type" type="String">
+      <column name="Product_Type" length="255" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="Job_Type" type="String">
+      <column name="Job_Type" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="Dummy_Type" type="String">
+      <column name="Dummy_Type" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="Skip_Flag" type="String">
+      <column name="Skip_Flag" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="Process_Flag" type="String">
+      <column name="Process_Flag" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="Process_Reason_Code" type="String">
+      <column name="Process_Reason_Code" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="LOT_Code" type="String">
+      <column name="LOT_Code" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="Glass_Thickness" type="String">
+      <column name="Glass_Thickness" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="Glass_Degree" type="String">
+      <column name="Glass_Degree" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="Inspection_Flag" type="String">
+      <column name="Inspection_Flag" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="Job_Judge" type="String">
+      <column name="Job_Judge" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="Job_Grade" type="String">
+      <column name="Job_Grade" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="Job_Recovery_Flag" type="String">
+      <column name="Job_Recovery_Flag" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="Mode" type="String">
+      <column name="Mode" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="Step_ID" type="String">
+      <column name="Step_ID" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="VCR_Read_ID" type="String">
+      <column name="VCR_Read_ID" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="Master_Recipe_ID" type="String">
+      <column name="Master_Recipe_ID" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="PPID" type="String">
+      <column name="PPID" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+ 
+    
+  </class>
+</hibernate-mapping>

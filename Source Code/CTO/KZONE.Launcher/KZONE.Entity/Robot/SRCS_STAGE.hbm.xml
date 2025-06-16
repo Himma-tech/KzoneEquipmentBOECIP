@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+  <class name="KZONE.Entity.SRCS_STAGE, KZONE.Entity" table="SRCS_STAGE">
+    <id name="OBJECTKEY" type="Int64" unsaved-value="null">
+      <column name="OBJECTKEY" length="8" sql-type="bigint" not-null="true" unique="true"/>
+      <generator class="native" />
+    </id>
+    <property name="SERVERNAME" type="String">
+      <column name="SERVERNAME" length="100" sql-type="varchar" not-null="true" index="UK_SRCS_STAGE,UK_SRCS_STAGE_1" />
+    </property>
+    <property name="STAGENAME" type="String">
+      <column name="STAGENAME" length="100" sql-type="varchar" not-null="true" index="UK_SRCS_STAGE"/>
+    </property>
+    <property name="STAGE_POSITION" type="Int32">
+      <column name="STAGE_POSITION" length="4" sql-type="int" not-null="true" index="UK_SRCS_STAGE_1"/>
+    </property>
+    <property name="SCAN_METHOD" type="String">
+      <column name="SCAN_METHOD" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="LINEID" type="String">
+      <column name="LINEID" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="NODENO" type="String">
+      <column name="NODENO" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="PORT_ID" type="String">
+      <column name="PORT_ID" length="50" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="NODE_ID" type="String">
+      <column name="NODE_ID" length="50" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="ROBOTNAME" type="String">
+      <column name="ROBOTNAME" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="STAGE_PRIORITY" type="Int32">
+      <column name="STAGE_PRIORITY" length="4" sql-type="int" not-null="true"/>
+    </property>
+    <property name="UPSTREAM_PATHNO" type="String">
+      <column name="UPSTREAM_PATHNO" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="DOWNSTREAM_PATHNO" type="String">
+      <column name="DOWNSTREAM_PATHNO" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="SEND_GDB" type="String">
+      <column name="SEND_GDB" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="RECV_GDB" type="String">
+      <column name="RECV_GDB" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="STAGETYPE" type="String">
+      <column name="STAGETYPE" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="CASSETTETYPE" type="String">
+      <column name="CASSETTETYPE" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="SLOTCOUNT" type="Int32">
+      <column name="SLOTCOUNT" length="4" sql-type="int" not-null="true"/>
+    </property>
+    <property name="MAXSLOT" type="Int32">
+      <column name="MAXSLOT" length="4" sql-type="int" not-null="true"/>
+    </property>
+    <property name="GLASSBIT" type="String">
+      <column name="GLASSBIT" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="REDOBIT" type="String">
+      <column name="REDOBIT" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="INSPBIT" type="String">
+      <column name="INSPBIT" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="RECIPEINDEX" type="String">
+      <column name="RECIPEINDEX" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="SLOTFETCHSEQ" type="String">
+      <column name="SLOTFETCHSEQ" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="SLOTSTORESEQ" type="String">
+      <column name="SLOTSTORESEQ" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="ARM_FETCH_SEQ" type="String">
+      <column name="ARM_FETCH_SEQ" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="ARM_STORE_SEQ" type="String">
+      <column name="ARM_STORE_SEQ" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="GETREADYFLAG" type="String">
+      <column name="GETREADYFLAG" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="GETREADYSLOT" type="Int32">
+      <column name="GETREADYSLOT" length="4" sql-type="int" not-null="true"/>
+    </property>
+    <property name="GETREADYARM" type="String">
+      <column name="GETREADYARM" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="PUTREADYFLAG" type="String">
+      <column name="PUTREADYFLAG" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="PREFETCHFLAG" type="String">
+      <column name="PREFETCHFLAG" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="BOTHARMFLAG" type="String">
+      <column name="BOTHARMFLAG" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="EXCHANGE_TYPE" type="String">
+      <column name="EXCHANGE_TYPE" length="100" sql-type="varchar" not-null="true"/>
+    </property>
+  </class>
+</hibernate-mapping>

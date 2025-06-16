@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+	<class name="KZONE.Entity.EquipmentEntityData, KZONE.Entity" table="SBRM_NODE">
+		<id name="Id" type="Int64" unsaved-value="null">
+			<column name="OBJECTKEY" length="8" sql-type="bigint" not-null="true" unique="true"/>
+			<generator class="native" />
+		</id>
+		<property name="LINEID" type="String">
+			<column name="LINEID" length="50" sql-type="varchar" not-null="true"/>
+		</property>
+		<property name="SERVERNAME" type="String">
+			<column name="SERVERNAME" length="50" sql-type="varchar" not-null="true"/>
+		</property>
+		<property name="NODENO" type="String">
+			<column name="NODENO" length="50" sql-type="varchar" not-null="true"/>
+		</property>
+		<property name="NODEID" type="String">
+			<column name="NODEID" length="50" sql-type="varchar" not-null="true"/>
+		</property>
+		<property name="REPORTMODE" type="String">
+			<column name="REPORTMODE" length="50" sql-type="varchar" not-null="true"/>
+		</property>
+		<property name="ATTRIBUTE" type="String">
+			<column name="ATTRIBUTE" length="50" sql-type="varchar" not-null="true"/>
+		</property>
+		<property name="RECIPEIDX" type="Int32">
+			<column name="RECIPEIDX" length="4" sql-type="int" not-null="true"/>
+		</property>
+		<property name="RECIPELEN" type="Int32">
+			<column name="RECIPELEN" length="4" sql-type="int" not-null="true"/>
+		</property>
+		<property name="RECIPESEQ" type="String">
+			<column name="RECIPESEQ" length="10" sql-type="varchar" not-null="true"/>
+		</property>
+		<property name="UNITCOUNT" type="Int32">
+			<column name="UNITCOUNT" length="4" sql-type="int" not-null="false"/>
+		</property>
+		<property name="NODENAME" type="String">
+			<column name="NODENAME" length="50" sql-type="varchar" not-null="true"/>
+		</property>
+		<property name="RECIPEREGVALIDATIONENABLED" type="String">
+			<column name="RECIPEREGVALIDATIONENABLED" length="1" sql-type="varchar" not-null="true"/>
+		</property>
+		<property name="USERUNMODE" type="String">
+			<column name="USERUNMODE" length="1" sql-type="varchar" not-null="false"/>
+		</property>
+		<property name="USEINDEXERMODE" type="String">
+			<column name="USEINDEXERMODE" length="1" sql-type="varchar" not-null="false"/>
+		</property>
+		<property name="USEEDCREPORT" type="String">
+			<column name="USEEDCREPORT" length="1" sql-type="varchar" not-null="false"/>
+		</property>
+		<property name="DCRCOUNT" type="Int32">
+			<column name="DCRCOUNT" length="4" sql-type="int" not-null="false"/>
+		</property>
+		<property name="STOPBITCOUNT" type="Int32">
+			<column name="STOPBITCOUNT" length="4" sql-type="int" not-null="false"/>
+		</property>
+		<property name="OPITYPE" type="String">
+			<column name="OPITYPE" length="20" sql-type="varchar" not-null="false"/>
+		</property>
+		<property name="EQPPROFILE" type="String">
+			<column name="EQPPROFILE" length="255" sql-type="varchar" not-null="false"/>
+		</property>
+		<property name="RECIPEPARAVALIDATIONENABLED" type="String">
+			<column name="RECIPEPARAVALIDATIONENABLED" length="1" sql-type="varchar" not-null="true"/>
+		</property>
+		<property name="FDCREPORT" type="String">
+			<column name="FDCREPORT" length="1" sql-type="varchar" not-null="false"/>
+		</property>
+		<property name="FDCREPORTTIME" type="Int32">
+			<column name="FDCREPORTTIME" length="4" sql-type="int" not-null="false"/>
+		</property>
+		<property name="DAILYCHECKREPORT" type="String">
+			<column name="DAILYCHECKREPORT" length="1" sql-type="varchar" not-null="false"/>
+		</property>
+		<property name="DAILYCHECKREPORTTIME" type="Int32">
+			<column name="DAILYCHECKREPORTTIME" length="4" sql-type="int" not-null="false"/>
+		</property>
+	</class>
+</hibernate-mapping>

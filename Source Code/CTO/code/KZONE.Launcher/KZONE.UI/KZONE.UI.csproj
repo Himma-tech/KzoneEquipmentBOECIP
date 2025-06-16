@@ -1,0 +1,1034 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B510AD92-92D9-4060-91BC-13CA21EBFE05}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>KZONE.UI</RootNamespace>
+    <AssemblyName>KZONE.UI</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EPPlus, Version=5.3.2.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\bin\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="IrisSkin4, Version=2006.3.22.45, Culture=neutral, PublicKeyToken=127be25a6db25e07, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\bin\IrisSkin4.dll</HintPath>
+    </Reference>
+    <Reference Include="KZONE.ConstantParameter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DLL\KZONE.ConstantParameter.dll</HintPath>
+    </Reference>
+    <Reference Include="KZONE.Log, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DLL\KZONE.Log.dll</HintPath>
+    </Reference>
+    <Reference Include="KZONE.MessageManager, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DLL\KZONE.MessageManager.dll</HintPath>
+    </Reference>
+    <Reference Include="KZONE.PLCAgent, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DLL\KZONE.PLCAgent.dll</HintPath>
+    </Reference>
+    <Reference Include="KZONE.PLCAgent.PLC, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DLL\KZONE.PLCAgent.PLC.dll</HintPath>
+    </Reference>
+    <Reference Include="KZONE.Work, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DLL\KZONE.Work.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI, Version=1.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\NPOI.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="Spring.Core, Version=1.3.2.40943, Culture=neutral, PublicKeyToken=65e474d141e25e07, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\bin\Spring.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Spring.Data, Version=1.3.2.40943, Culture=neutral, PublicKeyToken=65e474d141e25e07, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\bin\Spring.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="UniLayout, Version=1.0.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\UniLayout.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CIMMessageManagement.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CIMMessageManagement.Designer.cs">
+      <DependentUpon>CIMMessageManagement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormMonitorPLC.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormMonitorPLC.designer.cs">
+      <DependentUpon>FormMonitorPLC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormPassWordConfirm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormPassWordConfirm.Designer.cs">
+      <DependentUpon>FormPassWordConfirm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormRecipeDataDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormRecipeDataDetail.designer.cs">
+      <DependentUpon>FormRecipeDataDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormRecipeValidationResult.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormRecipeValidationResult.Designer.cs">
+      <DependentUpon>FormRecipeValidationResult.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmAgent.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmDataManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmDataManager.designer.cs">
+      <DependentUpon>FrmDataManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmLogDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmLogView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmMaterialDataDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmMaterialDataDetail.Designer.cs">
+      <DependentUpon>FrmMaterialDataDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmMessage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmMisc.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmMonitor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmMonitor.Designer.cs">
+      <DependentUpon>FrmMonitor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmObjectEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmObjectEdit.designer.cs">
+      <DependentUpon>FrmObjectEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmQues.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmQues.Designer.cs">
+      <DependentUpon>FrmQues.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmRemoveRecoveryJob.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmRemoveRecoveryJob.designer.cs">
+      <DependentUpon>FrmRemoveRecoveryJob.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DBHISSET.cs">
+      <DependentUpon>DBHISSET.dbml</DependentUpon>
+    </Compile>
+    <Compile Include="DBHISSET.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DBHISSET.dbml</DependentUpon>
+    </Compile>
+    <Compile Include="DBSET.cs">
+      <DependentUpon>DBSET.dbml</DependentUpon>
+    </Compile>
+    <Compile Include="DBSET.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DBSET.dbml</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\CustButton.cs" />
+    <Compile Include="Entity\Dense.cs" />
+    <Compile Include="Entity\Interface.cs" />
+    <Compile Include="Entity\Item.cs" />
+    <Compile Include="Entity\Line.cs" />
+    <Compile Include="Entity\Node.cs" />
+    <Compile Include="Entity\PagedGridView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Entity\Pallet.cs" />
+    <Compile Include="Entity\Port.cs" />
+    <Compile Include="Entity\Recipe.cs" />
+    <Compile Include="Entity\Stage.cs" />
+    <Compile Include="Entity\Unit.cs" />
+    <Compile Include="Entity\UserAccount.cs" />
+    <Compile Include="FormBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormBase.designer.cs">
+      <DependentUpon>FormBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormBcMessage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormBcMessage.designer.cs">
+      <DependentUpon>FormBcMessage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormHistory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormHistory.designer.cs">
+      <DependentUpon>FormHistory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormHistory_JobDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormHistory_JobDetail.designer.cs">
+      <DependentUpon>FormHistory_JobDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormInterface.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormInterface.designer.cs">
+      <DependentUpon>FormInterface.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormJobDataDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormJobDataDetail.designer.cs">
+      <DependentUpon>FormJobDataDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormLayout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormLayout.designer.cs">
+      <DependentUpon>FormLayout.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormOPIMessage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormOPIMessage.designer.cs">
+      <DependentUpon>FormOPIMessage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormProcessDataHistory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormProcessDataHistory.designer.cs">
+      <DependentUpon>FormProcessDataHistory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormProcessDataHistoryDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormProcessDataHistoryDetail.designer.cs">
+      <DependentUpon>FormProcessDataHistoryDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormQuectionMessage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormQuectionMessage.designer.cs">
+      <DependentUpon>FormQuectionMessage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormTimingChart.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormTimingChart.designer.cs">
+      <DependentUpon>FormTimingChart.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormVCRResult.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormVCRResult.designer.cs">
+      <DependentUpon>FormVCRResult.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HisTableParam.cs" />
+    <Compile Include="OPIConstant.cs" />
+    <Compile Include="OPIInfo.cs" />
+    <Compile Include="UniTools.cs" />
+    <Compile Include="UserControls\UcAutoButtons.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\UcAutoButtons.designer.cs">
+      <DependentUpon>UcAutoButtons.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ucComBox_His.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\ucComBox_His.designer.cs">
+      <DependentUpon>ucComBox_His.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ucComBox_Node.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\ucComBox_Node.designer.cs">
+      <DependentUpon>ucComBox_Node.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ucFlowPriority.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\ucFlowPriority.designer.cs">
+      <DependentUpon>ucFlowPriority.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ucJobData_CheckBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\ucJobData_CheckBox.designer.cs">
+      <DependentUpon>ucJobData_CheckBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ucJudge.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\ucJudge.designer.cs">
+      <DependentUpon>ucJudge.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ucOXRInfo.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\ucOXRInfo.designer.cs">
+      <DependentUpon>ucOXRInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ucRBMethod.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\ucRBMethod.designer.cs" />
+    <Compile Include="UserControls\ucRTCInfo.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\ucRTCInfo.designer.cs" />
+    <Compile Include="UserControls\ucSemiCommand.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\ucSemiCommand.designer.cs" />
+    <Compile Include="UserControls\ucTextBox_His.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\ucTextBox_His.Designer.cs" />
+    <Compile Include="UserControls\ucTextBox_Normal.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\ucTextBox_Normal.Designer.cs" />
+    <Compile Include="LogOutFrm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LogOutFrm.Designer.cs">
+      <DependentUpon>LogOutFrm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MDIForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MDIForm.Designer.cs">
+      <DependentUpon>MDIForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ObjectMonitor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ObjectMonitor.designer.cs">
+      <DependentUpon>ObjectMonitor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CIMMessageManagement.resx">
+      <DependentUpon>CIMMessageManagement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormMonitorPLC.resx">
+      <DependentUpon>FormMonitorPLC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormPassWordConfirm.resx">
+      <DependentUpon>FormPassWordConfirm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormRecipeDataDetail.resx">
+      <DependentUpon>FormRecipeDataDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormRecipeValidationResult.resx">
+      <DependentUpon>FormRecipeValidationResult.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmAgent.resx">
+      <DependentUpon>FrmAgent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmDataManager.resx">
+      <DependentUpon>FrmDataManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmLogView.resx">
+      <DependentUpon>FrmLogView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmMaterialDataDetail.resx">
+      <DependentUpon>FrmMaterialDataDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmMessage.resx">
+      <DependentUpon>FrmMessage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmMisc.resx">
+      <DependentUpon>FrmMisc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmMonitor.resx">
+      <DependentUpon>FrmMonitor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmObjectEdit.resx">
+      <DependentUpon>FrmObjectEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmQues.resx">
+      <DependentUpon>FrmQues.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmRemoveRecoveryJob.resx">
+      <DependentUpon>FrmRemoveRecoveryJob.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="DBHISSET.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>DBHISSET.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DBSET.dbml.layout">
+      <DependentUpon>DBSET.dbml</DependentUpon>
+    </None>
+    <None Include="DBHISSET.dbml.layout">
+      <DependentUpon>DBHISSET.dbml</DependentUpon>
+      <SubType>Designer</SubType>
+    </None>
+    <EmbeddedResource Include="FormBase.resx">
+      <DependentUpon>FormBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormBcMessage.resx">
+      <DependentUpon>FormBcMessage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormHistory.resx">
+      <DependentUpon>FormHistory.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormHistory_JobDetail.resx">
+      <DependentUpon>FormHistory_JobDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormInterface.resx">
+      <DependentUpon>FormInterface.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormJobDataDetail.resx">
+      <DependentUpon>FormJobDataDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormLayout.resx">
+      <DependentUpon>FormLayout.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormOPIMessage.resx">
+      <DependentUpon>FormOPIMessage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormProcessDataHistory.resx">
+      <DependentUpon>FormProcessDataHistory.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormProcessDataHistoryDetail.resx">
+      <DependentUpon>FormProcessDataHistoryDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormQuectionMessage.resx">
+      <DependentUpon>FormQuectionMessage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormTimingChart.resx">
+      <DependentUpon>FormTimingChart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormVCRResult.resx">
+      <DependentUpon>FormVCRResult.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\UcAutoButtons.resx">
+      <DependentUpon>UcAutoButtons.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\ucComBox_His.resx">
+      <DependentUpon>ucComBox_His.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\ucComBox_Node.resx">
+      <DependentUpon>ucComBox_Node.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\ucFlowPriority.resx">
+      <DependentUpon>ucFlowPriority.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\ucJobData_CheckBox.resx">
+      <DependentUpon>ucJobData_CheckBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\ucJudge.resx">
+      <DependentUpon>ucJudge.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\ucOXRInfo.resx">
+      <DependentUpon>ucOXRInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\ucRBMethod.resx" />
+    <EmbeddedResource Include="UserControls\ucRTCInfo.resx" />
+    <EmbeddedResource Include="UserControls\ucSemiCommand.resx" />
+    <EmbeddedResource Include="UserControls\ucTextBox_His.resx" />
+    <EmbeddedResource Include="UserControls\ucTextBox_Normal.resx" />
+    <EmbeddedResource Include="LogOutFrm.resx">
+      <DependentUpon>LogOutFrm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MDIForm.resx">
+      <DependentUpon>MDIForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ObjectMonitor.resx">
+      <DependentUpon>ObjectMonitor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\KZONE.EntityManager\KZONE.EntityManager.csproj">
+      <Project>{3AF798BF-0431-4121-9DE7-87E25E23219B}</Project>
+      <Name>KZONE.EntityManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\KZONE.Entity\KZONE.Entity.csproj">
+      <Project>{D8255DBB-D5B9-4654-BD15-2A6A7130500D}</Project>
+      <Name>KZONE.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\KZONE.Service\KZONE.Service.csproj">
+      <Project>{8C944307-9960-4A9B-9CD0-3A76EF161F1D}</Project>
+      <Name>KZONE.Service</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DBSET.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>DBSET.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Resources\Logouttu1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KZONE.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KZONE1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KZONE2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KZONE3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\New KZONE.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ArrowLeft_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ArrowRight_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\B_Title_Left.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Bg_BaseCaption.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Bg_Left.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Bg_Login.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Bg_Login_Info.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Bg_LoginInfo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Bg_Main.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Bg_Main_Left.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BgHeader.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BgLayout.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BgTitle.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Bit_Bule.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Bit_Green.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Bit_Green_64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Bit_Red.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Bit_Red_64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Bit_Sliver.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnAdd.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnAlarmStatus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnBackground.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnBackground_Normal.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnBCMessage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnCancel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnCIMMessage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnDB.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnDelete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\btnEDC.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnEdit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnEQPCIM.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnExport.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Btngroup.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnHelp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnHistory.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnImport.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnIndexer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnJobCount.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnLayout.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnLineControl.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnLineStatus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnMonitor.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnNetAlive.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnOK.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnOperation.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnParameter.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnPortCommand.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnQuery.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnRecipeID.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnRecipeMessage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnRecipePara.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnRefresh.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnRefresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnSave.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnSetting.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnSubBlock.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnTimeCalib.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnTimingChart.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnTrackout.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnUserGroup.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnUserSetting.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BtnUtility.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ButtonMemu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ButtonNone.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ButtonNormal.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ButtonShortCut.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ButtonSpecial.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ButtonTmp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTBuffer_LC.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTBuffer_LR.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTBuffer_NONE.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTBuffer_UC.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTBuffer_UR.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTCell_LC.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTCell_LR.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTCell_NONE.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTCell_UC.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTCell_UR.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTMPortr_LC.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTMPortr_LR.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTMPortr_NONE.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTMPortr_UC.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTMPortr_UR.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTNormal_LC.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTNormal_LR.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTNormal_NONE.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTNormal_UC.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTNormal_UR.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTTray_LC.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTTray_LR.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTTray_NONE.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTTray_UC.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTTray_UR.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTWire_LC.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTWire_LR.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTWire_NONE.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTWire_UC.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSTWire_UR.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CVtoCV.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Dense_LC.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Dense_LR.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Dense_NONE.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Dense_UC.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Dense_UR.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\download.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\exit-02.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\H.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HKC_1.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Laayout_StageTurn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\LanguageB.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Layout_Conveyor1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Layout_Conveyor1_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Layout_Conveyor2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Layout_Conveyor2_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Layout_DispatchOff_gary.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Layout_DispatchOn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Layout_DoubleArm.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Layout_Pallet .png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Layout_PortLC.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Layout_PortLR.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Layout_PortUC.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Layout_PortUR.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Layout_SingleArm.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Layout_StageFixed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Layout_StageTurn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Layout_StageTurn_OFF.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Layout_StageTurn_ON.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Layout_StageTurnOver.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Layout_StageTurnOver_OFF.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Layout_StageTurnOver_ON.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Layout_Trolley.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Layout_Trolley_Track.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Layout_VCROff.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Layout_VCROn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\line.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\line2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\line3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Login_UniOPI.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\login-info-bg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\OPI-logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Robot_DoubleArm.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SetAll.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SetOne.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\UniBCM.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\upload.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\user.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\user-02.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Visionox.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+	<class name="KZONE.Entity.TankHistory, KZONE.Entity" table="SBCS_TANKHISTORY">
+		<id name="ID" type="Int64" unsaved-value="null">
+			<column name="OBJECTKEY" length="8" sql-type="bigint" not-null="true" unique="true"/>
+			<generator class="native" />
+		</id>
+		<property name="NODEID" type="String">
+			<column name="NODEID" length="50" sql-type="varchar" not-null="true"/>
+		</property>
+    <property name="TANKID" type="String">
+      <column name="TANKID" length="50" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="TANKEVENT" type="String">
+      <column name="TANKEVENT" length="50" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="STARTTIME" type="Timestamp">
+      <column name="STARTTIME" length="8" sql-type="datetime" not-null="false"/>
+    </property>
+    <property name="ENDTIME" type="Timestamp">
+      <column name="ENDTIME" length="8" sql-type="datetime" not-null="false"/>
+    </property>
+    <property name="TOTALTIME" type="String">
+      <column name="TOTALTIME" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="QUANTITY" type="String">
+      <column name="QUANTITY" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="SPEED" type="String">
+      <column name="SPEED" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+    <property name="OPERATORID" type="String">
+      <column name="OPERATORID" length="50" sql-type="varchar" not-null="false"/>
+    </property>
+	</class>
+</hibernate-mapping>

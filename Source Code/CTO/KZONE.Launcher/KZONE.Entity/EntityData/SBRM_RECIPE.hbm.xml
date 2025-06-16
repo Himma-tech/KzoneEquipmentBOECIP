@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+	<class name="KZONE.Entity.RecipeEntityData, KZONE.Entity" table="SBRM_RECIPE">
+		<id name="Id" type="Int64" unsaved-value="null">
+			<column name="OBJECTKEY" length="8" sql-type="bigint" not-null="true" unique="true"/>
+			<generator class="native" />
+		</id>
+		<property name="FABTYPE" type="String">
+			<column name="FABTYPE" length="50" sql-type="varchar" not-null="true" index="UK_SBRM_RECIPE"/>
+		</property>
+		<property name="LINETYPE" type="String">
+			<column name="LINETYPE" length="50" sql-type="varchar" not-null="true" index="UK_SBRM_RECIPE"/>
+		</property>
+    <property name="LINEID" type="String">
+      <column name="LINEID" length="50" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="NODENO" type="String">
+      <column name="NODENO" length="50" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="RECIPENO" type="String">
+      <column name="RECIPENO" length="50" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="RECIPEID" type="String">
+      <column name="RECIPEID" length="50" sql-type="varchar" not-null="true"/>
+    </property>
+    <property name="CREATETIME" type="Timestamp">
+      <column name="CREATETIME" length="8" sql-type="datetime" not-null="true"/>
+    </property>
+		<property name="VERSIONNO" type="String">
+			<column name="VERSIONNO" length="50" sql-type="varchar" not-null="true" />
+		</property>
+		<property name="RECIPESTATUS" type="String">
+			<column name="RECIPESTATUS" length="50" sql-type="varchar" not-null="true"/>
+		</property>
+		<property name="OPERATORID" type="String">
+			<column name="OPERATORID" length="50" sql-type="varchar" not-null="true"/>
+		</property>
+		<property name="FILENAME" type="String">
+			<column name="FILENAME" length="100" sql-type="varchar" not-null="true"/>
+		</property>
+	
+	</class>
+</hibernate-mapping>
