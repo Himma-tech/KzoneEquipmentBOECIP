@@ -950,7 +950,7 @@ namespace KZONE.Service
                 }
                 if (bitResult == eBitResult.ON)
                 {
-                    CPCCIMModeChangeCommand(eqp, inputData, eBitResult.OFF, "0");
+                    //CPCCIMModeChangeCommand(eqp, inputData, eBitResult.OFF, "0");
 
                     Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
                         new System.Timers.ElapsedEventHandler(EQCIMModeChangeCommandReplyAction), inputData.TrackKey);
@@ -7384,7 +7384,7 @@ namespace KZONE.Service
                 LogWarn(MethodBase.GetCurrentMethod().Name + "()",
                     string.Format("[EQUIPMENT={0}] [EC -> BC][{1}] Recipe Parameter Request Reply T2 TIMEOUT, SET BIT=[OFF].", sArray[0], trackKey));
 
-                CPCRecipeParameterRequestReply(eBitResult.OFF, null, null);
+                //CPCRecipeParameterRequestReply(eBitResult.OFF, null, null);
             }
             catch (Exception ex)
             {
@@ -7438,7 +7438,7 @@ namespace KZONE.Service
                         string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF] Recipe Key Parameter Request.",
                         eqpNo, inputData.TrackKey));
 
-                    CPCRecipeParameterRequestReply(eBitResult.OFF, inputData, "0");
+                    //CPCRecipeParameterRequestReply(eBitResult.OFF, inputData, "0");
 
                     return;
                 }

@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>KZONE.Service</RootNamespace>
     <AssemblyName>KZONE.Service</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -39,7 +39,7 @@
     </Reference>
     <Reference Include="KZONE.ConstantParameter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\DLL\KZONE.ConstantParameter.dll</HintPath>
+      <HintPath>..\KZONE.ConstantParameter\obj\Debug\KZONE.ConstantParameter.dll</HintPath>
     </Reference>
     <Reference Include="KZONE.Log, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -47,7 +47,7 @@
     </Reference>
     <Reference Include="KZONE.MessageManager, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\DLL\KZONE.MessageManager.dll</HintPath>
+      <HintPath>..\KZONE.MessageManager\obj\Debug\KZONE.MessageManager.dll</HintPath>
     </Reference>
     <Reference Include="KZONE.PLCAgent, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

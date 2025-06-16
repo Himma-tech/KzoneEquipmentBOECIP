@@ -432,17 +432,46 @@ namespace KZONE.Service
                 LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
             }
         }
-
+        /// <summary>
+        /// HandleDummyJobRequestReplyEx
+        /// </summary>
+        /// <param name="e"></param>
         private void HandleDummyJobRequestReplyEx(TagValueChangedEventArgs e)
         {
             try
             {
                 int returnCode = 0;
                 eipTagAccess.WriteItemValue(
-                    "RV_CIMToEQ_Status01_01_05_00",
-                    "Machine_Status_Event_Reply",
-                    "Dummy Job Request Reply",
-                    returnCode);
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Machine_Status_Event",
+                    "Dummy_Job_Request",
+                    true);
+                eipTagAccess.WriteItemValue(
+                    "Dummy_Job_Request_Block",
+                    "Machine_Status_Event",
+                    "Remain_Dummy_Job_Count",
+                    1);
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Machine_Status_Event",
+                    "Request_Dummy_Job_Count",
+                    2);
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Machine_Status_Event",
+                    "Request_local_number",
+                    3);
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Machine_Status_Event",
+                    "Dummy_Type",
+                    4);
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Machine_Status_Event",
+                    "Port_Number",
+                    5);
+
                 LogInfo(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
@@ -451,11 +480,62 @@ namespace KZONE.Service
                 LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
             }
         }
-
+        /// <summary>
+        /// HandleJobJudgeResultReportReplyEx
+        /// </summary>
+        /// <param name="e"></param>
         private void HandleJobJudgeResultReportReplyEx(TagValueChangedEventArgs e)
         {
             try
             {
+
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Machine_Status_Event",
+                    "Job_Judge_Result_Report",
+                    true);
+
+
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Job_Judge_Result_Report_Block",
+                    "Job_ID",
+                    1);
+
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Job_Judge_Result_Report_Block",
+                    "Lot_Sequence_Number",
+                    2);
+
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Job_Judge_Result_Report_Block",
+                    "Slot_Sequence_Number",
+                    3);
+
+
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Job_Judge_Result_Report_Block",
+                    "Unit_Number",
+                    4);
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Job_Judge_Result_Report_Block",
+                    "Slot_Number",
+                    5);
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Job_Judge_Result_Report_Block",
+                    "Job_Judge_Code",
+                    6);
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Job_Judge_Result_Report_Block",
+                    "Job_Grade_Code",
+                    7);
+
                 int returnCode = 0;
                 LogInfo(MethodBase.GetCurrentMethod().Name + "()",
                     "no reply:" + returnCode.ToString());
@@ -465,6 +545,7 @@ namespace KZONE.Service
                 LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
             }
         }
+
 
         private void HandleDateTimeRequestReplyEx(TagValueChangedEventArgs e)
         {
@@ -731,17 +812,67 @@ namespace KZONE.Service
                 LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
             }
         }
-
+        /// <summary>
+        /// HandleMaterialValidationRequestReply
+        /// </summary>
+        /// <param name="e"></param>
         private void HandleMaterialValidationRequestReply(TagValueChangedEventArgs e)
         {
             try
             {
                 int returnCode = 0;
                 eipTagAccess.WriteItemValue(
-                    "RV_CIMToEQ_EventReply_01_05_00",
-                    "Machine_Material_Event_Reply",
-                    "Material Validation Request Reply",
-                    returnCode);
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Machine_Material_Status",
+                    "Material_Validation_Request",
+                    true);
+
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Material_Validation_Request_Block",
+                    "Material_Type",
+                    1);
+
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Material_Validation_Request_Block",
+                    "Material_ID",
+                    2);
+
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Material_Validation_Request_Block",
+                    "Unit_Number",
+                    3);
+
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Material_Validation_Request_Block",
+                    "Unit_Number",
+                    4);
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Material_Validation_Request_Block",
+                    "Material_Use_Count",
+                    5);
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Material_Validation_Request_Block",
+                    "Material_Use_Life_Time",
+                    6);
+
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Material_Validation_Request_Block",
+                    "Concentration",
+                    7);
+
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Material_Validation_Request_Block",
+                    "Concentration",
+                    8);
+
                 LogInfo(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
@@ -751,18 +882,70 @@ namespace KZONE.Service
             }
         }
 
+        /// <summary>
+        /// HandleMaterialStatusChangeReportReply
+        /// </summary>
+        /// <param name="e"></param>
         private void HandleMaterialStatusChangeReportReply(TagValueChangedEventArgs e)
         {
             try
             {
                 int returnCode = 0;
                 eipTagAccess.WriteItemValue(
-                    "RV_CIMToEQ_EventReply_01_05_00",
-                    "Machine_Material_Event_Reply",
-                    "Material Status Change Report Reply",
-                    returnCode);
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Machine_Material_Status",
+                    "Material_Status_Change_Report",
+                    true);
                 LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                    "reply:" + returnCode.ToString());
+                    "Material_Status_Change_Report:" + true.ToString());
+
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Material_Status_Change_Report_Block",
+                    "Material_Status",
+                    1);
+
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Material_Status_Change_Report_Block",
+                    "Material_ID",
+                    135);
+
+
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Material_Status_Change_Report_Block",
+                    "Material_Type",
+                    1);
+
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Material_Status_Change_Report_Block",
+                    "Unit_Number",
+                    2);
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Material_Status_Change_Report_Block",
+                    "Slot_Number",
+                    11);
+
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Material_Status_Change_Report_Block",
+                    "Material_Use_Count",
+                    13);
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Material_Status_Change_Report_Block",
+                    "Unloading_Code",
+                    14);
+
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Material_Status_Change_Report_Block",
+                    "Tank_ID",
+                    15);
+
             }
             catch (Exception ex)
             {
@@ -774,14 +957,53 @@ namespace KZONE.Service
         {
             try
             {
-                int returnCode = 0;
+                string result = "true";
                 eipTagAccess.WriteItemValue(
-                    "RV_CIMToEQ_UnpackManagement_01_05_00",
-                    "Panel Judge Event Reply",
-                    "Panel Data Update Report Reply",
-                    returnCode);
+                    "SD_CIMToEQ_UnpackManagement_01_05_00",
+                    "Panel_Data_Update_Report",
+                    "Panel_Judge_Data_Download_Request",
+                    result);
                 LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                    "reply:" + returnCode.ToString());
+                    "reply:" + result.ToString());
+
+                eipTagAccess.WriteItemValue(
+                    "SD_CIMToEQ_UnpackManagement_01_05_00",
+                    "Panel_Data_Update_Report_Block",
+                    "Job_ID",
+                    "1");
+
+                eipTagAccess.WriteItemValue(
+                    "SD_CIMToEQ_UnpackManagement_01_05_00",
+                    "Panel_Data_Update_Report_Block",
+                    "Lot_Sequence_Number",
+                    "L1");
+
+                eipTagAccess.WriteItemValue(
+                    "SD_CIMToEQ_UnpackManagement_01_05_00",
+                    "Panel_Data_Update_Report_Block",
+                    "Slot_Sequence_Number",
+                    "S1");
+
+                eipTagAccess.WriteItemValue(
+                    "SD_CIMToEQ_UnpackManagement_01_05_00",
+                    "Panel_Judge_Data_Download Request_Block",
+                    "Slot_Sequence_Number",
+                    "S1");
+
+                eipTagAccess.WriteItemValue(
+                    "SD_CIMToEQ_UnpackManagement_01_05_00",
+                    "Panel_Data_Update_Report_Block",
+                    "OPER_ID",
+                    "O1");
+
+                for (int i = 1; i <= 130; i++)
+                {
+                    eipTagAccess.WriteItemValue(
+                        "SD_CIMToEQ_UnpackManagement_01_05_00",
+                        "Panel_Data_Update_Report_Block",
+                        $"Panel_Particel_Size_Data#{i}",
+                        "true");
+                }
             }
             catch (Exception ex)
             {
@@ -4224,15 +4446,15 @@ namespace KZONE.Service
 
                 #region 建立timer
 
-                if (Timermanager.IsAliveTimer(timerID))
-                {
-                    Timermanager.TerminateTimer(timerID);
-                }
-                if (bitResult == eBitResult.ON)
-                {
-                    Timermanager.CreateTimer(timerID, false, T4,
-                        new System.Timers.ElapsedEventHandler(BCRecipeParameterRequestTimeoutAction), TrackKey);
-                }
+                //if (Timermanager.IsAliveTimer(timerID))
+                //{
+                //    Timermanager.TerminateTimer(timerID);
+                //}
+                //if (bitResult == eBitResult.ON)
+                //{
+                //    Timermanager.CreateTimer(timerID, false, T4,
+                //        new System.Timers.ElapsedEventHandler(BCRecipeParameterRequestTimeoutAction), TrackKey);
+                //}
 
                 #endregion
 
@@ -4258,48 +4480,48 @@ namespace KZONE.Service
                     string strlog = string.Empty;
                     string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
-                    Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
-                    if (eq == null)
-                    {
-                        throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
-                    }
+                    //Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                    //if (eq == null)
+                    //{
+                    //    throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
+                    //}
 
-                    eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
+                    //eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
 
-                    string timerID = string.Format("{0}_{1}", eqpNo, CIMMessageClearCommandTimeout);
+                    //string timerID = string.Format("{0}_{1}", eqpNo, CIMMessageClearCommandTimeout);
 
-                    if (bitResult == eBitResult.OFF)
-                    {
-                        //bit off移除本次timer
-                        if (Timermanager.IsAliveTimer(timerID))
-                        {
-                            Timermanager.TerminateTimer(timerID);
-                        }
+                    //if (bitResult == eBitResult.OFF)
+                    //{
+                    //    //bit off移除本次timer
+                    //    if (Timermanager.IsAliveTimer(timerID))
+                    //    {
+                    //        Timermanager.TerminateTimer(timerID);
+                    //    }
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("[EQUIPMENT={0}] [BC >- EC][{1}] BIT=[OFF] CIM Message Clear Command.",
-                            eqpNo, TrackKey));
+                    //    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //        string.Format("[EQUIPMENT={0}] [BC >- EC][{1}] BIT=[OFF] CIM Message Clear Command.",
+                    //        eqpNo, TrackKey));
 
-                        CPCCIMMessageClearCommandReply(eBitResult.OFF, TrackKey);
+                    //    CPCCIMMessageClearCommandReply(eBitResult.OFF, TrackKey);
 
-                        return;
-                    }
+                    //    return;
+                    //}
 
-                    CPCCIMMessageClearCommandReply(eBitResult.ON, TrackKey);
+                    //CPCCIMMessageClearCommandReply(eBitResult.ON, TrackKey);
 
-                    #region 建立timer
+                    //#region 建立timer
 
-                    if (Timermanager.IsAliveTimer(timerID))
-                    {
-                        Timermanager.TerminateTimer(timerID);
-                    }
-                    if (bitResult == eBitResult.ON)
-                    {
-                        //CPCMessageDisplayCommand(eq, inputData, eBitResult.ON);
+                    //if (Timermanager.IsAliveTimer(timerID))
+                    //{
+                    //    Timermanager.TerminateTimer(timerID);
+                    //}
+                    //if (bitResult == eBitResult.ON)
+                    //{
+                    //    //CPCMessageDisplayCommand(eq, inputData, eBitResult.ON);
 
-                        Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
-                            new System.Timers.ElapsedEventHandler(BCCIMMessageClearCommandTimeoutAction), TrackKey);
-                    }
+                    //    Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
+                    //        new System.Timers.ElapsedEventHandler(BCCIMMessageClearCommandTimeoutAction), TrackKey);
+                    //}
 
                     #endregion
 
@@ -4342,44 +4564,44 @@ namespace KZONE.Service
                     string strlog = string.Empty;
                     string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
-                    Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
-                    if (eq == null)
-                    {
-                        throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
-                    }
-                    if (eq.File.CIMMode == eBitResult.OFF)
-                    {
-                        return;
-                    }
-                    eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
+                    //Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                    //if (eq == null)
+                    //{
+                    //    throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
+                    //}
+                    //if (eq.File.CIMMode == eBitResult.OFF)
+                    //{
+                    //    return;
+                    //}
+                    //eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
 
-                    string timerID = string.Format("{0}_{1}", eqpNo, DateTimeCalibrationCommandTimeout);
+                    //string timerID = string.Format("{0}_{1}", eqpNo, DateTimeCalibrationCommandTimeout);
 
-                    if (bitResult == eBitResult.OFF)
-                    {
-                        //bit off移除本次timer
-                        if (Timermanager.IsAliveTimer(timerID))
-                        {
-                            Timermanager.TerminateTimer(timerID);
-                        }
+                    //if (bitResult == eBitResult.OFF)
+                    //{
+                    //    //bit off移除本次timer
+                    //    if (Timermanager.IsAliveTimer(timerID))
+                    //    {
+                    //        Timermanager.TerminateTimer(timerID);
+                    //    }
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  Date Time Calibration Command.",
-                            eqpNo, TrackKey));
+                    //    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  Date Time Calibration Command.",
+                    //        eqpNo, TrackKey));
 
-                        CPCDateTimeCalibrationCommandReply(eBitResult.OFF, TrackKey);
+                    //    CPCDateTimeCalibrationCommandReply(eBitResult.OFF, TrackKey);
 
-                        return;
-                    }
+                    //    return;
+                    //}
 
                     CPCDateTimeCalibrationCommandReply(eBitResult.ON, TrackKey);
 
                     #region 建立timer
 
-                    if (Timermanager.IsAliveTimer(timerID))
-                    {
-                        Timermanager.TerminateTimer(timerID);
-                    }
+                    //if (Timermanager.IsAliveTimer(timerID))
+                    //{
+                    //    Timermanager.TerminateTimer(timerID);
+                    //}
                     //DateTimeYear
                     //DateTimeMonth
                     //DateTimeDay
@@ -4403,13 +4625,13 @@ namespace KZONE.Service
 
 
 
-                    if (bitResult == eBitResult.ON)
-                    {
-                        CPCDateTimeCalibrationCommand(eq, dateTime, eBitResult.ON, TrackKey);
+                    //if (bitResult == eBitResult.ON)
+                    //{
+                    //    CPCDateTimeCalibrationCommand(eq, dateTime, eBitResult.ON, TrackKey);
 
-                        Timermanager.CreateTimer(timerID, false, T4,
-                            new System.Timers.ElapsedEventHandler(BCDateTimeCalibrationCommandTimeoutAction), TrackKey);
-                    }
+                    //    Timermanager.CreateTimer(timerID, false, T4,
+                    //        new System.Timers.ElapsedEventHandler(BCDateTimeCalibrationCommandTimeoutAction), TrackKey);
+                    //}
 
                     #endregion
 
@@ -4573,36 +4795,36 @@ namespace KZONE.Service
                     string strlog = string.Empty;
                     string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
-                    Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
-                    if (eq == null)
-                    {
-                        throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
-                    }
+                    //Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                    //if (eq == null)
+                    //{
+                    //    throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
+                    //}
 
-                    if (eq.File.CIMMode == eBitResult.OFF)
-                    {
-                        return;
-                    }
-                    eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
+                    //if (eq.File.CIMMode == eBitResult.OFF)
+                    //{
+                    //    return;
+                    //}
+                    //eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
 
-                    string timerID = string.Format("{0}_{1}", eqpNo, "SetLastJobCommandTimeout");
+                    //string timerID = string.Format("{0}_{1}", eqpNo, "SetLastJobCommandTimeout");
 
-                    if (bitResult == eBitResult.OFF)
-                    {
-                        //bit off移除本次timer
-                        if (Timermanager.IsAliveTimer(timerID))
-                        {
-                            Timermanager.TerminateTimer(timerID);
-                        }
+                    //if (bitResult == eBitResult.OFF)
+                    //{
+                    //    //bit off移除本次timer
+                    //    if (Timermanager.IsAliveTimer(timerID))
+                    //    {
+                    //        Timermanager.TerminateTimer(timerID);
+                    //    }
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  Set Last Glass Command.",
-                            eqpNo, TrackKey));
+                    //    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  Set Last Glass Command.",
+                    //        eqpNo, TrackKey));
 
-                        CPCSetLastGlassCommandReply(eBitResult.OFF, TrackKey, "0");
+                    //    CPCSetLastGlassCommandReply(eBitResult.OFF, TrackKey, "0");
 
-                        return;
-                    }
+                    //    return;
+                    //}
                     //LotSequenceNumber
                     //SlotSequenceNumber
 
@@ -4631,17 +4853,17 @@ namespace KZONE.Service
                     }
                     #region 建立timer
 
-                    if (Timermanager.IsAliveTimer(timerID))
-                    {
-                        Timermanager.TerminateTimer(timerID);
-                    }
-                    if (bitResult == eBitResult.ON)
-                    {
+                    //if (Timermanager.IsAliveTimer(timerID))
+                    //{
+                    //    Timermanager.TerminateTimer(timerID);
+                    //}
+                    //if (bitResult == eBitResult.ON)
+                    //{
 
 
-                        Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
-                            new System.Timers.ElapsedEventHandler(BCSetLastGlassCommandTimeoutAction), TrackKey);
-                    }
+                    //    Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
+                    //        new System.Timers.ElapsedEventHandler(BCSetLastGlassCommandTimeoutAction), TrackKey);
+                    //}
 
                     #endregion
 
@@ -4682,69 +4904,69 @@ namespace KZONE.Service
                 string strlog = string.Empty;
                 string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
-                Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
-                if (eq == null)
-                {
-                    throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
-                }
+                //Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                //if (eq == null)
+                //{
+                //    throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
+                //}
 
-                if (eq.File.CIMMode == eBitResult.OFF)
-                {
-                    return;
-                }
-                eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
+                //if (eq.File.CIMMode == eBitResult.OFF)
+                //{
+                //    return;
+                //}
+                //eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
 
-                string LoadingStopStatus = eipTagAccess.ReadItemValue("RV_CIMToEQ_Status_01_03_00", "LoadingStopChangeCommandBlock", "LoadingStopStatus").ToString();
+                //string LoadingStopStatus = eipTagAccess.ReadItemValue("RV_CIMToEQ_Status_01_03_00", "LoadingStopChangeCommandBlock", "LoadingStopStatus").ToString();
 
-                string timerID = string.Format("{0}_{1}", eqpNo, "BCStopBitCommandTimeout");
+                //string timerID = string.Format("{0}_{1}", eqpNo, "BCStopBitCommandTimeout");
 
-                if (bitResult == eBitResult.OFF)
-                {
+                //if (bitResult == eBitResult.OFF)
+                //{
 
-                    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                    //   string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] Stop Bit Command Bit=[{2}].",
-                    // eq.Data.NODENO, TrackKey, "OFF"));
+                //    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //    //   string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] Stop Bit Command Bit=[{2}].",
+                //    // eq.Data.NODENO, TrackKey, "OFF"));
 
-                    eipTagAccess.WriteItemValue("SD_EQToCIM_Status_03_01_00", "LoadingStopChangeCommandReplyBlock", "ReturnCode", 0);
-                }
-                else
-                {
-                    eipTagAccess.WriteItemValue("SD_EQToCIM_Status_03_01_00", "LoadingStopChangeCommandReplyBlock", "ReturnCode", 1);
-                }
-                eipTagAccess.WriteItemValue("SD_EQToCIM_Status_03_01_00", "CIMCommandReply", "LoadingStopChangeCommandReply", bitResult == eBitResult.ON ? "true" : "false");
+                //    eipTagAccess.WriteItemValue("SD_EQToCIM_Status_03_01_00", "LoadingStopChangeCommandReplyBlock", "ReturnCode", 0);
+                //}
+                //else
+                //{
+                //    eipTagAccess.WriteItemValue("SD_EQToCIM_Status_03_01_00", "LoadingStopChangeCommandReplyBlock", "ReturnCode", 1);
+                //}
+                //eipTagAccess.WriteItemValue("SD_EQToCIM_Status_03_01_00", "CIMCommandReply", "LoadingStopChangeCommandReply", bitResult == eBitResult.ON ? "true" : "false");
 
                 #region 建立timer
 
-                if (bitResult == eBitResult.ON && LoadingStopStatus == "1")
-                {
+                //if (bitResult == eBitResult.ON && LoadingStopStatus == "1")
+                //{
 
-                    lock (eq)
-                    {
-                        eq.File.StopBitCommand = true;
-                    }
-                    ObjectManager.EquipmentManager.EnqueueSave(eq.File);
+                //    lock (eq)
+                //    {
+                //        eq.File.StopBitCommand = true;
+                //    }
+                //    ObjectManager.EquipmentManager.EnqueueSave(eq.File);
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                       string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] Stop Bit Command Bit=[{2}].",
-                     eq.Data.NODENO, TrackKey, "ON"));
+                //    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //       string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] Stop Bit Command Bit=[{2}].",
+                //     eq.Data.NODENO, TrackKey, "ON"));
 
 
-                }
-                else if (bitResult == eBitResult.ON && LoadingStopStatus == "2")
-                {
+                //}
+                //else if (bitResult == eBitResult.ON && LoadingStopStatus == "2")
+                //{
 
-                    lock (eq)
-                    {
-                        eq.File.StopBitCommand = false;
-                        eq.File.ReceiveStep = eReceiveStep.InlineMode;
+                //    lock (eq)
+                //    {
+                //        eq.File.StopBitCommand = false;
+                //        eq.File.ReceiveStep = eReceiveStep.InlineMode;
 
-                    }
-                    ObjectManager.EquipmentManager.EnqueueSave(eq.File);
+                //    }
+                //    ObjectManager.EquipmentManager.EnqueueSave(eq.File);
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                       string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] Stop Bit Command Bit=[{2}].",
-                     eq.Data.NODENO, TrackKey, "OFF"));
-                }
+                //    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //       string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] Stop Bit Command Bit=[{2}].",
+                //     eq.Data.NODENO, TrackKey, "OFF"));
+                //}
 
                 #endregion
             }
@@ -4761,51 +4983,51 @@ namespace KZONE.Service
             {
                 string strlog = string.Empty;
                 string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                //Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
 
-                if (eqp == null)
-                {
-                    LogError(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("Not found Node =[{0}]", eqpNo));
-                    return;
-                }
-                eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
-                string timerID = string.Format("{0}_{1}", eqpNo, CPCEquipmentStatusChangeReportReplyTimeout);
+                //if (eqp == null)
+                //{
+                //    LogError(MethodBase.GetCurrentMethod().Name + "()",
+                //            string.Format("Not found Node =[{0}]", eqpNo));
+                //    return;
+                //}
+                //eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
+                //string timerID = string.Format("{0}_{1}", eqpNo, CPCEquipmentStatusChangeReportReplyTimeout);
 
-                if (bitResult == eBitResult.OFF)
-                {
-                    //bit off移除本次timer
-                    if (Timermanager.IsAliveTimer(timerID))
-                    {
-                        Timermanager.TerminateTimer(timerID);
-                    }
+                //if (bitResult == eBitResult.OFF)
+                //{
+                //    //bit off移除本次timer
+                //    if (Timermanager.IsAliveTimer(timerID))
+                //    {
+                //        Timermanager.TerminateTimer(timerID);
+                //    }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                        string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] Equipment Status Change Report Reply.",
-                        eqpNo, TrackKey));
+                //    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //        string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] Equipment Status Change Report Reply.",
+                //        eqpNo, TrackKey));
 
-                    return;
-                }
+                //    return;
+                //}
                 #region 建立timer
 
-                if (Timermanager.IsAliveTimer(timerID))
-                {
-                    Timermanager.TerminateTimer(timerID);
-                }
-                if (bitResult == eBitResult.ON)
-                {
-                    CPCEquipmentStatusChangeReport(eqp, TrackKey, eBitResult.OFF);
+                //if (Timermanager.IsAliveTimer(timerID))
+                //{
+                //    Timermanager.TerminateTimer(timerID);
+                //}
+                //if (bitResult == eBitResult.ON)
+                //{
+                //    CPCEquipmentStatusChangeReport(eqp, TrackKey, eBitResult.OFF);
 
-                    Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
-                        new System.Timers.ElapsedEventHandler(BCEquipmentStatusChangeReportReplyAction), TrackKey);
-                }
+                //    Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
+                //        new System.Timers.ElapsedEventHandler(BCEquipmentStatusChangeReportReplyAction), TrackKey);
+                //}
 
-                #endregion
+                //#endregion
 
 
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] Equipment Status Change Report Reply BIT [{2}].",
-                            eqpNo, TrackKey, bitResult));
+                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] Equipment Status Change Report Reply BIT [{2}].",
+                //            eqpNo, TrackKey, bitResult));
             }
             catch (System.Exception ex)
             {
@@ -4841,44 +5063,44 @@ namespace KZONE.Service
                     string strlog = string.Empty;
                     string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
-                    Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
-                    if (eq == null)
-                    {
-                        throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
-                    }
-                    if (eq.File.CIMMode == eBitResult.OFF)
-                    {
-                        return;
-                    }
-                    eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
+                    //Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                    //if (eq == null)
+                    //{
+                    //    throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
+                    //}
+                    //if (eq.File.CIMMode == eBitResult.OFF)
+                    //{
+                    //    return;
+                    //}
+                    //eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
 
-                    string timerID = string.Format("{0}_{1}", eqpNo, DateTimeCalibrationCommandTimeout);
+                    //string timerID = string.Format("{0}_{1}", eqpNo, DateTimeCalibrationCommandTimeout);
 
-                    if (bitResult == eBitResult.OFF)
-                    {
-                        //bit off移除本次timer
-                        if (Timermanager.IsAliveTimer(timerID))
-                        {
-                            Timermanager.TerminateTimer(timerID);
-                        }
+                    //if (bitResult == eBitResult.OFF)
+                    //{
+                    //    //bit off移除本次timer
+                    //    if (Timermanager.IsAliveTimer(timerID))
+                    //    {
+                    //        Timermanager.TerminateTimer(timerID);
+                    //    }
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  Date Time Calibration Command.",
-                            eqpNo, TrackKey));
+                    //    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  Date Time Calibration Command.",
+                    //        eqpNo, TrackKey));
 
-                        eipTagAccess.WriteItemValue("SD_EQToCIM_Status_03_01_00", "MachineStatus", "DateTimeRequest", "false");
+                    //    eipTagAccess.WriteItemValue("SD_EQToCIM_Status_03_01_00", "MachineStatus", "DateTimeRequest", "false");
 
-                        return;
-                    }
+                    //    return;
+                    //}
 
                     eipTagAccess.WriteItemValue("SD_EQToCIM_Status_03_01_00", "MachineStatus", "DateTimeRequest", "false");
 
                     #region 建立timer
 
-                    if (Timermanager.IsAliveTimer(timerID))
-                    {
-                        Timermanager.TerminateTimer(timerID);
-                    }
+                    //if (Timermanager.IsAliveTimer(timerID))
+                    //{
+                    //    Timermanager.TerminateTimer(timerID);
+                    //}
                     //DateTimeYear
                     //DateTimeMonth
                     //DateTimeDay
@@ -4902,13 +5124,13 @@ namespace KZONE.Service
 
 
 
-                    if (bitResult == eBitResult.ON)
-                    {
-                        CPCDateTimeCalibrationCommand(eq, dateTime, eBitResult.ON, TrackKey);
+                    //if (bitResult == eBitResult.ON)
+                    //{
+                    //    CPCDateTimeCalibrationCommand(eq, dateTime, eBitResult.ON, TrackKey);
 
-                        Timermanager.CreateTimer(timerID, false, T4,
-                            new System.Timers.ElapsedEventHandler(BCDateTimeCalibrationCommandTimeoutAction), TrackKey);
-                    }
+                    //    Timermanager.CreateTimer(timerID, false, T4,
+                    //        new System.Timers.ElapsedEventHandler(BCDateTimeCalibrationCommandTimeoutAction), TrackKey);
+                    //}
 
                     #endregion
 
@@ -4999,12 +5221,12 @@ namespace KZONE.Service
         {
             try
             {
-                string timerID = string.Format("{0}_{1}", eqpNo, EquipmentRunModeChangeReportReplyTimeout);
+                //string timerID = string.Format("{0}_{1}", eqpNo, EquipmentRunModeChangeReportReplyTimeout);
 
-                if (Timermanager.IsAliveTimer(timerID))
-                {
-                    Timermanager.TerminateTimer(timerID);
-                }
+                //if (Timermanager.IsAliveTimer(timerID))
+                //{
+                //    Timermanager.TerminateTimer(timerID);
+                //}
                 eipTagAccess.WriteItemValue("SD_EQToCIM_Status_03_01_00", "MachineStatus", "MachineModeChangeReport", false);
             }
             catch (System.Exception ex)
@@ -5098,52 +5320,52 @@ namespace KZONE.Service
                 {
                     string strlog = string.Empty;
                     string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                    Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                    //Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
 
-                    if (eqp == null)
-                    {
-                        LogError(MethodBase.GetCurrentMethod().Name + "()",
-                                string.Format("Not found Node =[{0}]", eqpNo));
-                        return;
-                    }
+                    //if (eqp == null)
+                    //{
+                    //    LogError(MethodBase.GetCurrentMethod().Name + "()",
+                    //            string.Format("Not found Node =[{0}]", eqpNo));
+                    //    return;
+                    //}
                     eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
-                    string timerID = string.Format("{0}_{1}", eqpNo, CPCOperatorLoginLogoutReportReplyTimeout);
+                    //string timerID = string.Format("{0}_{1}", eqpNo, CPCOperatorLoginLogoutReportReplyTimeout);
 
-                    if (bitResult == eBitResult.OFF)
-                    {
-                        //bit off移除本次timer
-                        if (Timermanager.IsAliveTimer(timerID))
-                        {
-                            Timermanager.TerminateTimer(timerID);
-                        }
+                    //if (bitResult == eBitResult.OFF)
+                    //{
+                    //    //bit off移除本次timer
+                    //    if (Timermanager.IsAliveTimer(timerID))
+                    //    {
+                    //        Timermanager.TerminateTimer(timerID);
+                    //    }
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] Operator Login Logout Report Reply.",
-                            eqpNo, TrackKey));
+                    //    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //        string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] Operator Login Logout Report Reply.",
+                    //        eqpNo, TrackKey));
 
 
-                        return;
-                    }
+                    //    return;
+                    //}
                     #region 建立timer
 
-                    if (Timermanager.IsAliveTimer(timerID))
-                    {
-                        Timermanager.TerminateTimer(timerID);
-                    }
-                    if (bitResult == eBitResult.ON)
-                    {
-                        CPCOperatorLoginLogoutReport(eqp, new Trx(), eBitResult.OFF);
+                    //if (Timermanager.IsAliveTimer(timerID))
+                    //{
+                    //    Timermanager.TerminateTimer(timerID);
+                    //}
+                    //if (bitResult == eBitResult.ON)
+                    //{
+                    //    CPCOperatorLoginLogoutReport(eqp, new Trx(), eBitResult.OFF);
 
-                        Timermanager.CreateTimer(timerID, false, T2,
-                            new System.Timers.ElapsedEventHandler(BCOperatorLoginLogoutReportReplyAction), TrackKey);
-                    }
+                    //    Timermanager.CreateTimer(timerID, false, T2,
+                    //        new System.Timers.ElapsedEventHandler(BCOperatorLoginLogoutReportReplyAction), TrackKey);
+                    //}
 
-                    #endregion
+                    //#endregion
 
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                                string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] Operator Login Logout Report Reply BIT [{2}].",
-                                eqpNo, TrackKey, bitResult));
+                    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] Operator Login Logout Report Reply BIT [{2}].",
+                    //            eqpNo, TrackKey, bitResult));
                 }
                 catch (System.Exception ex)
                 {
@@ -5254,38 +5476,38 @@ namespace KZONE.Service
             {
                 string strlog = string.Empty;
                 string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                //Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
 
-                if (eqp == null)
-                {
-                    LogError(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("Not found Node =[{0}]", eqpNo));
-                    return;
-                }
+                //if (eqp == null)
+                //{
+                //    LogError(MethodBase.GetCurrentMethod().Name + "()",
+                //            string.Format("Not found Node =[{0}]", eqpNo));
+                //    return;
+                //}
                 eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
-                string timerID = string.Format("{0}_{1}_{2}", eqpNo, "1", ReceiveGlassDataReportTimeout);
+                //string timerID = string.Format("{0}_{1}_{2}", eqpNo, "1", ReceiveGlassDataReportTimeout);
 
 
-                if (bitResult == eBitResult.OFF)
-                {
-                    //bit off移除本次timer
-                    if (Timermanager.IsAliveTimer(timerID))
-                    {
-                        Timermanager.TerminateTimer(timerID);
-                    }
+                //if (bitResult == eBitResult.OFF)
+                //{
+                //    //bit off移除本次timer
+                //    if (Timermanager.IsAliveTimer(timerID))
+                //    {
+                //        Timermanager.TerminateTimer(timerID);
+                //    }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                        string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] ReceivedJobReportReply.",
-                        eqpNo, TrackKey));
+                //    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //        string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] ReceivedJobReportReply.",
+                //        eqpNo, TrackKey));
 
-                    return;
-                }
+                //    return;
+                //}
                 #region 建立timer
 
-                if (Timermanager.IsAliveTimer(timerID))
-                {
-                    Timermanager.TerminateTimer(timerID);
-                }
+                //if (Timermanager.IsAliveTimer(timerID))
+                //{
+                //    Timermanager.TerminateTimer(timerID);
+                //}
                 if (bitResult == eBitResult.ON)
                 {
                     eipTagAccess.WriteItemValue("SD_EQToCIM_MachineJobEvent_03_01_00", "MachineJobEvent", "ReceivedJobReport", false);
@@ -5295,9 +5517,9 @@ namespace KZONE.Service
                 #endregion
 
 
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] ReceivedJobReportReply BIT [{2}].",
-                            eqpNo, TrackKey, bitResult));
+                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] ReceivedJobReportReply BIT [{2}].",
+                //            eqpNo, TrackKey, bitResult));
             }
             catch (System.Exception ex)
             {
@@ -5311,50 +5533,50 @@ namespace KZONE.Service
             {
                 string strlog = string.Empty;
                 string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                //Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
 
-                if (eqp == null)
-                {
-                    LogError(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("Not found Node =[{0}]", eqpNo));
-                    return;
-                }
+                //if (eqp == null)
+                //{
+                //    LogError(MethodBase.GetCurrentMethod().Name + "()",
+                //            string.Format("Not found Node =[{0}]", eqpNo));
+                //    return;
+                //}
                 eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
-                string timerID = string.Format("{0}_{1}_{2}", eqpNo, "1", SendingGlassDataReportTimeout);
+                //string timerID = string.Format("{0}_{1}_{2}", eqpNo, "1", SendingGlassDataReportTimeout);
 
 
-                if (bitResult == eBitResult.OFF)
-                {
-                    //bit off移除本次timer
-                    if (Timermanager.IsAliveTimer(timerID))
-                    {
-                        Timermanager.TerminateTimer(timerID);
-                    }
+                //if (bitResult == eBitResult.OFF)
+                //{
+                //    //bit off移除本次timer
+                //    if (Timermanager.IsAliveTimer(timerID))
+                //    {
+                //        Timermanager.TerminateTimer(timerID);
+                //    }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                        string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] SentOutJobReportReply.",
-                        eqpNo, TrackKey));
+                //    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //        string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] SentOutJobReportReply.",
+                //        eqpNo, TrackKey));
 
-                    return;
-                }
+                //    return;
+                //}
                 #region 建立timer
 
-                if (Timermanager.IsAliveTimer(timerID))
-                {
-                    Timermanager.TerminateTimer(timerID);
-                }
-                if (bitResult == eBitResult.ON)
-                {
-                    eipTagAccess.WriteItemValue("SD_EQToCIM_MachineJobEvent_03_01_00", "MachineJobEvent", "SentOutJobReport", false);
+                //if (Timermanager.IsAliveTimer(timerID))
+                //{
+                //    Timermanager.TerminateTimer(timerID);
+                //}
+                //if (bitResult == eBitResult.ON)
+                //{
+                //    eipTagAccess.WriteItemValue("SD_EQToCIM_MachineJobEvent_03_01_00", "MachineJobEvent", "SentOutJobReport", false);
 
-                }
+                //}
 
                 #endregion
 
 
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] SentOutJobReportReply BIT [{2}].",
-                            eqpNo, TrackKey, bitResult));
+                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] SentOutJobReportReply BIT [{2}].",
+                //            eqpNo, TrackKey, bitResult));
             }
             catch (System.Exception ex)
             {
@@ -5369,14 +5591,14 @@ namespace KZONE.Service
             {
                 string strlog = string.Empty;
                 string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                //Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
 
-                if (eqp == null)
-                {
-                    LogError(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("Not found Node =[{0}]", eqpNo));
-                    return;
-                }
+                //if (eqp == null)
+                //{
+                //    LogError(MethodBase.GetCurrentMethod().Name + "()",
+                //            string.Format("Not found Node =[{0}]", eqpNo));
+                //    return;
+                //}
                 eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
                 string timerID = "L3_GlassDataRemoveRecoveryReportTimeout";
                 if (bitResult == eBitResult.OFF)
@@ -5387,9 +5609,9 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                        string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] JobManualMoveReportReply.",
-                        eqpNo, TrackKey));
+                    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //    string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] JobManualMoveReportReply.",
+                    //    eqpNo, TrackKey));
 
                     return;
                 }
@@ -5410,9 +5632,9 @@ namespace KZONE.Service
                 #endregion
 
 
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] JobManualMoveReportReply BIT [{2}].",
-                            eqpNo, TrackKey, bitResult));
+                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] JobManualMoveReportReply BIT [{2}].",
+                //            eqpNo, TrackKey, bitResult));
             }
             catch (System.Exception ex)
             {
@@ -5426,14 +5648,14 @@ namespace KZONE.Service
             {
                 string strlog = string.Empty;
                 string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                //Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
 
-                if (eqp == null)
-                {
-                    LogError(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("Not found Node =[{0}]", eqpNo));
-                    return;
-                }
+                //if (eqp == null)
+                //{
+                //    LogError(MethodBase.GetCurrentMethod().Name + "()",
+                //            string.Format("Not found Node =[{0}]", eqpNo));
+                //    return;
+                //}
                 eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
                 string timerID = string.Format("{0}_{1}", eqp.Data.NODENO, JobDataEditReportTimeout);
                 if (bitResult == eBitResult.OFF)
@@ -5444,9 +5666,9 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                        string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] JobDataChangeReportReply.",
-                        eqpNo, TrackKey));
+                    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //    string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] JobDataChangeReportReply.",
+                    //    eqpNo, TrackKey));
 
                     return;
                 }
@@ -5467,9 +5689,9 @@ namespace KZONE.Service
                 #endregion
 
 
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] JobDataChangeReportReply BIT [{2}].",
-                            eqpNo, TrackKey, bitResult));
+                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] JobDataChangeReportReply BIT [{2}].",
+                //            eqpNo, TrackKey, bitResult));
             }
             catch (System.Exception ex)
             {
@@ -5519,12 +5741,12 @@ namespace KZONE.Service
 
                 if (bitResult == eBitResult.ON)
                 {
-                    CPCJobDataRequestReply(eBitResult.ON, JobDataRequestReplyBlock);
+                    //CPCJobDataRequestReply(eBitResult.ON, JobDataRequestReplyBlock);
 
-                    eipTagAccess.WriteItemValue("SD_EQToCIM_JobEvent_03_01_00", "JobEvent", "JobDataRequest", "false");
+                    //eipTagAccess.WriteItemValue("SD_EQToCIM_JobEvent_03_01_00", "JobEvent", "JobDataRequest", "false");
 
-                    Timermanager.CreateTimer(timerID, false, T2,
-                        new System.Timers.ElapsedEventHandler(BCJobDataRequestReplyAction), TrackKey);
+                    //Timermanager.CreateTimer(timerID, false, T2,
+                    //    new System.Timers.ElapsedEventHandler(BCJobDataRequestReplyAction), TrackKey);
                 }
 
                 #endregion
@@ -5554,7 +5776,7 @@ namespace KZONE.Service
                     }
                     else
                     {
-                        job = CreateJob(cstSeq, slotNo, JobDataRequestReplyBlock);
+                        //job = CreateJob(cstSeq, slotNo, JobDataRequestReplyBlock);
                         //UpdateJobData(eqp, job, JobDataRequestReplyBlock);
 
                         LogInfo(MethodBase.GetCurrentMethod().Name + "()",
@@ -5588,14 +5810,14 @@ namespace KZONE.Service
             {
                 string strlog = string.Empty;
                 string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                //Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
 
-                if (eqp == null)
-                {
-                    LogError(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("Not found Node =[{0}]", eqpNo));
-                    return;
-                }
+                //if (eqp == null)
+                //{
+                //    LogError(MethodBase.GetCurrentMethod().Name + "()",
+                //            string.Format("Not found Node =[{0}]", eqpNo));
+                //    return;
+                //}
                 eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
                 string timerID = string.Format("{0}_{1}_{2}", eqp.Data.NODENO, "1", ProcessStartJobReportTimeout);
 
@@ -5607,9 +5829,9 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                        string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] ProcessStartJobReportReply.",
-                        eqpNo, TrackKey));
+                    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //    string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] ProcessStartJobReportReply.",
+                    //    eqpNo, TrackKey));
 
                     return;
                 }
@@ -5621,7 +5843,7 @@ namespace KZONE.Service
                 }
                 if (bitResult == eBitResult.ON)
                 {
-                    ProcessStartJobReport(eqp, null, eBitResult.OFF, "1");
+                    //ProcessStartJobReport(eqp, null, eBitResult.OFF, "1");
 
                     Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
                         new System.Timers.ElapsedEventHandler(BCEquipmentStatusChangeReportReplyAction), TrackKey);
@@ -5630,9 +5852,9 @@ namespace KZONE.Service
                 #endregion
 
 
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] ProcessStartJobReportReply BIT [{2}].",
-                            eqpNo, TrackKey, bitResult));
+                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] ProcessStartJobReportReply BIT [{2}].",
+                //            eqpNo, TrackKey, bitResult));
             }
             catch (System.Exception ex)
             {
@@ -5645,14 +5867,14 @@ namespace KZONE.Service
             {
                 string strlog = string.Empty;
                 string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                //Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
 
-                if (eqp == null)
-                {
-                    LogError(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("Not found Node =[{0}]", eqpNo));
-                    return;
-                }
+                //if (eqp == null)
+                //{
+                //    LogError(MethodBase.GetCurrentMethod().Name + "()",
+                //            string.Format("Not found Node =[{0}]", eqpNo));
+                //    return;
+                //}
                 eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
                 string timerID = string.Format("{0}_{1}_{2}", eqp.Data.NODENO, "1", ProcessEndJobReportTimeout);
 
@@ -5664,9 +5886,9 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                        string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] ProcessDataReportReply.",
-                        eqpNo, TrackKey));
+                    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //    string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] ProcessDataReportReply.",
+                    //    eqpNo, TrackKey));
 
                     return;
                 }
@@ -5684,9 +5906,9 @@ namespace KZONE.Service
                 #endregion
 
 
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] ProcessDataReportReply BIT [{2}].",
-                            eqpNo, TrackKey, bitResult));
+                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] ProcessDataReportReply BIT [{2}].",
+                //            eqpNo, TrackKey, bitResult));
             }
             catch (System.Exception ex)
             {
@@ -5699,12 +5921,12 @@ namespace KZONE.Service
             {
                 string strlog = string.Empty;
                 string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                //Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
 
                 if (eqp == null)
                 {
-                    LogError(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("Not found Node =[{0}]", eqpNo));
+                    //LogError(MethodBase.GetCurrentMethod().Name + "()",
+                    //        string.Format("Not found Node =[{0}]", eqpNo));
                     return;
                 }
                 eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
@@ -5718,9 +5940,9 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                        string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] ProcessEndJobReportReply.",
-                        eqpNo, TrackKey));
+                    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //    string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] ProcessEndJobReportReply.",
+                    //    eqpNo, TrackKey));
 
                     return;
                 }
@@ -5732,7 +5954,7 @@ namespace KZONE.Service
                 }
                 if (bitResult == eBitResult.ON)
                 {
-                    ProcessEndJobReport(eqp, null, eBitResult.OFF, "1");
+                    //ProcessEndJobReport(eqp, null, eBitResult.OFF, "1");
 
                     Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
                         new System.Timers.ElapsedEventHandler(BCEquipmentStatusChangeReportReplyAction), TrackKey);
@@ -5741,9 +5963,9 @@ namespace KZONE.Service
                 #endregion
 
 
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] ProcessEndJobReportReply BIT [{2}].",
-                            eqpNo, TrackKey, bitResult));
+                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] ProcessEndJobReportReply BIT [{2}].",
+                //            eqpNo, TrackKey, bitResult));
             }
             catch (System.Exception ex)
             {
@@ -5757,12 +5979,12 @@ namespace KZONE.Service
             {
                 string strlog = string.Empty;
                 string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                //Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
 
                 if (eqp == null)
                 {
-                    LogError(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("Not found Node =[{0}]", eqpNo));
+                    //LogError(MethodBase.GetCurrentMethod().Name + "()",
+                    //        string.Format("Not found Node =[{0}]", eqpNo));
                     return;
                 }
                 eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
@@ -5777,9 +5999,9 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                        string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] Equipment Status Change Report Reply.",
-                        eqpNo, TrackKey));
+                    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //    string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] Equipment Status Change Report Reply.",
+                    //    eqpNo, TrackKey));
 
                     return;
                 }
@@ -5801,9 +6023,9 @@ namespace KZONE.Service
                 #endregion
 
 
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] Equipment Status Change Report Reply BIT [{2}].",
-                            eqpNo, TrackKey, bitResult));
+                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] Equipment Status Change Report Reply BIT [{2}].",
+                //            eqpNo, TrackKey, bitResult));
             }
             catch (System.Exception ex)
             {
@@ -5817,12 +6039,12 @@ namespace KZONE.Service
             {
                 string strlog = string.Empty;
                 string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                //Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
 
                 if (eqp == null)
                 {
-                    LogError(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("Not found Node =[{0}]", eqpNo));
+                    //LogError(MethodBase.GetCurrentMethod().Name + "()",
+                    //        string.Format("Not found Node =[{0}]", eqpNo));
                     return;
                 }
                 eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
@@ -5836,9 +6058,9 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                        string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] AutoRecipeChangeModeReportReply.",
-                        eqpNo, TrackKey));
+                    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //    string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] AutoRecipeChangeModeReportReply.",
+                    //    eqpNo, TrackKey));
 
                     return;
                 }
@@ -5858,9 +6080,9 @@ namespace KZONE.Service
                 #endregion
 
 
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] AutoRecipeChangeModeReportReply BIT [{2}].",
-                            eqpNo, TrackKey, bitResult));
+                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] AutoRecipeChangeModeReportReply BIT [{2}].",
+                //            eqpNo, TrackKey, bitResult));
             }
             catch (System.Exception ex)
             {
@@ -5874,14 +6096,14 @@ namespace KZONE.Service
             {
                 string strlog = string.Empty;
                 string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                //Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
 
-                if (eqp == null)
-                {
-                    LogError(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("Not found Node =[{0}]", eqpNo));
-                    return;
-                }
+                //if (eqp == null)
+                //{
+                //    LogError(MethodBase.GetCurrentMethod().Name + "()",
+                //            string.Format("Not found Node =[{0}]", eqpNo));
+                //    return;
+                //}
                 eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
                 string timerID = string.Format("{0}_{1}", eqp.Data.NODENO, CPCCurrentRecipeIDReportTimeout);
 
@@ -5893,9 +6115,9 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                        string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] CurrentRecipeNumberChangeReportReply.",
-                        eqpNo, TrackKey));
+                    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //    string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] CurrentRecipeNumberChangeReportReply.",
+                    //    eqpNo, TrackKey));
 
                     return;
                 }
@@ -5915,9 +6137,9 @@ namespace KZONE.Service
                 #endregion
 
 
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] CurrentRecipeNumberChangeReportReply BIT [{2}].",
-                            eqpNo, TrackKey, bitResult));
+                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] CurrentRecipeNumberChangeReportReply BIT [{2}].",
+                //            eqpNo, TrackKey, bitResult));
             }
             catch (System.Exception ex)
             {
@@ -5931,14 +6153,14 @@ namespace KZONE.Service
             {
                 string strlog = string.Empty;
                 string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                //Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
 
-                if (eqp == null)
-                {
-                    LogError(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("Not found Node =[{0}]", eqpNo));
-                    return;
-                }
+                //if (eqp == null)
+                //{
+                //    LogError(MethodBase.GetCurrentMethod().Name + "()",
+                //            string.Format("Not found Node =[{0}]", eqpNo));
+                //    return;
+                //}
                 eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
                 string timerID = string.Format("{0}_{1}", eqp.Data.NODENO, CPCRecipeIDModifyReportTimeout);
                 if (bitResult == eBitResult.OFF)
@@ -5949,9 +6171,9 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                        string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] RecipeChangeReportReply.",
-                        eqpNo, TrackKey));
+                    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //    string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] RecipeChangeReportReply.",
+                    //    eqpNo, TrackKey));
 
                     return;
                 }
@@ -5971,9 +6193,9 @@ namespace KZONE.Service
                 #endregion
 
 
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] RecipeChangeReportReply BIT [{2}].",
-                            eqpNo, TrackKey, bitResult));
+                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] RecipeChangeReportReply BIT [{2}].",
+                //            eqpNo, TrackKey, bitResult));
             }
             catch (System.Exception ex)
             {
@@ -5990,32 +6212,32 @@ namespace KZONE.Service
                     string strlog = string.Empty;
                     string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
-                    Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
-                    if (eq == null)
-                    {
-                        throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
-                    }
+                    //Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                    //if (eq == null)
+                    //{
+                    //    throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
+                    //}
                     if (eq.File.CIMMode == eBitResult.OFF)
                     {
                         return;
                     }
                     eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
 
-                    string timerID = string.Format("{0}_{1}", eqpNo, DateTimeCalibrationCommandTimeout);
+                    //string timerID = string.Format("{0}_{1}", eqpNo, DateTimeCalibrationCommandTimeout);
 
                     if (bitResult == eBitResult.OFF)
                     {
-                        //bit off移除本次timer
-                        if (Timermanager.IsAliveTimer(timerID))
-                        {
-                            Timermanager.TerminateTimer(timerID);
-                        }
+                        ////bit off移除本次timer
+                        //if (Timermanager.IsAliveTimer(timerID))
+                        //{
+                        //    Timermanager.TerminateTimer(timerID);
+                        //}
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  RecipeRegisterCheckCommand.",
-                            eqpNo, TrackKey));
+                        //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        //    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  RecipeRegisterCheckCommand.",
+                        //    eqpNo, TrackKey));
 
-                        CPCRecipeRegisterValidationCommandReply(eBitResult.OFF, TrackKey);
+                        //CPCRecipeRegisterValidationCommandReply(eBitResult.OFF, TrackKey);
 
                         return;
                     }
@@ -6028,7 +6250,7 @@ namespace KZONE.Service
                     if (recipeDic[eq.Data.LINEID].ContainsKey(recipeno))
                     {
 
-                        CPCRecipeRegisterValidationCommandReply(eBitResult.ON, "1");
+                        //CPCRecipeRegisterValidationCommandReply(eBitResult.ON, "1");
 
                         LogInfo(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC <- EC][{1}] BIT=[ON] Recipe Register Validation Command Reply OK .",
@@ -6037,7 +6259,7 @@ namespace KZONE.Service
                     }
                     else
                     {
-                        CPCRecipeRegisterValidationCommandReply(eBitResult.ON, "2");
+                        //CPCRecipeRegisterValidationCommandReply(eBitResult.ON, "2");
 
                         LogError(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC <- EC][{1}] BIT=[ON] Recipe Register Validation Command Reply NG Recipe ID=[{2}] Not exist.",
@@ -6046,15 +6268,15 @@ namespace KZONE.Service
 
                     #region 建立timer
 
-                    if (Timermanager.IsAliveTimer(timerID))
-                    {
-                        Timermanager.TerminateTimer(timerID);
-                    }
-                    if (bitResult == eBitResult.ON)
-                    {
-                        Timermanager.CreateTimer(timerID, false, T4,
-                            new System.Timers.ElapsedEventHandler(BCRecipeRegisterValidationCommandTimeoutAction), TrackKey);
-                    }
+                    //if (Timermanager.IsAliveTimer(timerID))
+                    //{
+                    //    Timermanager.TerminateTimer(timerID);
+                    //}
+                    //if (bitResult == eBitResult.ON)
+                    //{
+                    //    Timermanager.CreateTimer(timerID, false, T4,
+                    //        new System.Timers.ElapsedEventHandler(BCRecipeRegisterValidationCommandTimeoutAction), TrackKey);
+                    //}
 
                     #endregion
 
@@ -6078,14 +6300,14 @@ namespace KZONE.Service
             {
                 string strlog = string.Empty;
                 string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                //Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
 
-                if (eqp == null)
-                {
-                    LogError(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("Not found Node =[{0}]", eqpNo));
-                    return;
-                }
+                //if (eqp == null)
+                //{
+                //    LogError(MethodBase.GetCurrentMethod().Name + "()",
+                //            string.Format("Not found Node =[{0}]", eqpNo));
+                //    return;
+                //}
                 eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
 
                 string pathNo = e.Item.Name.Split('#')[1].Substring(0, 1);
@@ -6101,9 +6323,9 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                        string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] FetchedOutJobReport#1Reply.",
-                        eqpNo, TrackKey));
+                    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //    string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] FetchedOutJobReport#1Reply.",
+                    //    eqpNo, TrackKey));
 
                     return;
                 }
@@ -6126,9 +6348,9 @@ namespace KZONE.Service
                 #endregion
 
 
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}]  FetchedOutJobReport#1Reply BIT [{2}].",
-                            eqpNo, TrackKey, bitResult));
+                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}]  FetchedOutJobReport#1Reply BIT [{2}].",
+                //            eqpNo, TrackKey, bitResult));
             }
             catch (System.Exception ex)
             {
@@ -6141,14 +6363,14 @@ namespace KZONE.Service
             {
                 string strlog = string.Empty;
                 string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                //Equipment eqp = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
 
-                if (eqp == null)
-                {
-                    LogError(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("Not found Node =[{0}]", eqpNo));
-                    return;
-                }
+                //if (eqp == null)
+                //{
+                //    LogError(MethodBase.GetCurrentMethod().Name + "()",
+                //            string.Format("Not found Node =[{0}]", eqpNo));
+                //    return;
+                //}
                 eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
 
                 string pathNo = e.Item.Name.Split('#')[1].Substring(0, 1);
@@ -6162,9 +6384,9 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                        string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] StoredJobEventReply.",
-                        eqpNo, TrackKey));
+                    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //    string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] StoredJobEventReply.",
+                    //    eqpNo, TrackKey));
 
                     return;
                 }
@@ -6185,9 +6407,9 @@ namespace KZONE.Service
                 #endregion
 
 
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] StoredJobEventReply BIT [{2}].",
-                            eqpNo, TrackKey, bitResult));
+                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] StoredJobEventReply BIT [{2}].",
+                //            eqpNo, TrackKey, bitResult));
             }
             catch (System.Exception ex)
             {
@@ -6199,5 +6421,4 @@ namespace KZONE.Service
         #endregion
     }
 }
-
-
+#endregion
