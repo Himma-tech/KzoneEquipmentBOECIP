@@ -1,16 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using EipTagLibrary;
+﻿using EipTagLibrary;
 using KZONE.Entity;
 using KZONE.EntityManager;
 using KZONE.PLCAgent.PLC;
 using KZONE.Work;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Serialization;
+using System.Security.Claims;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KZONE.Service
 {
@@ -32,7 +36,7 @@ namespace KZONE.Service
                 {
                     try
                     {
-                         eipTagAccess.StartMonitoring();
+                        eipTagAccess.StartMonitoring();
                     }
                     catch (System.Exception ex)
                     {
@@ -63,9 +67,63 @@ namespace KZONE.Service
                         switch (e.Item.Name)
                         {
                             // Commands
+
+                            #region //EAS Command
+                            //CIM_Message_Clear_Command       0:1
+                            //Date_Time_Set_Command           0:2
+                            //CV_Report_Time_Change_Command
+                            //Machine Mode Change Command
+                            //Cassette Map Download Command
+                            //CIM_Mode_Change_Command         0:6
+                            //SV_Report_Time_Change_Command
+                            //Loading_Stop_Change_Command
+                            //Job_Reservation_Command         0:9
+                            //Set_First_Or_Last_Job_Command
+                            //EAP_Heart_Beat_Signal           0:11
+                            //CIM_Message_Set_Command         0:15
+                            #endregion
+                            #region //EAS Command Handle
+                            //CIM_Message_Clear_Command       0:1
+                            case "CIM_Message_Clear_Command":
+                                HandleCIM_Message_Clear_Command(e);
+                                break;
+                            //Date_Time_Set_Command           0:2
+                            case "Date_Time_Set_Command":
+                                HandleCIM_Message_Clear_Command(e);
+                                break;
+                            //CV_Report_Time_Change_Command
+
+                            //Machine Mode Change Command
+
+                            //Cassette Map Download Command
+
+                            //CIM_Mode_Change_Command         0:6
+
+                            //SV_Report_Time_Change_Command
+
+                            //Loading_Stop_Change_Command
+
+                            //Job_Reservation_Command         0:9
+
+                            //Set_First_Or_Last_Job_Command
+
+                            //EAP_Heart_Beat_Signal           0:11
+
+                            //CIM_Message_Set_Command         0:15
+
+                            #endregion
+
                             case "CIMModeChangeCommand":
                                 HandleCIMModeChangeCommand(e);
                                 break;
+
+
+                            //这里改成对应的命令
+                            case "CIM_Mode_Change_Command":
+                                HandleCIMModeChangeCommand(e);
+                                break;
+
+
                             case "CIMMessageSetCommand":
                                 HandleCIMMessageSetCommand(e);
                                 break;
@@ -212,11 +270,133 @@ namespace KZONE.Service
                                 DVDataReportReply(e);
                                 break;
 
-                              
+
                             case "Reserved":
-                        
+
                                 break;
-                                
+
+
+                            //FIX_WB begin
+                            //TEST FOR MTL SHEET
+                            //EAS Command
+                            case "Machine Mode Change Command": HandleMachineModeChangeCommandReply(e); break;
+                            //Recipe_Event_Command
+                            case "Recipe_Register_Check_Command": HandleRecipeRegisterCheckCommandReply(e); break;
+                            case "Recipe_Parameter_Request_Command": HandleRecipeParameterRequestCommandReply(e); break;
+                            case "Recipe_List_Request_Command": HandleRecipeListRequestCommandReply(e); break;
+                            case "Recipe_Step_Count_Request": HandleRecipeStepCountRequestReply(e); break;
+                            case "CIM_Message_Set_Command": HandleCIMMessageSetCommandReply(e); break;
+                            //case "CIM_Message_Clear_Command": break;//repeat
+                            //case "Date_Time_Set_Command": break;//repeat
+                            case "CV_Report_Time_Change_Command": HandleCVReportTimeChangeCommandReply(e); break;
+                            //case "Recipe Validation Result Send": break;//not found
+                            case "SV_Report_Time_Change_Command": HandleSVReportTimeChangeCommandReply(e); break;
+                            case "EAP_Heart_Beat_Signal": HandleEAPHeartBeatSignalReply(e); break;//no reply
+                            //EAS Special Command
+                            case "Set_First_Or_Last_Job_Command": HandleSetFirstOrLastJobCommandReply(e); break;//no reply
+                            case "Material Check Request": HandleMaterialCheckRequestReply(e); break;
+                            case "Material Control Request": HandleMaterialControlRequestReply(e); break;//no reply
+                            case "Loading_Stop_Change_Command": HandleLoadingStopChangeCommandReply(e); break;
+                            //Special Function
+                            case "Job_Reservation_Command": HandleJobReservationCommandReply(e); break;
+                            //TEST FOR LTM
+                            //Machine to Machine Event
+                            case "InlineLoadingStopRequest": HandleInlineLoadingStopRequestReply(e); break;
+                            //case "Lot End Glass Report":break;//not found
+                            //case "Lot First Glass Report": break;
+                            case "XFEDDownSignal": HandleXFEDDownSignalReply(e); break;
+                            case "Job_Manual_Move_Report": HandleJobManualMoveReportReplyEx(e); break;
+                            //case "Set_First_Or_Last_Job_Command": break;//repeat
+                            //Machine Status Event
+                            case "Machine_Heart_Beat_Signal": HandleMachineHeartBeatSignalReply(e); break;//no reply
+                            case "Upstream_Inline_Mode": HandleUpstreamInlineModeReply(e); break;//no reply
+                            case "Local_Alarm_State": HandleLocalAlarmStateReply(e); break;//no reply
+                            case "VCR Status Report": HandleVCRStatusReportReply(e); break;
+                            case "VCR Mismatch Report": HandleVCRMismatchReportReply(e); break;
+                            case "Auto_Recipe_Change_Mode": HandleAutoRecipeChangeModeReply(e); break;//no reply
+                            case "Ionizer Status Report": HandleIonizerStatusReportReplyEx(e); break;
+                            case "File_Path_Info_Request": HandleFilePathInfoRequestReply(e); break;
+                            //Job Event
+                            case "Received_Report01": HandleReceivedReport01Reply(e); break;
+                            case "Received_Report02": HandleReceivedReport02Reply(e); break;
+                            case "Received_Report03": HandleReceivedReport03Reply(e); break;
+                            case "Received_Report04": HandleReceivedReport04Reply(e); break;
+                            case "Received_Report05": HandleReceivedReport05Reply(e); break;
+                            case "Received_Report06": HandleReceivedReport06Reply(e); break;
+                            case "Received_Report07": HandleReceivedReport07Reply(e); break;
+                            case "Received_Report08": HandleReceivedReport08Reply(e); break;
+                            case "Received_Report09": HandleReceivedReport09Reply(e); break;
+                            case "Send_Out_Report01": HandleSendOutReport01Reply(e); break;
+                            case "Send_Out_Report02": HandleSendOutReport02Reply(e); break;
+                            case "Send_Out_Report03": HandleSendOutReport03Reply(e); break;
+                            case "Send_Out_Report04": HandleSendOutReport04Reply(e); break;
+                            case "Send_Out_Report05": HandleSendOutReport05Reply(e); break;
+                            case "Send_Out_Report06": HandleSendOutReport06Reply(e); break;
+                            case "Send_Out_Report07": HandleSendOutReport07Reply(e); break;
+                            case "Send_Out_Report08": HandleSendOutReport08Reply(e); break;
+                            case "Send_Out_Report09": HandleSendOutReport09Reply(e); break;
+                            case "Stored_Job_Report01": HandleStoredJobReport01Reply(e); break;
+                            case "Stored_Job_Report02": HandleStoredJobReport02Reply(e); break;
+                            case "Stored_Job_Report03": HandleStoredJobReport03Reply(e); break;
+                            case "Stored_Job_Report04": HandleStoredJobReport04Reply(e); break;
+                            case "Stored_Job_Report05": HandleStoredJobReport05Reply(e); break;
+                            case "Stored_Job_Report06": HandleStoredJobReport06Reply(e); break;
+                            case "Stored_Job_Report07": HandleStoredJobReport07Reply(e); break;
+                            case "Stored_Job_Report08": HandleStoredJobReport08Reply(e); break;
+                            case "Stored_Job_Report09": HandleStoredJobReport09Reply(e); break;
+                            case "Stored_Job_Report10": HandleStoredJobReport10Reply(e); break;
+                            case "Stored_Job_Report11": HandleStoredJobReport11Reply(e); break;
+                            case "Stored_Job_Report12": HandleStoredJobReport12Reply(e); break;
+                            case "Fetched_Out_Job_Report01": HandleFetchedOutJobReport01Reply(e); break;
+                            case "Fetched_Out_Job_Report02": HandleFetchedOutJobReport02Reply(e); break;
+                            case "Fetched_Out_Job_Report03": HandleFetchedOutJobReport03Reply(e); break;
+                            case "Fetched_Out_Job_Report04": HandleFetchedOutJobReport04Reply(e); break;
+                            case "Fetched_Out_Job_Report05": HandleFetchedOutJobReport05Reply(e); break;
+                            case "Fetched_Out_Job_Report06": HandleFetchedOutJobReport06Reply(e); break;
+                            case "Fetched_Out_Job_Report07": HandleFetchedOutJobReport07eply(e); break;
+                            case "Fetched_Out_Job_Report08": HandleFetchedOutJobReport08Reply(e); break;
+                            case "Fetched_Out_Job_Report09": HandleFetchedOutJobReport09Reply(e); break;
+                            case "Fetched_Out_Job_Report10": HandleFetchedOutJobReport10Reply(e); break;
+                            case "Fetched_Out_Job_Report11": HandleFetchedOutJobReport11Reply(e); break;
+                            case "Fetched_Out_Job_Report12": HandleFetchedOutJobReport12Reply(e); break;
+                            //case "Job Manual Move Report": HandleReply(e);break;//repeat
+                            //case "Job Process Start Report": HandleReply(e);break;//not found
+                            //case "Job Process End Report": HandleReply(e);break;//not found
+                            case "Job_Data_Request": HandleJobDataRequestReplyEx(e); break;
+                            case "Job_Data_Change_Report": HandleJobDataChangeReportReplyEx(e); break;
+                            case "Machine_Mode_Change_Report": HandleMachineModeChangeReportReplyEx(e); break;
+                            case "Machine_Status_Change_Report": HandleMachineStatusChangeReportReplyEx(e); break;
+                            case "Alarm_Report#1": HandleAlarmReport1Reply(e); break;
+                            case "Alarm_Report#2": HandleAlarmReport2Reply(e); break;
+                            case "Alarm_Report#3": HandleAlarmReport3Reply(e); break;
+                            case "Alarm_Report#4": HandleAlarmReport4Reply(e); break;
+                            case "Alarm_Report#5": HandleAlarmReport5Reply(e); break;
+                            case "DV_Data_Report": HandleDVDataReportReply(e); break;
+                            case "Auto_Recipe_Change_Mode_Report": HandleAutoRecipeChangeModeReportReplyEx(e); break;
+                            case "Current_Recipe_ID_Change_Report": HandleCurrentRecipeIDChangeReportReply(e); break;
+                            case "Recipe_List_Report": HandleRecipeListReportReply(e); break;
+                            case "Recipe_Change_Report": HandleRecipeChangeReportReplyEx(e); break;
+                            case "Recipe_Parameter_Report": HandleRecipeParameterReportReply(e); break;
+                            //case "Transfer Time Data Report": HandleReply(e);break;//not found
+                            case "CIM_Message_Confirm_Report": HandleCIMMessageConfirmReportReplyEx(e); break;
+                            case "FAC_Data Report": HandleReportReply(e); break;
+                            case "Date_Time_Request": HandleDateTimeRequestReplyEx(e); break;
+                            //Machine Special Event
+                            case "Panel Judge Data Download Request": HandlePanelJudgeDataDownloadRequestReply(e); break;
+                            case "Panel Data Update Report": HandlePanelDataUpdateReportReply(e); break;
+                            case "Material Status Change Report": HandleMaterialStatusChangeReportReply(e); break;
+                            case "Job Judge Result Report": HandleJobJudgeResultReportReplyEx(e); break;//no reply
+                            case "Dummy Job Request": HandleDummyJobRequestReplyEx(e); break;
+                            case "Material Validation Request": HandleMaterialValidationRequestReply(e); break;
+                            case "SV_Data Report": HandleSVDataReportReply(e); break;
+                            case "CVData Report": HandleCVDataReportReply(e); break;//no reply
+                            case "Operator_Login_Report": HandleOperatorLoginReportReplyEx(e); break;
+                            //case "Loading Stop Request": HandleReply(e);break;//repeat
+                            //EFEM Event
+                            case "EFEM_Operation_Mode_Change_Report": HandleEFEMOperationModeChangeReportReply(e); break;//no reply
+                            case "CST_Operation_Mode_Change_Report": HandleCSTOperationModeChangeReportReply(e); break;//tag list not contains the sheet which is CIMToEQ_PortManagement
+                            case "Cancel Abort Request Event Report": HandleCancelAbortRequestEventReportReply(e); break;//tag list not contains the sheet which is CIMToEQ_PortManagement
+                            //FIX_WB end
 
                             default:
                                 LogError(MethodBase.GetCurrentMethod().Name + "()", "Unhandled command: " + e.Item.Name);
@@ -235,13 +415,1800 @@ namespace KZONE.Service
             }
         }
 
-        #region Handler Methods
-        private void HandleCIMModeChangeCommand(TagValueChangedEventArgs e)
+        private void HandleOperatorLoginReportReplyEx(TagValueChangedEventArgs e)
+        {
+            //
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_Status01_01_05_00",
+                    "Machine_Status_Event_Reply",
+                    "Operator_Login_Report_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleDummyJobRequestReplyEx(TagValueChangedEventArgs e)
         {
             try
             {
-              
-                string eqpNo ="L3";
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_Status01_01_05_00",
+                    "Machine_Status_Event_Reply",
+                    "Dummy Job Request Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleJobJudgeResultReportReplyEx(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "no reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleDateTimeRequestReplyEx(TagValueChangedEventArgs e)
+        {
+
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_Status01_01_05_00",
+                    "Machine_Status_Event_Reply",
+                    "Date_Time_Request_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+
+        }
+
+        private void HandleCIMMessageConfirmReportReplyEx(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_Status01_01_05_00",
+                    "Machine_Status_Event_Reply",
+                    "CIM_Message_Confirm_Report_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+
+
+        }
+
+        private void HandleRecipeChangeReportReplyEx(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Recipe_Event_Reply",
+                    "Recipe_Change_Report_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+
+        }
+
+        private void HandleAutoRecipeChangeModeReportReplyEx(TagValueChangedEventArgs e)
+        {
+
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Recipe_Event_Reply",
+                    "Auto_Recipe_Change_Mode_Report_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+
+        }
+
+        private void HandleMachineStatusChangeReportReplyEx(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_Status01_01_05_00",
+                    "Machine_Status_Event_Reply",
+                    "Machine_Status_Change_Report_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+
+        }
+
+        private void HandleMachineModeChangeReportReplyEx(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_Status01_01_05_00",
+                    "Machine_Status_Event_Reply",
+                    "Machine_Mode_Change_Report_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+            ;
+        }
+
+        private void HandleJobDataChangeReportReplyEx(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Status_Event_Reply",
+                    "Job_Data_Change_Report_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleJobDataRequestReplyEx(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_Status01_01_05_00",
+                    "Machine_Status_Event_Reply",
+                    "Job_Data_Request_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+
+        }
+
+        private void HandleJobManualMoveReportReplyEx(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Job_Manual_Move_Report_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+        private void HandleCancelAbortRequestEventReportReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                //eipTagAccess.WriteItemValue(
+                //    "CIMToEQ_PortManagement",
+                //    "Indexer Event Reply",
+                //    "Cancel Abort Request Event Reply",
+                //    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "no reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleCSTOperationModeChangeReportReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                //NO CIMToEQ_PortManagement  tag
+                /* eipTagAccess.WriteItemValue(
+                     "CIMToEQ_PortManagement",
+                     "Indexer Event Reply",
+                     "CST_Operation_Mode_Change_Report_Reply",
+                     returnCode);*/
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "no reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleEFEMOperationModeChangeReportReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "no reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleCVDataReportReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleSVDataReportReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_Status01_01_05_00",
+                    "Machine_Status_Event_Reply",
+                    "SV_Data Report Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleMaterialValidationRequestReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Material_Event_Reply",
+                    "Material Validation Request Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleMaterialStatusChangeReportReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Material_Event_Reply",
+                    "Material Status Change Report Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandlePanelDataUpdateReportReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_UnpackManagement_01_05_00",
+                    "Panel Judge Event Reply",
+                    "Panel Data Update Report Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandlePanelJudgeDataDownloadRequestReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_UnpackManagement_01_05_00",
+                    "Panel Judge Event Reply",
+                    "Panel Judge Data Download Request Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleReportReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Variable_Data_Event_Reply",
+                    "FAC_Data Report_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleRecipeParameterReportReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                     "RV_CIMToEQ_EventReply_01_05_00",
+                    "Recipe_Event_Reply",
+                    "Recipe_Parameter_Report_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleRecipeListReportReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                     "RV_CIMToEQ_EventReply_01_05_00",
+                    "Recipe_Event_Reply",
+                    "Recipe_List_Report_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleCurrentRecipeIDChangeReportReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Recipe_Event_Reply",
+                    "Current_Recipe_Change_Report_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleDVDataReportReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleAlarmReport5Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Alarm_Event_Reply",
+                    "Alarm_Report#5_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleAlarmReport4Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Alarm_Event_Reply",
+                    "Alarm_Report#4_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleAlarmReport3Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Alarm_Event_Reply",
+                    "Alarm_Report#3_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleAlarmReport2Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Alarm_Event_Reply",
+                    "Alarm_Report#2_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleAlarmReport1Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Alarm_Event_Reply",
+                    "Alarm_Report#1_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleFetchedOutJobReport12Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Fetched_Out_Job_Report12_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleFetchedOutJobReport11Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Fetched_Out_Job_Report11_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleFetchedOutJobReport10Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                   "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Fetched_Out_Job_Report10_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleFetchedOutJobReport09Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                     "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Fetched_Out_Job_Report09_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleFetchedOutJobReport08Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                     "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Fetched_Out_Job_Report08_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleFetchedOutJobReport07eply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                     "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Fetched_Out_Job_Report07_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleFetchedOutJobReport06Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                     "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Fetched_Out_Job_Report06_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleFetchedOutJobReport05Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                     "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Fetched_Out_Job_Report05_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleFetchedOutJobReport04Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Fetched_Out_Job_Report04_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleFetchedOutJobReport03Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                     "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Fetched_Out_Job_Report03_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleFetchedOutJobReport02Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                     "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Fetched_Out_Job_Report02_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleFetchedOutJobReport01Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                     "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Fetched_Out_Job_Report01_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleStoredJobReport12Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                     "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Stored_Job_Report12_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleStoredJobReport11Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                     "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Stored_Job_Report11_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleStoredJobReport10Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                     "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Stored_Job_Report10_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleStoredJobReport09Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                     "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Stored_Job_Report09_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleStoredJobReport08Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Stored_Job_Report08_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleStoredJobReport07Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Stored_Job_Report07_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleStoredJobReport06Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Stored_Job_Report06_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleStoredJobReport05Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                     "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Stored_Job_Report05_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleStoredJobReport04Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Stored_Job_Report04_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleStoredJobReport03Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Stored_Job_Report03_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleStoredJobReport02Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Stored_Job_Report02_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleStoredJobReport01Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                     "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Stored_Job_Report01_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleSendOutReport09Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                     "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Send_Out_Job_Report09_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleSendOutReport08Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Send_Out_Job_Report08_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleSendOutReport07Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                     "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Send_Out_Job_Report07_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleSendOutReport06Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                     "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Send_Out_Job_Report06_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleSendOutReport05Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                     "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Send_Out_Job_Report05_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleSendOutReport04Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                     "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Send_Out_Job_Report04_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleSendOutReport03Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                     "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Send_Out_Job_Report03_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleSendOutReport02Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Send_Out_Job_Report02_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+
+        }
+
+        private void HandleSendOutReport01Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Send_Out_Job_Report01_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleReceivedReport09Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Received Job Report09_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleReceivedReport08Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Received Job Report08_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleReceivedReport07Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Received Job Report07_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleReceivedReport06Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Received Job Report06_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleReceivedReport05Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Received Job Report05_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleReceivedReport04Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Received Job Report04_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleReceivedReport03Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                   "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Received Job Report03_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleReceivedReport02Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Received Job Report02_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleReceivedReport01Reply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_EventReply_01_05_00",
+                    "Machine_Job_Event_Reply",
+                    "Received Job Report01_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleFilePathInfoRequestReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_Status01_01_05_00",
+                    "Machine_Status_Event_Reply",
+                    "File Path Info Request Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleAutoRecipeChangeModeReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleVCRMismatchReportReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_Status01_01_05_00",
+                    "Machine_Status_Event_Reply",
+                    "VCR_Mismatch_Report_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleLocalAlarmStateReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "no reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleUpstreamInlineModeReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "no reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleMachineHeartBeatSignalReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "no reply:" + 0.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleInlineLoadingStopRequestReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "CIMToEQ_Status01_01_05_00",
+                    "Machine_Status_Event_Reply",
+                    "Loading Stop Request Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleXFEDDownSignalReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_EQToEQ_Event_02_05_00",
+                    "MachineToMachineEventReply",
+                    "XFEDDownSignallReply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleJobReservationCommandReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 2;
+                eipTagAccess.WriteItemValue(
+                    "EQToCIM_Status_05_01_00",
+                    "EAS Command Reply",
+                    "Job Reservation Command Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleLoadingStopChangeCommandReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "EAS Command Reply",
+                    "Loading Stop Change Command Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleMaterialControlRequestReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "no reply:" + 0.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleMaterialCheckRequestReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "EAS Command Reply",
+                    "Material Check Request Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleSetFirstOrLastJobCommandReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "no reply:" + 0.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleEAPHeartBeatSignalReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "no reply:" + 0.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleSVReportTimeChangeCommandReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_ProcessSVData_05_01_00",
+                    "SV_Report_Time_Change_Command_Reply_Block",
+                    "SV Command Return Code",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleCVReportTimeChangeCommandReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 2;
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "EAS Command Reply",
+                    "CV_Report_Time_Change_Command_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleCIMMessageSetCommandReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 2;
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "EAS Command Reply",
+                    "CIM_Message_Set_Command_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleRecipeStepCountRequestReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 1;
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_RecipeManagement_05_01_00",
+                    "Recipe_Command_Reply",
+                    "Recipe_Step_Count_Request_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleRecipeListRequestCommandReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 1;
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_RecipeManagement_05_01_00",
+                    "Recipe_Command_Reply",
+                    "Recipe_List_Request_Command_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleRecipeParameterRequestCommandReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 1;
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_RecipeManagement_05_01_00",
+                    "Recipe_Command_Reply",
+                    "Recipe_Parameter_Request_Command_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleRecipeRegisterCheckCommandReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 1;
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_RecipeManagement_05_01_00",
+                    "Recipe_Command_Reply",
+                    "Recipe_Register_Check_Command_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        private void HandleMachineModeChangeCommandReply(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                int returnCode = 2;
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "EAS Command Reply",
+                    "Machine Mode Change Command Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        #region //EAS Command Handle
+
+        //CIM_Message_Clear_Command       0:1
+
+        //Date_Time_Set_Command           0:2
+
+        //CV_Report_Time_Change_Command
+
+        //Machine Mode Change Command
+
+        //Cassette Map Download Command
+
+        //CIM_Mode_Change_Command         0:6
+
+        //SV_Report_Time_Change_Command
+
+        //Loading_Stop_Change_Command
+
+        //Job_Reservation_Command         0:9
+
+        //Set_First_Or_Last_Job_Command
+
+        //EAP_Heart_Beat_Signal           0:11
+
+        //CIM_Message_Set_Command         0:15
+
+        /// <summary>
+        /// 1;CIM_Message_Clear_Command
+        /// </summary>
+        /// <param name="e"></param>
+        private void HandleCIM_Message_Clear_Command(TagValueChangedEventArgs e)
+        {
+            try
+            {
+
+                string eqpNo = "L3";
                 string strlog = string.Empty;
                 string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
                 Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
@@ -249,8 +2216,8 @@ namespace KZONE.Service
                 {
                     throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
                 }
-               
-                eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF); 
+
+                eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
 
                 string timerID = string.Format("{0}_{1}", eqpNo, CIMModeChangeCommandTimeout);
 
@@ -271,7 +2238,7 @@ namespace KZONE.Service
                     return;
                 }
 
-                string cIMModeCommand =  eipTagAccess.ReadItemValue("RV_CIMToEQ_Status_01_03_00", "CIMModeChangeCommandBlock", "CIMMode").ToString();
+                string cIMModeCommand = eipTagAccess.ReadItemValue("RV_CIMToEQ_Status01_01_05_00", "EAS_Command", "CIM_Message_Clear_Command").ToString();
                 string no = "1";
 
                 if (cIMModeCommand != "1" && cIMModeCommand != "2")
@@ -285,7 +2252,7 @@ namespace KZONE.Service
                 {
                     if (eq.File.CIMMode == eBitResult.ON)
                     {
-                        CPCCIMModeChangeCommandReply(eBitResult.ON,TrackKey, "2", no);
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
                         LogWarn(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
                                 eq.Data.NODENO, TrackKey, cIMModeCommand));
@@ -331,9 +2298,1725 @@ namespace KZONE.Service
                 }
                 if (bitResult == eBitResult.ON)
                 {
-                   
+
                     Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
-                        new System.Timers.ElapsedEventHandler(BCCIMModeChangeCommandTimeoutAction),  TrackKey);
+                        new System.Timers.ElapsedEventHandler(BCCIMModeChangeCommandTimeoutAction), TrackKey);
+                }
+
+                #endregion
+
+
+
+            }
+            catch (System.Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+        /// <summary>
+        /// 2;Date_Time_Set_Command
+        /// </summary>
+        /// <param name="e"></param>
+        private void HandleDate_Time_Set_Command(TagValueChangedEventArgs e)
+        {
+            try
+            {
+
+                string eqpNo = "L3";
+                string strlog = string.Empty;
+                string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                if (eq == null)
+                {
+                    throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
+                }
+
+                eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
+
+                string timerID = string.Format("{0}_{1}", eqpNo, CIMModeChangeCommandTimeout);
+
+                if (bitResult == eBitResult.OFF)
+                {
+                    //bit off移除本次timer
+                    if (Timermanager.IsAliveTimer(timerID))
+                    {
+                        Timermanager.TerminateTimer(timerID);
+                    }
+
+                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
+                        eqpNo, TrackKey));
+
+                    CPCCIMModeChangeCommandReply(eBitResult.OFF, TrackKey, "0", "0");
+
+                    return;
+                }
+
+                string cIMModeCommand = eipTagAccess.ReadItemValue("RV_CIMToEQ_Status01_01_05_00", "EAS_Command", "Date_Time_Set_Command").ToString();
+                string no = "1";
+
+                if (cIMModeCommand != "1" && cIMModeCommand != "2")
+                {
+                    CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "3", no);
+                    LogError(MethodBase.GetCurrentMethod().Name + "()",
+                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                            eq.Data.NODENO, TrackKey, cIMModeCommand));
+                }
+                else if (cIMModeCommand == "2")
+                {
+                    if (eq.File.CIMMode == eBitResult.ON)
+                    {
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+                        LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                    else
+                    { // 切换CIM MODE
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+                        CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
+
+                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                }
+                else
+                {
+                    if (eq.File.CIMMode == eBitResult.OFF)
+                    {
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+                        LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                    else
+                    { // 切换CIM MODE
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+                        CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
+
+                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+
+                }
+
+                #region 建立timer
+
+                if (Timermanager.IsAliveTimer(timerID))
+                {
+                    Timermanager.TerminateTimer(timerID);
+                }
+                if (bitResult == eBitResult.ON)
+                {
+
+                    Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
+                        new System.Timers.ElapsedEventHandler(BCCIMModeChangeCommandTimeoutAction), TrackKey);
+                }
+
+                #endregion
+
+
+
+            }
+            catch (System.Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+        /// <summary>
+        /// 3;CV_Report_Time_Change_Command
+        /// </summary>
+        /// <param name="e"></param>
+        private void HandleCV_Report_Time_Change_Command(TagValueChangedEventArgs e)
+        {
+            try
+            {
+
+                string eqpNo = "L3";
+                string strlog = string.Empty;
+                string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                if (eq == null)
+                {
+                    throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
+                }
+
+                eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
+
+                string timerID = string.Format("{0}_{1}", eqpNo, CIMModeChangeCommandTimeout);
+
+                if (bitResult == eBitResult.OFF)
+                {
+                    //bit off移除本次timer
+                    if (Timermanager.IsAliveTimer(timerID))
+                    {
+                        Timermanager.TerminateTimer(timerID);
+                    }
+
+                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
+                        eqpNo, TrackKey));
+
+                    CPCCIMModeChangeCommandReply(eBitResult.OFF, TrackKey, "0", "0");
+
+                    return;
+                }
+
+                string cIMModeCommand = eipTagAccess.ReadItemValue("RV_CIMToEQ_Status01_01_05_00", "EAS_Command", "CV_Report_Time_Change_Command").ToString();
+                string no = "1";
+
+                if (cIMModeCommand != "1" && cIMModeCommand != "2")
+                {
+                    CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "3", no);
+                    LogError(MethodBase.GetCurrentMethod().Name + "()",
+                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                            eq.Data.NODENO, TrackKey, cIMModeCommand));
+                }
+                else if (cIMModeCommand == "2")
+                {
+                    if (eq.File.CIMMode == eBitResult.ON)
+                    {
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+                        LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                    else
+                    { // 切换CIM MODE
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+                        CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
+
+                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                }
+                else
+                {
+                    if (eq.File.CIMMode == eBitResult.OFF)
+                    {
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+                        LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                    else
+                    { // 切换CIM MODE
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+                        CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
+
+                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+
+                }
+
+                #region 建立timer
+
+                if (Timermanager.IsAliveTimer(timerID))
+                {
+                    Timermanager.TerminateTimer(timerID);
+                }
+                if (bitResult == eBitResult.ON)
+                {
+
+                    Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
+                        new System.Timers.ElapsedEventHandler(BCCIMModeChangeCommandTimeoutAction), TrackKey);
+                }
+
+                #endregion
+
+
+
+            }
+            catch (System.Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+        /// <summary>
+        /// 4;Machine Mode Change Command
+        /// </summary>
+        /// <param name="e"></param>
+        private void HandleMachineModeChangeCommand(TagValueChangedEventArgs e)
+        {
+            try
+            {
+
+                string eqpNo = "L3";
+                string strlog = string.Empty;
+                string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                if (eq == null)
+                {
+                    throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
+                }
+
+                eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
+
+                string timerID = string.Format("{0}_{1}", eqpNo, CIMModeChangeCommandTimeout);
+
+                if (bitResult == eBitResult.OFF)
+                {
+                    //bit off移除本次timer
+                    if (Timermanager.IsAliveTimer(timerID))
+                    {
+                        Timermanager.TerminateTimer(timerID);
+                    }
+
+                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
+                        eqpNo, TrackKey));
+
+                    CPCCIMModeChangeCommandReply(eBitResult.OFF, TrackKey, "0", "0");
+
+                    return;
+                }
+
+                string cIMModeCommand = eipTagAccess.ReadItemValue("RV_CIMToEQ_Status01_01_05_00", "EAS_Command", "Machine Mode Change Command").ToString();
+                string no = "1";
+
+                if (cIMModeCommand != "1" && cIMModeCommand != "2")
+                {
+                    CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "3", no);
+                    LogError(MethodBase.GetCurrentMethod().Name + "()",
+                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                            eq.Data.NODENO, TrackKey, cIMModeCommand));
+                }
+                else if (cIMModeCommand == "2")
+                {
+                    if (eq.File.CIMMode == eBitResult.ON)
+                    {
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+                        LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                    else
+                    { // 切换CIM MODE
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+                        CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
+
+                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                }
+                else
+                {
+                    if (eq.File.CIMMode == eBitResult.OFF)
+                    {
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+                        LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                    else
+                    { // 切换CIM MODE
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+                        CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
+
+                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+
+                }
+
+                #region 建立timer
+
+                if (Timermanager.IsAliveTimer(timerID))
+                {
+                    Timermanager.TerminateTimer(timerID);
+                }
+                if (bitResult == eBitResult.ON)
+                {
+
+                    Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
+                        new System.Timers.ElapsedEventHandler(BCCIMModeChangeCommandTimeoutAction), TrackKey);
+                }
+
+                #endregion
+
+
+
+            }
+            catch (System.Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+        /// <summary>
+        /// 5;Cassette Map Download Command
+        /// </summary>
+        /// <param name="e"></param>
+        private void HandleCassetteMapDownloadCommand(TagValueChangedEventArgs e)
+        {
+            try
+            {
+
+                string eqpNo = "L3";
+                string strlog = string.Empty;
+                string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                if (eq == null)
+                {
+                    throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
+                }
+
+                eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
+
+                string timerID = string.Format("{0}_{1}", eqpNo, CIMModeChangeCommandTimeout);
+
+                if (bitResult == eBitResult.OFF)
+                {
+                    //bit off移除本次timer
+                    if (Timermanager.IsAliveTimer(timerID))
+                    {
+                        Timermanager.TerminateTimer(timerID);
+                    }
+
+                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
+                        eqpNo, TrackKey));
+
+                    CPCCIMModeChangeCommandReply(eBitResult.OFF, TrackKey, "0", "0");
+
+                    return;
+                }
+
+                string cIMModeCommand = eipTagAccess.ReadItemValue("RV_CIMToEQ_Status01_01_05_00", "EAS_Command", "Cassette Map Download Command").ToString();
+                string no = "1";
+
+                if (cIMModeCommand != "1" && cIMModeCommand != "2")
+                {
+                    CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "3", no);
+                    LogError(MethodBase.GetCurrentMethod().Name + "()",
+                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                            eq.Data.NODENO, TrackKey, cIMModeCommand));
+                }
+                else if (cIMModeCommand == "2")
+                {
+                    if (eq.File.CIMMode == eBitResult.ON)
+                    {
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+                        LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                    else
+                    { // 切换CIM MODE
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+                        CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
+
+                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                }
+                else
+                {
+                    if (eq.File.CIMMode == eBitResult.OFF)
+                    {
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+                        LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                    else
+                    { // 切换CIM MODE
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+                        CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
+
+                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+
+                }
+
+                #region 建立timer
+
+                if (Timermanager.IsAliveTimer(timerID))
+                {
+                    Timermanager.TerminateTimer(timerID);
+                }
+                if (bitResult == eBitResult.ON)
+                {
+
+                    Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
+                        new System.Timers.ElapsedEventHandler(BCCIMModeChangeCommandTimeoutAction), TrackKey);
+                }
+
+                #endregion
+
+
+
+            }
+            catch (System.Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        /// <summary>
+        /// 6;CIM_Mode_Change_Command
+        /// </summary>
+        /// <param name="e"></param>
+        private void HandleCIM_Mode_Change_Command(TagValueChangedEventArgs e)
+        {
+            try
+            {
+
+                string eqpNo = "L3";
+                string strlog = string.Empty;
+                string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                if (eq == null)
+                {
+                    throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
+                }
+
+                eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
+
+                string timerID = string.Format("{0}_{1}", eqpNo, CIMModeChangeCommandTimeout);
+
+                if (bitResult == eBitResult.OFF)
+                {
+                    //bit off移除本次timer
+                    if (Timermanager.IsAliveTimer(timerID))
+                    {
+                        Timermanager.TerminateTimer(timerID);
+                    }
+
+                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
+                        eqpNo, TrackKey));
+
+                    CPCCIMModeChangeCommandReply(eBitResult.OFF, TrackKey, "0", "0");
+
+                    return;
+                }
+
+                string cIMModeCommand = eipTagAccess.ReadItemValue("RV_CIMToEQ_Status01_01_05_00", "EAS_Command", "CIM_Message_Clear_Command").ToString();
+                string no = "1";
+
+                if (cIMModeCommand != "1" && cIMModeCommand != "2")
+                {
+                    CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "3", no);
+                    LogError(MethodBase.GetCurrentMethod().Name + "()",
+                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                            eq.Data.NODENO, TrackKey, cIMModeCommand));
+                }
+                else if (cIMModeCommand == "2")
+                {
+                    if (eq.File.CIMMode == eBitResult.ON)
+                    {
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+                        LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                    else
+                    { // 切换CIM MODE
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+                        CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
+
+                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                }
+                else
+                {
+                    if (eq.File.CIMMode == eBitResult.OFF)
+                    {
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+                        LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                    else
+                    { // 切换CIM MODE
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+                        CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
+
+                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+
+                }
+
+                #region 建立timer
+
+                if (Timermanager.IsAliveTimer(timerID))
+                {
+                    Timermanager.TerminateTimer(timerID);
+                }
+                if (bitResult == eBitResult.ON)
+                {
+
+                    Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
+                        new System.Timers.ElapsedEventHandler(BCCIMModeChangeCommandTimeoutAction), TrackKey);
+                }
+
+                #endregion
+
+
+
+            }
+            catch (System.Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+        /// <summary>
+        /// 7;SV_Report_Time_Change_Command
+        /// </summary>
+        /// <param name="e"></param>
+        private void HandleSV_Report_Time_Change_Command(TagValueChangedEventArgs e)
+        {
+            try
+            {
+
+                string eqpNo = "L3";
+                string strlog = string.Empty;
+                string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                if (eq == null)
+                {
+                    throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
+                }
+
+                eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
+
+                string timerID = string.Format("{0}_{1}", eqpNo, CIMModeChangeCommandTimeout);
+
+                if (bitResult == eBitResult.OFF)
+                {
+                    //bit off移除本次timer
+                    if (Timermanager.IsAliveTimer(timerID))
+                    {
+                        Timermanager.TerminateTimer(timerID);
+                    }
+
+                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
+                        eqpNo, TrackKey));
+
+                    CPCCIMModeChangeCommandReply(eBitResult.OFF, TrackKey, "0", "0");
+
+                    return;
+                }
+
+                string cIMModeCommand = eipTagAccess.ReadItemValue("RV_CIMToEQ_Status01_01_05_00", "EAS_Command", "Date_Time_Set_Command").ToString();
+                string no = "1";
+
+                if (cIMModeCommand != "1" && cIMModeCommand != "2")
+                {
+                    CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "3", no);
+                    LogError(MethodBase.GetCurrentMethod().Name + "()",
+                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                            eq.Data.NODENO, TrackKey, cIMModeCommand));
+                }
+                else if (cIMModeCommand == "2")
+                {
+                    if (eq.File.CIMMode == eBitResult.ON)
+                    {
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+                        LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                    else
+                    { // 切换CIM MODE
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+                        CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
+
+                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                }
+                else
+                {
+                    if (eq.File.CIMMode == eBitResult.OFF)
+                    {
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+                        LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                    else
+                    { // 切换CIM MODE
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+                        CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
+
+                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+
+                }
+
+                #region 建立timer
+
+                if (Timermanager.IsAliveTimer(timerID))
+                {
+                    Timermanager.TerminateTimer(timerID);
+                }
+                if (bitResult == eBitResult.ON)
+                {
+
+                    Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
+                        new System.Timers.ElapsedEventHandler(BCCIMModeChangeCommandTimeoutAction), TrackKey);
+                }
+
+                #endregion
+
+
+
+            }
+            catch (System.Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+        /// <summary>
+        /// 8;Loading_Stop_Change_Command
+        /// </summary>
+        /// <param name="e"></param>
+        private void HandleLoading_Stop_Change_Command(TagValueChangedEventArgs e)
+        {
+            try
+            {
+
+                string eqpNo = "L3";
+                string strlog = string.Empty;
+                string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                if (eq == null)
+                {
+                    throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
+                }
+
+                eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
+
+                string timerID = string.Format("{0}_{1}", eqpNo, CIMModeChangeCommandTimeout);
+
+                if (bitResult == eBitResult.OFF)
+                {
+                    //bit off移除本次timer
+                    if (Timermanager.IsAliveTimer(timerID))
+                    {
+                        Timermanager.TerminateTimer(timerID);
+                    }
+
+                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
+                        eqpNo, TrackKey));
+
+                    CPCCIMModeChangeCommandReply(eBitResult.OFF, TrackKey, "0", "0");
+
+                    return;
+                }
+
+                string cIMModeCommand = eipTagAccess.ReadItemValue("RV_CIMToEQ_Status01_01_05_00", "EAS_Command", "CV_Report_Time_Change_Command").ToString();
+                string no = "1";
+
+                if (cIMModeCommand != "1" && cIMModeCommand != "2")
+                {
+                    CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "3", no);
+                    LogError(MethodBase.GetCurrentMethod().Name + "()",
+                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                            eq.Data.NODENO, TrackKey, cIMModeCommand));
+                }
+                else if (cIMModeCommand == "2")
+                {
+                    if (eq.File.CIMMode == eBitResult.ON)
+                    {
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+                        LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                    else
+                    { // 切换CIM MODE
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+                        CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
+
+                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                }
+                else
+                {
+                    if (eq.File.CIMMode == eBitResult.OFF)
+                    {
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+                        LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                    else
+                    { // 切换CIM MODE
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+                        CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
+
+                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+
+                }
+
+                #region 建立timer
+
+                if (Timermanager.IsAliveTimer(timerID))
+                {
+                    Timermanager.TerminateTimer(timerID);
+                }
+                if (bitResult == eBitResult.ON)
+                {
+
+                    Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
+                        new System.Timers.ElapsedEventHandler(BCCIMModeChangeCommandTimeoutAction), TrackKey);
+                }
+
+                #endregion
+
+
+
+            }
+            catch (System.Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+        /// <summary>
+        /// 9;Job_Reservation_Command
+        /// </summary>
+        /// <param name="e"></param>
+        private void HandleJob_Reservation_Command(TagValueChangedEventArgs e)
+        {
+            try
+            {
+
+                string eqpNo = "L3";
+                string strlog = string.Empty;
+                string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                if (eq == null)
+                {
+                    throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
+                }
+
+                eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
+
+                string timerID = string.Format("{0}_{1}", eqpNo, CIMModeChangeCommandTimeout);
+
+                if (bitResult == eBitResult.OFF)
+                {
+                    //bit off移除本次timer
+                    if (Timermanager.IsAliveTimer(timerID))
+                    {
+                        Timermanager.TerminateTimer(timerID);
+                    }
+
+                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
+                        eqpNo, TrackKey));
+
+                    CPCCIMModeChangeCommandReply(eBitResult.OFF, TrackKey, "0", "0");
+
+                    return;
+                }
+
+                string cIMModeCommand = eipTagAccess.ReadItemValue("RV_CIMToEQ_Status01_01_05_00", "EAS_Command", "Job_Reservation_Command").ToString();
+                string no = "1";
+
+                if (cIMModeCommand != "1" && cIMModeCommand != "2")
+                {
+                    CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "3", no);
+                    LogError(MethodBase.GetCurrentMethod().Name + "()",
+                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                            eq.Data.NODENO, TrackKey, cIMModeCommand));
+                }
+                else if (cIMModeCommand == "2")
+                {
+                    if (eq.File.CIMMode == eBitResult.ON)
+                    {
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+                        LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                    else
+                    { // 切换CIM MODE
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+                        CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
+
+                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                }
+                else
+                {
+                    if (eq.File.CIMMode == eBitResult.OFF)
+                    {
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+                        LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                    else
+                    { // 切换CIM MODE
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+                        CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
+
+                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+
+                }
+
+                #region 建立timer
+
+                if (Timermanager.IsAliveTimer(timerID))
+                {
+                    Timermanager.TerminateTimer(timerID);
+                }
+                if (bitResult == eBitResult.ON)
+                {
+
+                    Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
+                        new System.Timers.ElapsedEventHandler(BCCIMModeChangeCommandTimeoutAction), TrackKey);
+                }
+
+                #endregion
+
+
+
+            }
+            catch (System.Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+        /// <summary>
+        /// 10;Set_First_Or_Last_Job_Command
+        /// </summary>
+        /// <param name="e"></param>
+        private void HandleSet_First_Or_Last_Job_Command(TagValueChangedEventArgs e)
+        {
+            try
+            {
+
+                string eqpNo = "L3";
+                string strlog = string.Empty;
+                string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                if (eq == null)
+                {
+                    throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
+                }
+
+                eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
+
+                string timerID = string.Format("{0}_{1}", eqpNo, CIMModeChangeCommandTimeout);
+
+                if (bitResult == eBitResult.OFF)
+                {
+                    //bit off移除本次timer
+                    if (Timermanager.IsAliveTimer(timerID))
+                    {
+                        Timermanager.TerminateTimer(timerID);
+                    }
+
+                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
+                        eqpNo, TrackKey));
+
+                    CPCCIMModeChangeCommandReply(eBitResult.OFF, TrackKey, "0", "0");
+
+                    return;
+                }
+
+                string cIMModeCommand = eipTagAccess.ReadItemValue("RV_CIMToEQ_Status01_01_05_00", "EAS_Command", "Cassette Map Download Command").ToString();
+                string no = "1";
+
+                if (cIMModeCommand != "1" && cIMModeCommand != "2")
+                {
+                    CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "3", no);
+                    LogError(MethodBase.GetCurrentMethod().Name + "()",
+                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                            eq.Data.NODENO, TrackKey, cIMModeCommand));
+                }
+                else if (cIMModeCommand == "2")
+                {
+                    if (eq.File.CIMMode == eBitResult.ON)
+                    {
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+                        LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                    else
+                    { // 切换CIM MODE
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+                        CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
+
+                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                }
+                else
+                {
+                    if (eq.File.CIMMode == eBitResult.OFF)
+                    {
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+                        LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                    else
+                    { // 切换CIM MODE
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+                        CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
+
+                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+
+                }
+
+                #region 建立timer
+
+                if (Timermanager.IsAliveTimer(timerID))
+                {
+                    Timermanager.TerminateTimer(timerID);
+                }
+                if (bitResult == eBitResult.ON)
+                {
+
+                    Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
+                        new System.Timers.ElapsedEventHandler(BCCIMModeChangeCommandTimeoutAction), TrackKey);
+                }
+
+                #endregion
+
+
+
+            }
+            catch (System.Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+
+        /// <summary>
+        /// 1;EAP_Heart_Beat_Signal
+        /// </summary>
+        /// <param name="e"></param>
+        private void HandleEAP_Heart_Beat_Signal(TagValueChangedEventArgs e)
+        {
+            try
+            {
+
+                string eqpNo = "L3";
+                string strlog = string.Empty;
+                string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                if (eq == null)
+                {
+                    throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
+                }
+
+                eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
+
+                string timerID = string.Format("{0}_{1}", eqpNo, CIMModeChangeCommandTimeout);
+
+                if (bitResult == eBitResult.OFF)
+                {
+                    //bit off移除本次timer
+                    if (Timermanager.IsAliveTimer(timerID))
+                    {
+                        Timermanager.TerminateTimer(timerID);
+                    }
+
+                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
+                        eqpNo, TrackKey));
+
+                    CPCCIMModeChangeCommandReply(eBitResult.OFF, TrackKey, "0", "0");
+
+                    return;
+                }
+
+                string cIMModeCommand = eipTagAccess.ReadItemValue("RV_CIMToEQ_Status01_01_05_00", "EAS_Command", "CIM_Message_Clear_Command").ToString();
+                string no = "1";
+
+                if (cIMModeCommand != "1" && cIMModeCommand != "2")
+                {
+                    CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "3", no);
+                    LogError(MethodBase.GetCurrentMethod().Name + "()",
+                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                            eq.Data.NODENO, TrackKey, cIMModeCommand));
+                }
+                else if (cIMModeCommand == "2")
+                {
+                    if (eq.File.CIMMode == eBitResult.ON)
+                    {
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+                        LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                    else
+                    { // 切换CIM MODE
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+                        CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
+
+                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                }
+                else
+                {
+                    if (eq.File.CIMMode == eBitResult.OFF)
+                    {
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+                        LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                    else
+                    { // 切换CIM MODE
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+                        CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
+
+                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+
+                }
+
+                #region 建立timer
+
+                if (Timermanager.IsAliveTimer(timerID))
+                {
+                    Timermanager.TerminateTimer(timerID);
+                }
+                if (bitResult == eBitResult.ON)
+                {
+
+                    Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
+                        new System.Timers.ElapsedEventHandler(BCCIMModeChangeCommandTimeoutAction), TrackKey);
+                }
+
+                #endregion
+
+
+
+            }
+            catch (System.Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+        ///// <summary>
+        ///// 2;Date_Time_Set_Command
+        ///// </summary>
+        ///// <param name="e"></param>
+        //private void HandleDate_Time_Set_Command(TagValueChangedEventArgs e)
+        //{
+        //    try
+        //    {
+
+        //        string eqpNo = "L3";
+        //        string strlog = string.Empty;
+        //        string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
+        //        Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+        //        if (eq == null)
+        //        {
+        //            throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
+        //        }
+
+        //        eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
+
+        //        string timerID = string.Format("{0}_{1}", eqpNo, CIMModeChangeCommandTimeout);
+
+        //        if (bitResult == eBitResult.OFF)
+        //        {
+        //            //bit off移除本次timer
+        //            if (Timermanager.IsAliveTimer(timerID))
+        //            {
+        //                Timermanager.TerminateTimer(timerID);
+        //            }
+
+        //            LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //                string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
+        //                eqpNo, TrackKey));
+
+        //            CPCCIMModeChangeCommandReply(eBitResult.OFF, TrackKey, "0", "0");
+
+        //            return;
+        //        }
+
+        //        string cIMModeCommand = eipTagAccess.ReadItemValue("RV_CIMToEQ_Status01_01_05_00", "EAS_Command", "Date_Time_Set_Command").ToString();
+        //        string no = "1";
+
+        //        if (cIMModeCommand != "1" && cIMModeCommand != "2")
+        //        {
+        //            CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "3", no);
+        //            LogError(MethodBase.GetCurrentMethod().Name + "()",
+        //                string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+        //                    eq.Data.NODENO, TrackKey, cIMModeCommand));
+        //        }
+        //        else if (cIMModeCommand == "2")
+        //        {
+        //            if (eq.File.CIMMode == eBitResult.ON)
+        //            {
+        //                CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+        //                LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+        //                    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+        //                        eq.Data.NODENO, TrackKey, cIMModeCommand));
+        //            }
+        //            else
+        //            { // 切换CIM MODE
+        //                CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+        //                CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
+
+        //                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //                    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+        //                        eq.Data.NODENO, TrackKey, cIMModeCommand));
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if (eq.File.CIMMode == eBitResult.OFF)
+        //            {
+        //                CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+        //                LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+        //                    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+        //                        eq.Data.NODENO, TrackKey, cIMModeCommand));
+        //            }
+        //            else
+        //            { // 切换CIM MODE
+        //                CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+        //                CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
+
+        //                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //                    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+        //                        eq.Data.NODENO, TrackKey, cIMModeCommand));
+        //            }
+
+        //        }
+
+        //        #region 建立timer
+
+        //        if (Timermanager.IsAliveTimer(timerID))
+        //        {
+        //            Timermanager.TerminateTimer(timerID);
+        //        }
+        //        if (bitResult == eBitResult.ON)
+        //        {
+
+        //            Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
+        //                new System.Timers.ElapsedEventHandler(BCCIMModeChangeCommandTimeoutAction), TrackKey);
+        //        }
+
+        //        #endregion
+
+
+
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+        //    }
+        //}
+        ///// <summary>
+        ///// 3;CV_Report_Time_Change_Command
+        ///// </summary>
+        ///// <param name="e"></param>
+        //private void HandleCV_Report_Time_Change_Command(TagValueChangedEventArgs e)
+        //{
+        //    try
+        //    {
+
+        //        string eqpNo = "L3";
+        //        string strlog = string.Empty;
+        //        string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
+        //        Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+        //        if (eq == null)
+        //        {
+        //            throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
+        //        }
+
+        //        eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
+
+        //        string timerID = string.Format("{0}_{1}", eqpNo, CIMModeChangeCommandTimeout);
+
+        //        if (bitResult == eBitResult.OFF)
+        //        {
+        //            //bit off移除本次timer
+        //            if (Timermanager.IsAliveTimer(timerID))
+        //            {
+        //                Timermanager.TerminateTimer(timerID);
+        //            }
+
+        //            LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //                string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
+        //                eqpNo, TrackKey));
+
+        //            CPCCIMModeChangeCommandReply(eBitResult.OFF, TrackKey, "0", "0");
+
+        //            return;
+        //        }
+
+        //        string cIMModeCommand = eipTagAccess.ReadItemValue("RV_CIMToEQ_Status01_01_05_00", "EAS_Command", "CV_Report_Time_Change_Command").ToString();
+        //        string no = "1";
+
+        //        if (cIMModeCommand != "1" && cIMModeCommand != "2")
+        //        {
+        //            CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "3", no);
+        //            LogError(MethodBase.GetCurrentMethod().Name + "()",
+        //                string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+        //                    eq.Data.NODENO, TrackKey, cIMModeCommand));
+        //        }
+        //        else if (cIMModeCommand == "2")
+        //        {
+        //            if (eq.File.CIMMode == eBitResult.ON)
+        //            {
+        //                CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+        //                LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+        //                    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+        //                        eq.Data.NODENO, TrackKey, cIMModeCommand));
+        //            }
+        //            else
+        //            { // 切换CIM MODE
+        //                CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+        //                CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
+
+        //                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //                    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+        //                        eq.Data.NODENO, TrackKey, cIMModeCommand));
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if (eq.File.CIMMode == eBitResult.OFF)
+        //            {
+        //                CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+        //                LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+        //                    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+        //                        eq.Data.NODENO, TrackKey, cIMModeCommand));
+        //            }
+        //            else
+        //            { // 切换CIM MODE
+        //                CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+        //                CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
+
+        //                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //                    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+        //                        eq.Data.NODENO, TrackKey, cIMModeCommand));
+        //            }
+
+        //        }
+
+        //        #region 建立timer
+
+        //        if (Timermanager.IsAliveTimer(timerID))
+        //        {
+        //            Timermanager.TerminateTimer(timerID);
+        //        }
+        //        if (bitResult == eBitResult.ON)
+        //        {
+
+        //            Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
+        //                new System.Timers.ElapsedEventHandler(BCCIMModeChangeCommandTimeoutAction), TrackKey);
+        //        }
+
+        //        #endregion
+
+
+
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+        //    }
+        //}
+        ///// <summary>
+        ///// 4;Machine Mode Change Command
+        ///// </summary>
+        ///// <param name="e"></param>
+        //private void HandleMachineModeChangeCommand(TagValueChangedEventArgs e)
+        //{
+        //    try
+        //    {
+
+        //        string eqpNo = "L3";
+        //        string strlog = string.Empty;
+        //        string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
+        //        Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+        //        if (eq == null)
+        //        {
+        //            throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
+        //        }
+
+        //        eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
+
+        //        string timerID = string.Format("{0}_{1}", eqpNo, CIMModeChangeCommandTimeout);
+
+        //        if (bitResult == eBitResult.OFF)
+        //        {
+        //            //bit off移除本次timer
+        //            if (Timermanager.IsAliveTimer(timerID))
+        //            {
+        //                Timermanager.TerminateTimer(timerID);
+        //            }
+
+        //            LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //                string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
+        //                eqpNo, TrackKey));
+
+        //            CPCCIMModeChangeCommandReply(eBitResult.OFF, TrackKey, "0", "0");
+
+        //            return;
+        //        }
+
+        //        string cIMModeCommand = eipTagAccess.ReadItemValue("RV_CIMToEQ_Status01_01_05_00", "EAS_Command", "Machine Mode Change Command").ToString();
+        //        string no = "1";
+
+        //        if (cIMModeCommand != "1" && cIMModeCommand != "2")
+        //        {
+        //            CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "3", no);
+        //            LogError(MethodBase.GetCurrentMethod().Name + "()",
+        //                string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+        //                    eq.Data.NODENO, TrackKey, cIMModeCommand));
+        //        }
+        //        else if (cIMModeCommand == "2")
+        //        {
+        //            if (eq.File.CIMMode == eBitResult.ON)
+        //            {
+        //                CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+        //                LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+        //                    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+        //                        eq.Data.NODENO, TrackKey, cIMModeCommand));
+        //            }
+        //            else
+        //            { // 切换CIM MODE
+        //                CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+        //                CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
+
+        //                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //                    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+        //                        eq.Data.NODENO, TrackKey, cIMModeCommand));
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if (eq.File.CIMMode == eBitResult.OFF)
+        //            {
+        //                CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+        //                LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+        //                    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+        //                        eq.Data.NODENO, TrackKey, cIMModeCommand));
+        //            }
+        //            else
+        //            { // 切换CIM MODE
+        //                CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+        //                CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
+
+        //                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //                    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+        //                        eq.Data.NODENO, TrackKey, cIMModeCommand));
+        //            }
+
+        //        }
+
+        //        #region 建立timer
+
+        //        if (Timermanager.IsAliveTimer(timerID))
+        //        {
+        //            Timermanager.TerminateTimer(timerID);
+        //        }
+        //        if (bitResult == eBitResult.ON)
+        //        {
+
+        //            Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
+        //                new System.Timers.ElapsedEventHandler(BCCIMModeChangeCommandTimeoutAction), TrackKey);
+        //        }
+
+        //        #endregion
+
+
+
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+        //    }
+        //}
+        ///// <summary>
+        ///// 5;Cassette Map Download Command
+        ///// </summary>
+        ///// <param name="e"></param>
+        //private void HandleCassetteMapDownloadCommand(TagValueChangedEventArgs e)
+        //{
+        //    try
+        //    {
+
+        //        string eqpNo = "L3";
+        //        string strlog = string.Empty;
+        //        string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
+        //        Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+        //        if (eq == null)
+        //        {
+        //            throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
+        //        }
+
+        //        eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
+
+        //        string timerID = string.Format("{0}_{1}", eqpNo, CIMModeChangeCommandTimeout);
+
+        //        if (bitResult == eBitResult.OFF)
+        //        {
+        //            //bit off移除本次timer
+        //            if (Timermanager.IsAliveTimer(timerID))
+        //            {
+        //                Timermanager.TerminateTimer(timerID);
+        //            }
+
+        //            LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //                string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
+        //                eqpNo, TrackKey));
+
+        //            CPCCIMModeChangeCommandReply(eBitResult.OFF, TrackKey, "0", "0");
+
+        //            return;
+        //        }
+
+        //        string cIMModeCommand = eipTagAccess.ReadItemValue("RV_CIMToEQ_Status01_01_05_00", "EAS_Command", "Cassette Map Download Command").ToString();
+        //        string no = "1";
+
+        //        if (cIMModeCommand != "1" && cIMModeCommand != "2")
+        //        {
+        //            CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "3", no);
+        //            LogError(MethodBase.GetCurrentMethod().Name + "()",
+        //                string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+        //                    eq.Data.NODENO, TrackKey, cIMModeCommand));
+        //        }
+        //        else if (cIMModeCommand == "2")
+        //        {
+        //            if (eq.File.CIMMode == eBitResult.ON)
+        //            {
+        //                CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+        //                LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+        //                    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+        //                        eq.Data.NODENO, TrackKey, cIMModeCommand));
+        //            }
+        //            else
+        //            { // 切换CIM MODE
+        //                CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+        //                CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
+
+        //                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //                    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+        //                        eq.Data.NODENO, TrackKey, cIMModeCommand));
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if (eq.File.CIMMode == eBitResult.OFF)
+        //            {
+        //                CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+        //                LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+        //                    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+        //                        eq.Data.NODENO, TrackKey, cIMModeCommand));
+        //            }
+        //            else
+        //            { // 切换CIM MODE
+        //                CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+        //                CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
+
+        //                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //                    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+        //                        eq.Data.NODENO, TrackKey, cIMModeCommand));
+        //            }
+
+        //        }
+
+        //        #region 建立timer
+
+        //        if (Timermanager.IsAliveTimer(timerID))
+        //        {
+        //            Timermanager.TerminateTimer(timerID);
+        //        }
+        //        if (bitResult == eBitResult.ON)
+        //        {
+
+        //            Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
+        //                new System.Timers.ElapsedEventHandler(BCCIMModeChangeCommandTimeoutAction), TrackKey);
+        //        }
+
+        //        #endregion
+
+
+
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+        //    }
+        //}
+
+
+
+
+
+        #endregion
+
+        #region Handler Methods
+        private void HandleCIMModeChangeCommand(TagValueChangedEventArgs e)
+        {
+            try
+            {
+
+                string eqpNo = "L3";
+                string strlog = string.Empty;
+                string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+                if (eq == null)
+                {
+                    throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
+                }
+
+                eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
+
+                string timerID = string.Format("{0}_{1}", eqpNo, CIMModeChangeCommandTimeout);
+
+                if (bitResult == eBitResult.OFF)
+                {
+                    //bit off移除本次timer
+                    if (Timermanager.IsAliveTimer(timerID))
+                    {
+                        Timermanager.TerminateTimer(timerID);
+                    }
+
+                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
+                        eqpNo, TrackKey));
+
+                    CPCCIMModeChangeCommandReply(eBitResult.OFF, TrackKey, "0", "0");
+
+                    return;
+                }
+
+                string cIMModeCommand = eipTagAccess.ReadItemValue("RV_CIMToEQ_Status_01_03_00", "CIMModeChangeCommandBlock", "CIMMode").ToString();
+                string no = "1";
+
+                if (cIMModeCommand != "1" && cIMModeCommand != "2")
+                {
+                    CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "3", no);
+                    LogError(MethodBase.GetCurrentMethod().Name + "()",
+                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                            eq.Data.NODENO, TrackKey, cIMModeCommand));
+                }
+                else if (cIMModeCommand == "2")
+                {
+                    if (eq.File.CIMMode == eBitResult.ON)
+                    {
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+                        LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                    else
+                    { // 切换CIM MODE
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+                        CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
+
+                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                }
+                else
+                {
+                    if (eq.File.CIMMode == eBitResult.OFF)
+                    {
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "2", no);
+                        LogWarn(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+                    else
+                    { // 切换CIM MODE
+                        CPCCIMModeChangeCommandReply(eBitResult.ON, TrackKey, "1", no);
+
+                        CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
+
+                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
+                                eq.Data.NODENO, TrackKey, cIMModeCommand));
+                    }
+
+                }
+
+                #region 建立timer
+
+                if (Timermanager.IsAliveTimer(timerID))
+                {
+                    Timermanager.TerminateTimer(timerID);
+                }
+                if (bitResult == eBitResult.ON)
+                {
+
+                    Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
+                        new System.Timers.ElapsedEventHandler(BCCIMModeChangeCommandTimeoutAction), TrackKey);
                 }
 
                 #endregion
@@ -354,7 +4037,7 @@ namespace KZONE.Service
                 string eqpNo = "L3";
                 string strlog = string.Empty;
                 string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
-               
+
                 Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
                 if (eq == null)
                 {
@@ -376,7 +4059,7 @@ namespace KZONE.Service
                         string.Format("[EQUIPMENT={0}] [BC >- EC][{1}] BIT=[OFF] Message Display Command.",
                         eqpNo, TrackKey));
 
-                    CPCMessageDisplayCommandReply(eBitResult.OFF,TrackKey);
+                    CPCMessageDisplayCommandReply(eBitResult.OFF, TrackKey);
 
                     return;
                 }
@@ -394,7 +4077,7 @@ namespace KZONE.Service
                     //CPCMessageDisplayCommand(eq, inputData, eBitResult.ON);
 
                     Timermanager.CreateTimer(timerID, false, T4,
-                        new System.Timers.ElapsedEventHandler(BCMessageDisplayCommandTimeoutAction),TrackKey);
+                        new System.Timers.ElapsedEventHandler(BCMessageDisplayCommandTimeoutAction), TrackKey);
                 }
 
                 #endregion
@@ -427,7 +4110,7 @@ namespace KZONE.Service
 
                 LogInfo(MethodBase.GetCurrentMethod().Name + "()",
                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] Message Display Command CIM Message ID=[{2}] CIMMessage=[{3}]  .",
-                     eq.Data.NODENO,TrackKey, CIMMessageID, CIMMessageData));
+                     eq.Data.NODENO, TrackKey, CIMMessageID, CIMMessageData));
 
             }
             catch (System.Exception ex)
@@ -453,7 +4136,7 @@ namespace KZONE.Service
                 }
                 eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
 
-               
+
                 string timerID = string.Format("{0}_{1}", eqpNo, RecipeParameterRequestTimeout);
 
                 if (bitResult == eBitResult.OFF)
@@ -475,7 +4158,7 @@ namespace KZONE.Service
                 Block RecipeParameterRequestCommandBlock = eipTagAccess.ReadBlockValues("RV_CIMToEQ_RecipeManagement_01_03_00", "RecipeParameterRequestCommandBlock");
 
                 string recipeID = RecipeParameterRequestCommandBlock[0].Value.ToString().Trim();
-               
+
 
                 LogInfo(MethodBase.GetCurrentMethod().Name + "()",
                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] Recipe Parameter RecipeID=[{2}].",
@@ -506,7 +4189,7 @@ namespace KZONE.Service
                         string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[ON] Recipe Parameter Validation Command Reply NG Recipe ID=[{2}] Not exist.",
                             eq.Data.NODENO, TrackKey, recipeID));
                 }
-       
+
                 #region 建立timer
 
                 if (Timermanager.IsAliveTimer(timerID))
@@ -516,7 +4199,7 @@ namespace KZONE.Service
                 if (bitResult == eBitResult.ON)
                 {
                     Timermanager.CreateTimer(timerID, false, T4,
-                        new System.Timers.ElapsedEventHandler(BCRecipeParameterRequestTimeoutAction),TrackKey);
+                        new System.Timers.ElapsedEventHandler(BCRecipeParameterRequestTimeoutAction), TrackKey);
                 }
 
                 #endregion
@@ -539,7 +4222,7 @@ namespace KZONE.Service
             {
                 try
                 {
-                   
+
                     string strlog = string.Empty;
                     string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
@@ -596,7 +4279,7 @@ namespace KZONE.Service
                     string TouchPanelNo = CIMMessageClearCommandBlock["TouchPanelNo"].Value.ToString().Trim();
                     string CIMMessageID = CIMMessageClearCommandBlock["CIMMessageID"].Value.ToString().Trim();
 
-                    
+
                     ObjectManager.EquipmentManager.UpdateCIMMessage(CIMMessageID, "clear");
 
 
@@ -721,107 +4404,107 @@ namespace KZONE.Service
             }
         }
 
-        private void HandleMachineModeChangeCommand(TagValueChangedEventArgs e)
-        {
-            try
-            {
-                try
-                {
-                    string strlog = string.Empty;
-                    string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
+        //private void HandleMachineModeChangeCommand(TagValueChangedEventArgs e)
+        //{
+        //    try
+        //    {
+        //        try
+        //        {
+        //            string strlog = string.Empty;
+        //            string TrackKey = e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
-                    Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
-                    if (eq == null)
-                    {
-                        throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
-                    }
-                    if (eq.File.CIMMode == eBitResult.OFF)
-                    {
-                        return;
-                    }
-                    eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
+        //            Equipment eq = ObjectManager.EquipmentManager.GetEquipmentByNo(eqpNo);
+        //            if (eq == null)
+        //            {
+        //                throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] IN EQUIPMENTENTITY!", eqpNo));
+        //            }
+        //            if (eq.File.CIMMode == eBitResult.OFF)
+        //            {
+        //                return;
+        //            }
+        //            eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
 
-                    string timerID = string.Format("{0}_{1}", eqpNo, EquipmentRunModeSetCommandTimeout);
+        //            string timerID = string.Format("{0}_{1}", eqpNo, EquipmentRunModeSetCommandTimeout);
 
-                    if (bitResult == eBitResult.OFF)
-                    {
-                        //bit off移除本次timer
-                        if (Timermanager.IsAliveTimer(timerID))
-                        {
-                            Timermanager.TerminateTimer(timerID);
-                        }
+        //            if (bitResult == eBitResult.OFF)
+        //            {
+        //                //bit off移除本次timer
+        //                if (Timermanager.IsAliveTimer(timerID))
+        //                {
+        //                    Timermanager.TerminateTimer(timerID);
+        //                }
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF] Equipment Run Mode Set Command.",
-                            eqpNo, TrackKey));
+        //                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //                    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF] Equipment Run Mode Set Command.",
+        //                    eqpNo, TrackKey));
 
-                        CPCEquipmentRunModeSetCommandReply(eBitResult.OFF, TrackKey, "0");
+        //                CPCEquipmentRunModeSetCommandReply(eBitResult.OFF, TrackKey, "0");
 
-                        return;
-                    }
-                    string pauseCommand = eipTagAccess.ReadItemValue("RV_CIMToEQ_Status_01_03_00", "MachineModeChangeCommandBlock", "MachineMode").ToString();
+        //                return;
+        //            }
+        //            string pauseCommand = eipTagAccess.ReadItemValue("RV_CIMToEQ_Status_01_03_00", "MachineModeChangeCommandBlock", "MachineMode").ToString();
 
-                    if (pauseCommand == "1" || pauseCommand == "2" || pauseCommand == "5" || pauseCommand == "15")
-                    {
-                        if (pauseCommand == "5")
-                        {
-                            pauseCommand = "3";
-                        }
-                        if (pauseCommand == "15")
-                        {
-                            pauseCommand = "4";
-                        }
+        //            if (pauseCommand == "1" || pauseCommand == "2" || pauseCommand == "5" || pauseCommand == "15")
+        //            {
+        //                if (pauseCommand == "5")
+        //                {
+        //                    pauseCommand = "3";
+        //                }
+        //                if (pauseCommand == "15")
+        //                {
+        //                    pauseCommand = "4";
+        //                }
 
-                        CPCEquipmentRunModeSetCommand(eq, TrackKey, pauseCommand, eBitResult.ON);
+        //                CPCEquipmentRunModeSetCommand(eq, TrackKey, pauseCommand, eBitResult.ON);
 
-                        CPCEquipmentRunModeSetCommandReply(eBitResult.ON, TrackKey, "1");
-                    }
-                    //if ((eq.File.EquipmentRunMode == "3" && pauseCommand != "5")||((pauseCommand == "1" || pauseCommand == "2") && eq.File.EquipmentRunMode != pauseCommand ) )
-                    //{
-                    //    CPCEquipmentRunModeSetCommand(eq, TrackKey, pauseCommand,eBitResult.ON);
+        //                CPCEquipmentRunModeSetCommandReply(eBitResult.ON, TrackKey, "1");
+        //            }
+        //            //if ((eq.File.EquipmentRunMode == "3" && pauseCommand != "5")||((pauseCommand == "1" || pauseCommand == "2") && eq.File.EquipmentRunMode != pauseCommand ) )
+        //            //{
+        //            //    CPCEquipmentRunModeSetCommand(eq, TrackKey, pauseCommand,eBitResult.ON);
 
-                    //    CPCEquipmentRunModeSetCommandReply(eBitResult.ON, TrackKey, "1");
-                    //}
-                    else
-                    {
-                        CPCEquipmentRunModeSetCommandReply(eBitResult.ON, TrackKey, "2");
+        //            //    CPCEquipmentRunModeSetCommandReply(eBitResult.ON, TrackKey, "1");
+        //            //}
+        //            else
+        //            {
+        //                CPCEquipmentRunModeSetCommandReply(eBitResult.ON, TrackKey, "2");
 
-                    }
+        //            }
 
-                    #region 建立timer
+        //            #region 建立timer
 
-                    if (Timermanager.IsAliveTimer(timerID))
-                    {
-                        Timermanager.TerminateTimer(timerID);
-                    }
-                    if (bitResult == eBitResult.ON)
-                    {
+        //            if (Timermanager.IsAliveTimer(timerID))
+        //            {
+        //                Timermanager.TerminateTimer(timerID);
+        //            }
+        //            if (bitResult == eBitResult.ON)
+        //            {
 
-                        Timermanager.CreateTimer(timerID, false, T4,
-                            new System.Timers.ElapsedEventHandler(BCEquipmentRunModeSetCommandTimeoutAction),TrackKey);
-                    }
+        //                Timermanager.CreateTimer(timerID, false, T4,
+        //                    new System.Timers.ElapsedEventHandler(BCEquipmentRunModeSetCommandTimeoutAction),TrackKey);
+        //            }
 
-                    #endregion
+        //            #endregion
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                           string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] Equipment Run Mode Set Command RUN Mode=[{2}].",
-                         eq.Data.NODENO,TrackKey, pauseCommand));
+        //            LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //                   string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] Equipment Run Mode Set Command RUN Mode=[{2}].",
+        //                 eq.Data.NODENO,TrackKey, pauseCommand));
 
 
 
-                }
-                catch (System.Exception ex)
-                {
-                    LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+        //        }
+        //        catch (System.Exception ex)
+        //        {
+        //            LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
 
-                }
+        //        }
 
-            }
-            catch (System.Exception ex)
-            {
-                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
-            }
-        }
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+        //    }
+        //}
 
         private void HandleJobReservationCommand(TagValueChangedEventArgs e)
         {
@@ -985,7 +4668,7 @@ namespace KZONE.Service
 
                 if (bitResult == eBitResult.OFF)
                 {
-                   
+
                     //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
                     //   string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] Stop Bit Command Bit=[{2}].",
                     // eq.Data.NODENO, TrackKey, "OFF"));
@@ -1002,7 +4685,7 @@ namespace KZONE.Service
 
                 if (bitResult == eBitResult.ON && LoadingStopStatus == "1")
                 {
-                   
+
                     lock (eq)
                     {
                         eq.File.StopBitCommand = true;
@@ -1017,7 +4700,7 @@ namespace KZONE.Service
                 }
                 else if (bitResult == eBitResult.ON && LoadingStopStatus == "2")
                 {
-                  
+
                     lock (eq)
                     {
                         eq.File.StopBitCommand = false;
@@ -1031,7 +4714,7 @@ namespace KZONE.Service
                      eq.Data.NODENO, TrackKey, "OFF"));
                 }
 
-                    #endregion
+                #endregion
             }
             catch (System.Exception ex)
             {
@@ -1226,6 +4909,14 @@ namespace KZONE.Service
             {
                 var value = e.Value;
                 // Implement your logic here
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "RV_CIMToEQ_Status01_01_05_00",
+                    "Machine_Status_Event_Reply",
+                    "VCR_Status_Report_Reply",
+                    returnCode);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + returnCode.ToString());
             }
             catch (System.Exception ex)
             {
@@ -1295,7 +4986,7 @@ namespace KZONE.Service
             try
             {
                 eipTagAccess.WriteItemValue("SD_EQToCIM_Status_03_01_00", "MachineStatus", "LoadingStopRequest", false);
-            
+
             }
             catch (System.Exception ex)
             {
@@ -1329,12 +5020,24 @@ namespace KZONE.Service
             }
         }
 
+        private void HandleIonizerStatusReportReplyEx(TagValueChangedEventArgs e)
+        {
+            try
+            {
+                eipTagAccess.WriteItemValue("RV_CIMToEQ_Status01_01_05_00", "Machine_Status_Event_Reply", "Ionizer Status Report Reply", 0);
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                                    "reply:" + 0.ToString());
+            }
+            catch (System.Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
         private void HandleIonizerStatusReportReply(TagValueChangedEventArgs e)
         {
             try
             {
                 eipTagAccess.WriteItemValue("SD_EQToCIM_Status_03_01_00", "MachineStatus", "IonizerStatusReport", "false");
-
             }
             catch (System.Exception ex)
             {
@@ -1397,7 +5100,7 @@ namespace KZONE.Service
                     }
                     if (bitResult == eBitResult.ON)
                     {
-                        CPCOperatorLoginLogoutReport(eqp, new Trx() , eBitResult.OFF);
+                        CPCOperatorLoginLogoutReport(eqp, new Trx(), eBitResult.OFF);
 
                         Timermanager.CreateTimer(timerID, false, T2,
                             new System.Timers.ElapsedEventHandler(BCOperatorLoginLogoutReportReplyAction), TrackKey);
@@ -1530,7 +5233,7 @@ namespace KZONE.Service
                 eBitResult bitResult = (bool.Parse(e.Item.Value.ToString()) ? eBitResult.ON : eBitResult.OFF);
                 string timerID = string.Format("{0}_{1}_{2}", eqpNo, "1", ReceiveGlassDataReportTimeout);
 
-               
+
                 if (bitResult == eBitResult.OFF)
                 {
                     //bit off移除本次timer
@@ -1626,6 +5329,7 @@ namespace KZONE.Service
                 LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
             }
         }
+
 
         private void HandleJobManualMoveReportReply(TagValueChangedEventArgs e)
         {
@@ -1805,7 +5509,7 @@ namespace KZONE.Service
 
                     if (job != null)
                     {
-                       // UpdateJobData(eqp, job, JobDataRequestReplyBlock);
+                        // UpdateJobData(eqp, job, JobDataRequestReplyBlock);
 
                         LogInfo(MethodBase.GetCurrentMethod().Name + "()",
                                           string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] Job Data Request Reply CST_SEQNO=[{2}] JOB_SEQNO=[{3}] GLASS_ID=[{4}] Return Code=[{5}], Job Data Exsit.",
@@ -2047,7 +5751,7 @@ namespace KZONE.Service
 
                     return;
                 }
-                alarmChannel[int.Parse(e.Item.Name.Split('#')[1].Substring(0,1))] = true;
+                alarmChannel[int.Parse(e.Item.Name.Split('#')[1].Substring(0, 1))] = true;
                 #region 建立timer
 
                 if (Timermanager.IsAliveTimer(timerID))
@@ -2056,7 +5760,7 @@ namespace KZONE.Service
                 }
                 if (bitResult == eBitResult.ON)
                 {
-                    eipTagAccess.WriteItemValue("SD_EQToCIM_AlarmEvent_03_01_00", "AlarmEvent", $"AlarmReport#{e.Item.Name.Split('#')[1].Substring(0,1)}", "false");
+                    eipTagAccess.WriteItemValue("SD_EQToCIM_AlarmEvent_03_01_00", "AlarmEvent", $"AlarmReport#{e.Item.Name.Split('#')[1].Substring(0, 1)}", "false");
 
                     Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
                         new System.Timers.ElapsedEventHandler(BCEquipmentStatusChangeReportReplyAction), TrackKey);
@@ -2292,16 +5996,16 @@ namespace KZONE.Service
                     if (recipeDic[eq.Data.LINEID].ContainsKey(recipeno))
                     {
 
-                        CPCRecipeRegisterValidationCommandReply(eBitResult.ON,  "1");
+                        CPCRecipeRegisterValidationCommandReply(eBitResult.ON, "1");
 
                         LogInfo(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC <- EC][{1}] BIT=[ON] Recipe Register Validation Command Reply OK .",
-                                eq.Data.NODENO,TrackKey));
+                                eq.Data.NODENO, TrackKey));
 
                     }
                     else
                     {
-                        CPCRecipeRegisterValidationCommandReply(eBitResult.ON,  "2");
+                        CPCRecipeRegisterValidationCommandReply(eBitResult.ON, "2");
 
                         LogError(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC <- EC][{1}] BIT=[ON] Recipe Register Validation Command Reply NG Recipe ID=[{2}] Not exist.",
@@ -2354,7 +6058,7 @@ namespace KZONE.Service
 
                 string pathNo = e.Item.Name.Split('#')[1].Substring(0, 1);
 
-          
+
                 string timerID = string.Format("{0}_{1}_{2}", "L3", pathNo.PadLeft(2, '0'), CPCFetchGlassDataReportTimeout);
 
                 if (bitResult == eBitResult.OFF)

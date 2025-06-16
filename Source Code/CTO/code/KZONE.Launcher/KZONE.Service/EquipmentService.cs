@@ -221,6 +221,8 @@ namespace KZONE.Service
 
         public override bool Init()
         {
+          
+
             _eqAlive = new Thread(new ThreadStart(EQAlive)) { IsBackground = true };
             _eqAlive.Start();
 
