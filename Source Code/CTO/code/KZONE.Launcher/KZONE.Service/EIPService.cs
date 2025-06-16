@@ -380,7 +380,7 @@ namespace KZONE.Service
                             case "FAC_Data Report": HandleReportReply(e); break;
                             case "Date_Time_Request": HandleDateTimeRequestReplyEx(e); break;
                             //Machine Special Event
-                            case "Panel Judge Data Download Request": HandlePanelJudgeDataDownloadRequestReply(e); break;
+                            case "Panel_Judge_Data_Download_Request": HandlePanelJudgeDataDownloadRequestReply(e); break;
                             case "Panel Data Update Report": HandlePanelDataUpdateReportReply(e); break;
                             case "Material Status Change Report": HandleMaterialStatusChangeReportReply(e); break;
                             case "Job Judge Result Report": HandleJobJudgeResultReportReplyEx(e); break;//no reply
@@ -793,14 +793,48 @@ namespace KZONE.Service
         {
             try
             {
-                int returnCode = 0;
+                string result = "true";
                 eipTagAccess.WriteItemValue(
-                    "RV_CIMToEQ_UnpackManagement_01_05_00",
-                    "Panel Judge Event Reply",
-                    "Panel Judge Data Download Request Reply",
-                    returnCode);
+                    "SD_CIMToEQ_UnpackManagement_01_05_00",
+                    "Panel_Judge_Event",
+                    "Panel_Judge_Data_Download_Request",
+                    result);
                 LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                    "reply:" + returnCode.ToString());
+                    "reply:" + result.ToString());
+
+                eipTagAccess.WriteItemValue(
+                    "SD_CIMToEQ_UnpackManagement_01_05_00",
+                    "Panel_Judge_Data_Download_Request_Block",
+                    "Job_ID",
+                    "1");
+
+                eipTagAccess.WriteItemValue(
+                    "SD_CIMToEQ_UnpackManagement_01_05_00",
+                    "Panel_Judge_Data_Download_Request_Block",
+                    "Lot_Sequence_Number",
+                    "L1");
+
+                eipTagAccess.WriteItemValue(
+                    "SD_CIMToEQ_UnpackManagement_01_05_00",
+                    "Panel_Judge_Data_Download_Request_Block",
+                    "Slot_Sequence_Number",
+                    "S1");
+
+                eipTagAccess.WriteItemValue(
+                    "SD_CIMToEQ_UnpackManagement_01_05_00",
+                    "Panel_Judge_Data_Download_Request_Block",
+                    "Slot_Sequence_Number",
+                    "S1");
+
+                eipTagAccess.WriteItemValue(
+                    "SD_CIMToEQ_UnpackManagement_01_05_00",
+                    "Panel_Judge_Data_Download_Request_Block",
+                    "Oper_ID",
+                    "S1");
+
+                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    "reply:" + result.ToString());
+
             }
             catch (Exception ex)
             {

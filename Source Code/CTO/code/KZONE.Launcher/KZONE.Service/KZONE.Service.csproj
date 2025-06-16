@@ -57,10 +57,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\DLL\KZONE.PLCAgent.PLC.dll</HintPath>
     </Reference>
-    <Reference Include="KZONE.Work, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\DLL\KZONE.Work.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="Spring.Core, Version=1.3.2.40943, Culture=neutral, PublicKeyToken=65e474d141e25e07, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -91,6 +87,10 @@
       <Project>{9c2b3e12-5807-4d3a-9d42-5d6bf3a45d18}</Project>
       <Name>EipTagLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\KZONE.DB\KZONE.DB.csproj">
+      <Project>{7db85af0-9e44-4a06-b39e-dc50e098d1da}</Project>
+      <Name>KZONE.DB</Name>
+    </ProjectReference>
     <ProjectReference Include="..\KZONE.EntityManager\KZONE.EntityManager.csproj">
       <Project>{3AF798BF-0431-4121-9DE7-87E25E23219B}</Project>
       <Name>KZONE.EntityManager</Name>
@@ -98,6 +98,10 @@
     <ProjectReference Include="..\KZONE.Entity\KZONE.Entity.csproj">
       <Project>{D8255DBB-D5B9-4654-BD15-2A6A7130500D}</Project>
       <Name>KZONE.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\KZONE.Work\KZONE.Work.csproj">
+      <Project>{dd1345b9-ea5c-431c-b841-bec9c15de37c}</Project>
+      <Name>KZONE.Work</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
