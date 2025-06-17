@@ -391,53 +391,6 @@ namespace KZONE.Entity
 
 
 
-       
-        public string JobID { get; set; }
-        public string LotSequenceNumber { get; set; }
-        public string SlotSequenceNumber { get; set; }
-        public string PropertyCode { get; set; }
-        public string JobJudgeCode { get; set; }
-        public string JobGradeCode { get; set; }
-        public string SubstrateType { get; set; }
-        public string ProcessingFlagMachineLocalNo { get; set; }
-        public string InspectionFlagMachineLocalNo { get; set; }
-        public string SkipFlagMachineLocalNo { get; set; }
-        public string JobSize { get; set; }
-        public string GlassThickness { get; set; }
-        public string JobAngle { get; set; }
-        public string JobFlip { get; set; }
-        public string ProcessingCount { get; set; }
-        public string InspectionJudgeData1 { get; set; }
-        public string InspectionJudgeData2 { get; set; }
-        public string InspectionJudgeData3 { get; set; }
-        public string InspectionJudgeDataNotUsed1 { get; set; }
-        public string InspectionJudgeData4 { get; set; }
-        public string InspectionJudgeData5 { get; set; }
-        public string InspectionJudgeData6 { get; set; }
-        public string InspectionJudgeDataNotUsed2 { get; set; }
-        public string InspectionJudgeData7 { get; set; }
-        public string InspectionJudgeData8 { get; set; }
-        public string InspectionJudgeData9 { get; set; }
-        public string InspectionJudgeDataNotUsed3 { get; set; }
-        public string RepairMode { get; set; }
-        public string JobIDPair { get; set; }
-        public string PairLotSequenceNumber { get; set; }
-        public string PairSlotSequenceNumber { get; set; }
-        public string JobJudgeCodePair { get; set; }
-        public string MMGCode { get; set; }
-        public string PanelInchSizeX { get; set; }
-        public string PanelInchSizeY { get; set; }
-        public string PanelGradeCode { get; set; }
-        public string SpecialFlag { get; set; }
-        public string ProductionType { get; set; }
-        public string PhotoMode { get; set; }
-        public string LineCode { get; set; }
-        public string AbnormalFlag { get; set; }
-        public string NGMark { get; set; }
-        public string CellProcessingFlag { get; set; }
-        public string CellFlag { get; set; }
-        public string OptionValue { get; set; }
-        public string Reserved { get; set; }
 
 
         #region JobDataA_Array_Special

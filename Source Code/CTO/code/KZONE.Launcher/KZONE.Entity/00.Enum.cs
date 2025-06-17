@@ -100,11 +100,10 @@ namespace KZONE.Entity
     public enum eEQPStatus
     {
         Unused = 0,
-        Pause =6,
         Run = 5,
         Down = 2,
         Idle = 4,
-        Stop = 3,
+        Pause = 3,
         Initial = 1
     }
 

@@ -1455,54 +1455,6 @@ namespace KZONE.Entity
         }
 
         #endregion
-        
-        private eEnableDisable _glassIDCheckMode = eEnableDisable.Disable;
-        private eEnableDisable _cstSlotNoCheckMode = eEnableDisable.Disable;
-        private eEnableDisable _groupNoCheckMode = eEnableDisable.Disable;
-        public eEnableDisable GlassIDCheckMode
-        {
-            get { return _glassIDCheckMode; }
-            set { _glassIDCheckMode = value; }
-        }
-
-        public eEnableDisable CstSlotNoCheckMode
-        {
-            get
-            {
-                return _cstSlotNoCheckMode;
-            }
-            set
-            {
-                _cstSlotNoCheckMode = value;
-            }
-        }
-        public eEnableDisable GroupNoCheckMode
-        {
-            get
-            {
-                return _groupNoCheckMode;
-            }
-            set
-            {
-                _groupNoCheckMode = value;
-            }
-        }
-        private Dictionary<int, eEnableDisable> _tankUseMode = new Dictionary<int, eEnableDisable>();
-        public Dictionary<int, eEnableDisable> TankUseMode
-        {
-            get
-            {
-                if (_tankUseMode == null)
-                {
-                    return _tankUseMode = new Dictionary<int, eEnableDisable>();
-                }
-                return _tankUseMode;
-            }
-            set
-            {
-                _tankUseMode = value;
-            }
-        }
     }
 
     public class Equipment : Entity

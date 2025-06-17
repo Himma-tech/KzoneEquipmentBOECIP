@@ -213,21 +213,21 @@ namespace KZONE.Service
             }
         }
 
-        //public void SaveDVDataToDB(string strSaveData)
-        //{
-        //    string sqlHead = "use KZONE_B20_01_HIS ";
-        //    string sqlName = "insert [dbo].[SBCS_DVData] ([UpdateTime],[DataValues])";
-        //    string sqlValue = $" values ('{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}','{strSaveData}')";
-        //    SqlConnection mycon = GetConnection();
-        //    mycon.Open();
+        public void SaveDVDataToDB(string strSaveData)
+        {
+            string sqlHead = "use KZONE_B20_01_HIS ";
+            string sqlName = "insert [dbo].[SBCS_DVData] ([UpdateTime],[DataValues])";
+            string sqlValue = $" values ('{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}','{strSaveData}')";
+            SqlConnection mycon = GetConnection();
+            mycon.Open();
 
 
-        //    SqlCommand cmd = mycon.CreateCommand();
-        //    cmd.CommandText = sqlHead + sqlName + sqlValue;
-        //    cmd.ExecuteNonQuery();
+            SqlCommand cmd = mycon.CreateCommand();
+            cmd.CommandText = sqlHead + sqlName + sqlValue;
+            cmd.ExecuteNonQuery();
 
-        //    mycon.Close();
-        //}
+            mycon.Close();
+        }
 
         public void ProcessDataReport(Trx inputData)
         {
