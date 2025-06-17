@@ -381,12 +381,12 @@ namespace KZONE.Service
                             case "Date_Time_Request": HandleDateTimeRequestReplyEx(e); break;
                             //Machine Special Event
                             case "Panel_Judge_Data_Download_Request": HandlePanelJudgeDataDownloadRequestReply(e); break;
-                            case "Panel Data Update Report": HandlePanelDataUpdateReportReply(e); break;
+                            case "Panel_Data_Update_Report": HandlePanelDataUpdateReportReply(e); break;
                             case "Material Status Change Report": HandleMaterialStatusChangeReportReply(e); break;
                             case "Job Judge Result Report": HandleJobJudgeResultReportReplyEx(e); break;//no reply
                             case "Dummy Job Request": HandleDummyJobRequestReplyEx(e); break;
                             case "Material Validation Request": HandleMaterialValidationRequestReply(e); break;
-                            case "SV_Data Report": HandleSVDataReportReply(e); break;
+                            case "SV_Data_Report": HandleSVDataReportReply(e); break;
                             case "CVData Report": HandleCVDataReportReply(e); break;//no reply
                             case "Operator_Login_Report": HandleOperatorLoginReportReplyEx(e); break;
                             //case "Loading Stop Request": HandleReply(e);break;//repeat
@@ -800,10 +800,38 @@ namespace KZONE.Service
             {
                 int returnCode = 0;
                 eipTagAccess.WriteItemValue(
-                    "RV_CIMToEQ_Status01_01_05_00",
-                    "Machine_Status_Event_Reply",
-                    "SV_Data Report Reply",
-                    returnCode);
+                    "SD_EQToCIM_ProcessSVData_05_01_00",
+                    "Machine_Variable_Event",
+                    "SV_Data_Report",
+                    true);
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_ProcessSVData_05_01_00",
+                    "Machine_Variable_Event",
+                    "SV_Report_Time_Change_Command_Reply",
+                    1);
+
+                //eipTagAccess.WriteItemValue(
+                //    "SD_EQToCIM_ProcessSVData_05_01_00",
+                //    "SV_Data_Report_Block",
+                //    "Total_Group_Number",
+                //    1);
+
+                //eipTagAccess.WriteItemValue(
+                //    "SD_EQToCIM_ProcessSVData_05_01_00",
+                //    "SV_Data_Report_Block",
+                //    "Current_Group_Number",
+                //    2);
+                //eipTagAccess.WriteItemValue(
+                //    "SD_EQToCIM_ProcessSVData_05_01_00",
+                //    "SV_Data_Report_Block",
+                //    "SV_Report_Time",
+                //    3);
+                //eipTagAccess.WriteItemValue(
+                //    "SD_EQToCIM_ProcessSVData_05_01_00",
+                //    "SV_Data_Block",
+                //    "SVData",
+                //    "SVData");
+
                 LogInfo(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
@@ -812,6 +840,9 @@ namespace KZONE.Service
                 LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
             }
         }
+
+
+
         /// <summary>
         /// HandleMaterialValidationRequestReply
         /// </summary>
@@ -1017,39 +1048,39 @@ namespace KZONE.Service
             {
                 string result = "true";
                 eipTagAccess.WriteItemValue(
-                    "SD_CIMToEQ_UnpackManagement_01_05_00",
+                    "SD_EQToCIM_UnpackManagement_05_01_00",
                     "Panel_Judge_Event",
                     "Panel_Judge_Data_Download_Request",
-                    result);
+                    true);
                 LogInfo(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + result.ToString());
 
                 eipTagAccess.WriteItemValue(
-                    "SD_CIMToEQ_UnpackManagement_01_05_00",
+                    "SD_EQToCIM_UnpackManagement_05_01_00",
                     "Panel_Judge_Data_Download_Request_Block",
                     "Job_ID",
                     "1");
 
                 eipTagAccess.WriteItemValue(
-                    "SD_CIMToEQ_UnpackManagement_01_05_00",
+                    "SD_EQToCIM_UnpackManagement_05_01_00",
                     "Panel_Judge_Data_Download_Request_Block",
                     "Lot_Sequence_Number",
-                    "L1");
+                    1);
 
                 eipTagAccess.WriteItemValue(
-                    "SD_CIMToEQ_UnpackManagement_01_05_00",
+                    "SD_EQToCIM_UnpackManagement_05_01_00",
                     "Panel_Judge_Data_Download_Request_Block",
                     "Slot_Sequence_Number",
-                    "S1");
+                    2);
 
                 eipTagAccess.WriteItemValue(
-                    "SD_CIMToEQ_UnpackManagement_01_05_00",
+                    "SD_EQToCIM_UnpackManagement_05_01_00",
                     "Panel_Judge_Data_Download_Request_Block",
                     "Slot_Sequence_Number",
-                    "S1");
+                    3);
 
                 eipTagAccess.WriteItemValue(
-                    "SD_CIMToEQ_UnpackManagement_01_05_00",
+                    "SD_EQToCIM_UnpackManagement_05_01_00",
                     "Panel_Judge_Data_Download_Request_Block",
                     "Oper_ID",
                     "S1");

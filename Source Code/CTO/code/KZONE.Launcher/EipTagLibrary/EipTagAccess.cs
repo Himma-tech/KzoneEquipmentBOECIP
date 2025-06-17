@@ -1127,11 +1127,11 @@ namespace EipTagLibrary
 
             foreach (var block in group.Blocks)
             {
-                if (!ShouldMonitorBlock(block))
-                {
-                    currentIndex += GetBlockTotalLength(block);
-                    continue;
-                }
+                //if (!ShouldMonitorBlock(block))
+                //{
+                //    currentIndex += GetBlockTotalLength(block);
+                //    continue;
+                //}
 
                 currentIndex = ProcessBlockMonitoring(group.Name, block, convertedValues, currentIndex, ref hasChanges);
             }
@@ -1198,7 +1198,8 @@ namespace EipTagLibrary
                     bitOffset = int.Parse(offsetParts[1]);
 
                     // 获取字值并转换为short
-                    short wordValue = Convert.ToInt16(convertedValues[block.Offset + wordOffset]);
+                    //short wordValue = Convert.ToInt16(convertedValues[block.Offset + wordOffset]);
+                    short wordValue = Convert.ToInt16(convertedValues[wordOffset * 16 + bitOffset]);
 
                     // 获取指定位的布尔值
                     bool bitValue = (wordValue & (1 << bitOffset)) != 0;
@@ -1636,14 +1637,19 @@ namespace EipTagLibrary
                                 string[] offsetParts = item.Offset.Split(':');
                                 if (offsetParts.Length == 2)
                                 {
-                                    // int wordOffset = int.Parse(offsetParts[0]);
+                                    wordOffset = int.Parse(offsetParts[0]);
+
+                                    
                                     int bitOffset = int.Parse(offsetParts[1]);
 
                                     bool bitValue = Convert.ToBoolean(value);
+
+                                    var offset = wordOffset * 16 + bitOffset;
+
                                     if (bitValue)
-                                        rawValues[currentIndex] |= (ushort)(1 << bitOffset);
+                                        rawValues[offset] |= (ushort)(1 << bitOffset);
                                     else
-                                        rawValues[currentIndex] &= (ushort)~(1 << bitOffset);
+                                        rawValues[offset] &= (ushort)~(1 << bitOffset);
                                     item.Value = bitValue;
                                 }
                             }
