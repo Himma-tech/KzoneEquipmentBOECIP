@@ -24,17 +24,17 @@ namespace KZONE.Service
         public bool StartEIP()
         {
             try
-            {
+            {              
                 eipTagAccess = new EipTagAccess("EipTag_Config.xml");
                 eipTagAccess.OnTagValueChanged += EipTagAccess_OnTagValueChanged;
-
+        
                 // 通过异步方式启动监控
                 monitoringCts = new CancellationTokenSource();
                 Task.Factory.StartNew(() =>
                 {
                     try
-                    {
-                        eipTagAccess.StartMonitoring();
+                    {                        
+                        eipTagAccess.StartMonitoring();  
                     }
                     catch (System.Exception ex)
                     {
@@ -57,15 +57,14 @@ namespace KZONE.Service
         private void EipTagAccess_OnTagValueChanged(object sender, TagValueChangedEventArgs e)
         {
             try
-            {
+            {              
                 Task.Factory.StartNew(() =>
                 {
                     try
                     {
                         switch (e.Item.Name)
                         {
-                            // Commands
-
+                            //
                             #region //EAS Command
                             //CIM_Message_Clear_Command       0:1
                             //Date_Time_Set_Command           0:2
@@ -111,15 +110,13 @@ namespace KZONE.Service
 
                             #endregion
 
-                            case "CIMModeChangeCommand":
-                                HandleCIMModeChangeCommand(e);
-                                break;
+
 
 
                             //这里改成对应的命令
-                            case "CIM_Mode_Change_Command":
-                                HandleCIMModeChangeCommand(e);
-                                break;
+                            //case "CIM_Mode_Change_Command":
+                            //    HandleCIMModeChangeCommand(e);
+                            //    break;
 
 
                             case "CIMMessageSetCommand":
@@ -269,15 +266,12 @@ namespace KZONE.Service
                                 break;
 
 
-                            case "Reserved":
 
-                                break;
-
-
+                            case "Reserved":break;
                             //FIX_WB begin
                             //TEST FOR MTL SHEET
                             //EAS Command
-                            case "Machine Mode Change Command": HandleMachineModeChangeCommandReply(e); break;
+                            case "Machine_Mode_Change_Command": HandleMachineModeChangeCommandReply(e); break;
                             //Recipe_Event_Command
                             case "Recipe_Register_Check_Command": HandleRecipeRegisterCheckCommandReply(e); break;
                             case "Recipe_Parameter_Request_Command": HandleRecipeParameterRequestCommandReply(e); break;
@@ -309,8 +303,8 @@ namespace KZONE.Service
                             case "Machine_Heart_Beat_Signal": HandleMachineHeartBeatSignalReply(e); break;//no reply
                             case "Upstream_Inline_Mode": HandleUpstreamInlineModeReply(e); break;//no reply
                             case "Local_Alarm_State": HandleLocalAlarmStateReply(e); break;//no reply
-                            case "VCR Status Report": HandleVCRStatusReportReply(e); break;
-                            case "VCR Mismatch Report": HandleVCRMismatchReportReply(e); break;
+                            case "VCR_Status_Report": HandleVCRStatusReportReply(e); break;
+                            case "VCR_Mismatch_Report": HandleVCRMismatchReportReply(e); break;
                             case "Auto_Recipe_Change_Mode": HandleAutoRecipeChangeModeReply(e); break;//no reply
                             case "Ionizer Status Report": HandleIonizerStatusReportReplyEx(e); break;
                             case "File_Path_Info_Request": HandleFilePathInfoRequestReply(e); break;
@@ -381,19 +375,19 @@ namespace KZONE.Service
                             case "Date_Time_Request": HandleDateTimeRequestReplyEx(e); break;
                             //Machine Special Event
                             case "Panel_Judge_Data_Download_Request": HandlePanelJudgeDataDownloadRequestReply(e); break;
-                            case "Panel Data Update Report": HandlePanelDataUpdateReportReply(e); break;
-                            case "Material Status Change Report": HandleMaterialStatusChangeReportReply(e); break;
-                            case "Job Judge Result Report": HandleJobJudgeResultReportReplyEx(e); break;//no reply
-                            case "Dummy Job Request": HandleDummyJobRequestReplyEx(e); break;
-                            case "Material Validation Request": HandleMaterialValidationRequestReply(e); break;
-                            case "SV_Data Report": HandleSVDataReportReply(e); break;
-                            case "CVData Report": HandleCVDataReportReply(e); break;//no reply
+                            case "Panel_Data_Update_Report": HandlePanelDataUpdateReportReply(e); break;
+                            case "Material_Status_Change_Report": HandleMaterialStatusChangeReportReply(e); break;
+                            case "Job_Judge_Result_Report": HandleJobJudgeResultReportReplyEx(e); break;//no reply
+                            case "Dummy_Job_Request": HandleDummyJobRequestReplyEx(e); break;
+                            case "Material_Validation_Request": HandleMaterialValidationRequestReply(e); break;
+                            case "SV_Data_Report": HandleSVDataReportReply(e); break;
+                            case "CVData_Report": HandleCVDataReportReply(e); break;//no reply
                             case "Operator_Login_Report": HandleOperatorLoginReportReplyEx(e); break;
                             //case "Loading Stop Request": HandleReply(e);break;//repeat
                             //EFEM Event
                             case "EFEM_Operation_Mode_Change_Report": HandleEFEMOperationModeChangeReportReply(e); break;//no reply
                             case "CST_Operation_Mode_Change_Report": HandleCSTOperationModeChangeReportReply(e); break;//tag list not contains the sheet which is CIMToEQ_PortManagement
-                            case "Cancel Abort Request Event Report": HandleCancelAbortRequestEventReportReply(e); break;//tag list not contains the sheet which is CIMToEQ_PortManagement
+                            case "Cancel_Abort_Request_Event_Report": HandleCancelAbortRequestEventReportReply(e); break;//tag list not contains the sheet which is CIMToEQ_PortManagement
                             //FIX_WB end
 
                             default:
@@ -2186,8 +2180,8 @@ namespace KZONE.Service
                 int returnCode = 2;
                 eipTagAccess.WriteItemValue(
                     "EQToCIM_Status_05_01_00",
-                    "EAS Command Reply",
-                    "Job Reservation Command Reply",
+                    "EAS_Command_Reply",
+                    "Job_Reservation_Command_Reply",
                     returnCode);
                 LogInfo(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
@@ -2205,8 +2199,8 @@ namespace KZONE.Service
                 int returnCode = 0;
                 eipTagAccess.WriteItemValue(
                     "SD_EQToCIM_Status_05_01_00",
-                    "EAS Command Reply",
-                    "Loading Stop Change Command Reply",
+                    "EAS_Command_Reply",
+                    "Loading_Stop_Change_Command Reply",
                     returnCode);
                 LogInfo(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
@@ -2237,8 +2231,8 @@ namespace KZONE.Service
                 int returnCode = 0;
                 eipTagAccess.WriteItemValue(
                     "SD_EQToCIM_Status_05_01_00",
-                    "EAS Command Reply",
-                    "Material Check Request Reply",
+                    "EAS_Command_Reply",
+                    "Material_Check_Request_Reply",
                     returnCode);
                 LogInfo(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
@@ -2283,7 +2277,7 @@ namespace KZONE.Service
                 eipTagAccess.WriteItemValue(
                     "SD_EQToCIM_ProcessSVData_05_01_00",
                     "SV_Report_Time_Change_Command_Reply_Block",
-                    "SV Command Return Code",
+                    "SV_Command_Return_Code",
                     returnCode);
                 LogInfo(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
@@ -2320,7 +2314,7 @@ namespace KZONE.Service
                 int returnCode = 2;
                 eipTagAccess.WriteItemValue(
                     "SD_EQToCIM_Status_05_01_00",
-                    "EAS Command Reply",
+                    "EAS_Command_Reply",
                     "CIM_Message_Set_Command_Reply",
                     returnCode);
                 LogInfo(MethodBase.GetCurrentMethod().Name + "()",
@@ -2407,16 +2401,19 @@ namespace KZONE.Service
                 LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
             }
         }
-
+        /// <summary>
+        /// MachineModeChangeCommandReply
+        /// </summary>
+        /// <param name="e"></param>
         private void HandleMachineModeChangeCommandReply(TagValueChangedEventArgs e)
         {
             try
             {
-                int returnCode = 2;
+                int returnCode = 1;
                 eipTagAccess.WriteItemValue(
                     "SD_EQToCIM_Status_05_01_00",
-                    "EAS Command Reply",
-                    "Machine Mode Change Command Reply",
+                    "EAS_Command_Reply",
+                    "Machine_Mode_Change_Command_Reply",
                     returnCode);
                 LogInfo(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
@@ -2426,32 +2423,6 @@ namespace KZONE.Service
                 LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
             }
         }
-
-        #region //EAS Command Handle
-
-        //CIM_Message_Clear_Command       0:1
-
-        //Date_Time_Set_Command           0:2
-
-        //CV_Report_Time_Change_Command
-
-        //Machine Mode Change Command
-
-        //Cassette Map Download Command
-
-        //CIM_Mode_Change_Command         0:6
-
-        //SV_Report_Time_Change_Command
-
-        //Loading_Stop_Change_Command
-
-        //Job_Reservation_Command         0:9
-
-        //Set_First_Or_Last_Job_Command
-
-        //EAP_Heart_Beat_Signal           0:11
-
-        //CIM_Message_Set_Command         0:15
 
         /// <summary>
         /// 1;CIM_Message_Clear_Command
@@ -4167,10 +4138,6 @@ namespace KZONE.Service
         //}
 
 
-
-
-
-        #endregion
 
         #region Handler Methods
         private void HandleCIMModeChangeCommand(TagValueChangedEventArgs e)

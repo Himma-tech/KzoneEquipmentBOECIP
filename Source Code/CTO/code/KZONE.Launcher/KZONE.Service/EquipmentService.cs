@@ -139,6 +139,19 @@ namespace KZONE.Service
 
         #endregion
 
+        private int T1 = 4000;
+        private int T2 = 2000;
+        private int T3 = 500;
+        private int T4 = 2000;
+        private int Tm = 200;
+        private int Tn = 200;
+
+        private int LinkSignalT2 = 60000;
+        private int LinkSignalT3 = 2000;
+        private int LinkSignalT4 = 60000;
+        private int LinkSignalT5 = 2000;
+
+        eEQPStatus eqOldStatus = eEQPStatus.Unused;
         private Thread _eqAlive;
         private bool _isRuning = false;
         private string _aliveValue = "1";
@@ -247,7 +260,7 @@ namespace KZONE.Service
                         _sendUpThread.Start();
                         if (line.Data.FABTYPE == "CELL")
                         {
-                            _tR01_02_TransferRequest = new Thread(new ThreadStart(CPCTR01_02_TransferRequest)) { IsBackground = true };
+                            //_tR01_02_TransferRequest = new Thread(new ThreadStart(CPCTR01_02_TransferRequest)) { IsBackground = true };
                             _tR01_02_TransferRequest.Start();
 
                             _receiveReturnThread = new Thread(new ThreadStart(ReturnReceiveGlassAction)) { IsBackground = true };
@@ -256,7 +269,7 @@ namespace KZONE.Service
                     }
                     if (line.Data.FABTYPE == "CF")
                     {
-                        _ppIDPreDownloadFlagReport = new Thread(new ThreadStart(CPCPPIDPreDownLoadFlagToDownstream)) { IsBackground = true };
+                        //_ppIDPreDownloadFlagReport = new Thread(new ThreadStart(CPCPPIDPreDownLoadFlagToDownstream)) { IsBackground = true };
                         _ppIDPreDownloadFlagReport.Start();
                     }
                 }
@@ -271,7 +284,7 @@ namespace KZONE.Service
             //_unitReasonCodeThread = new Thread(new ThreadStart(CPCUnitReasonCodeReport)) { IsBackground = true };
             //_unitReasonCodeThread.Start();
 
-            _equipmentStatusThread = new Thread(new ThreadStart(CPCEquipmentStatusChangeReport)) { IsBackground = true };
+            //_equipmentStatusThread = new Thread(new ThreadStart(CPCEquipmentStatusChangeReport)) { IsBackground = true };
             _equipmentStatusThread.Start();
 
             _storeThread = new Thread(new ThreadStart(CPCUnitStoreReport)) { IsBackground = true };
@@ -289,13 +302,13 @@ namespace KZONE.Service
             _tackTimeReport = new Thread(new ThreadStart(CPCTackTimeDataReport)) { IsBackground = true };
             _tackTimeReport.Start();
 
-            _svreport = new Thread(new ThreadStart(CPCSVDataReport)) { IsBackground = true };
+            //_svreport = new Thread(new ThreadStart(CPCSVDataReport)) { IsBackground = true };
             _svreport.Start();
 
-            _facReport = new Thread(new ThreadStart(CPCFACDataReport)) { IsBackground = true };
+            //_facReport = new Thread(new ThreadStart(CPCFACDataReport)) { IsBackground = true };
             _facReport.Start();
 
-            _transferTimeDataReport = new Thread(new ThreadStart(CPCTransferTimeDataReport)) { IsBackground = true };
+            //_transferTimeDataReport = new Thread(new ThreadStart(CPCTransferTimeDataReport)) { IsBackground = true };
             _transferTimeDataReport.Start();
 
             //_equipmentStatusScan = new Thread(new ThreadStart(EquipmentStatusChangeScan)) { IsBackground = true };
@@ -2353,7 +2366,7 @@ namespace KZONE.Service
                         string.Format("[EQUIPMENT={0}] [EC <- EQ][{1}] BIT=[ON]  Recipe ID Modify Report  RECIPE_ID=[{2}]  Modify Flag=[{3}] Error.",
                             eq.Data.NODENO, inputData.TrackKey, recipeID, flag));
                 }
-                CPCUnitRecipeListReport(flag);
+               // CPCUnitRecipeListReport(flag);
                 CurrentRecipeListReportType = flag;
 
             }
@@ -2747,7 +2760,7 @@ namespace KZONE.Service
                 {
                     if (CheckDatetimeValid(time, out msg))
                     {
-                        CPCDateTimeCalibrationCommand(eq, inputData, eBitResult.ON);
+                       // CPCDateTimeCalibrationCommand(eq, inputData, eBitResult.ON);
 
                         SetPCSystemTime(time);
                     }
@@ -2894,7 +2907,7 @@ namespace KZONE.Service
                 }
                 if (bitResult == eBitResult.ON)
                 {
-                    CPCDateTimeCalibrationCommand(eqp, inputData, eBitResult.OFF);
+                   // CPCDateTimeCalibrationCommand(eqp, inputData, eBitResult.OFF);
 
                     Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
                         new System.Timers.ElapsedEventHandler(EQDateTimeCalibrationCommandReplyAction), inputData.TrackKey);
@@ -3014,7 +3027,7 @@ namespace KZONE.Service
                     {
                         if (eq.File.Status == eEQPStatus.Idle || eq.File.Status == eEQPStatus.Initial)
                         {
-                            CPCEquipmentRunModeSetCommand(eq, inputData, eBitResult.ON);
+                            //CPCEquipmentRunModeSetCommand(eq, inputData, eBitResult.ON);
 
                             CPCEquipmentRunModeSetCommandReply(eBitResult.ON, inputData, "1");
                         }
@@ -3230,7 +3243,7 @@ namespace KZONE.Service
                 }
                 if (bitResult == eBitResult.ON)
                 {
-                    CPCEquipmentRunModeSetCommand(eqp, inputData, eBitResult.OFF);
+                    //CPCEquipmentRunModeSetCommand(eqp, inputData, eBitResult.OFF);
 
                     Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
                         new System.Timers.ElapsedEventHandler(EQEquipmentRunModeSetCommandReplyAction), inputData.TrackKey);
@@ -4001,7 +4014,7 @@ namespace KZONE.Service
                 LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
             }
         }
-
+        string eqpNo = "L3";
         private void CPCMessageDisplayCommandReply(eBitResult result, string trxID)
         {
             try
@@ -4009,7 +4022,7 @@ namespace KZONE.Service
                 Trx trx = null;
 
                 trx = GetServerAgent(eAgentName.PLCAgent).GetTransactionFormat("L3_CIMMessageSetCommandReply") as Trx;
-                string eqpNo = trx.Metadata.NodeNo;
+                //string eqpNo = trx.Metadata.NodeNo;
 
                 trx[0][0][0].Value = ((int)result).ToString();
                 trx.TrackKey = trxID;
@@ -8029,7 +8042,7 @@ namespace KZONE.Service
                      eq.Data.NODENO, inputData.TrackKey, unitNoOrLocalNo));
 
                 CPCLocalRecipeListRequestCommandReply(eBitResult.ON, inputData);
-                CPCUnitRecipeListReport("0");
+                //CPCUnitRecipeListReport("0");
                 CurrentRecipeListReportType = "0";
             }
             catch (System.Exception ex)
@@ -8194,7 +8207,7 @@ namespace KZONE.Service
                         new System.Timers.ElapsedEventHandler(LocalRecipeListReportReplyTimeoutAction), inputData.TrackKey);
                     if (RecipeListReportIndex != 0)
                     {
-                        CPCUnitRecipeListReport(CurrentRecipeListReportType);
+                       // CPCUnitRecipeListReport(CurrentRecipeListReportType);
                     }
                 }
 
@@ -8258,7 +8271,7 @@ namespace KZONE.Service
                     string.Format("[EQUIPMENT={0}] [BC <- EC][{1}] Local Recipe List Report BC Reply T1 TIMEOUT.", sArray[0], trackKey));
                 if (RecipeListReportIndex != 0)
                 {
-                    CPCUnitRecipeListReport(CurrentRecipeListReportType);
+                   // CPCUnitRecipeListReport(CurrentRecipeListReportType);
                 }
             }
             catch (Exception ex)
@@ -10467,14 +10480,20 @@ namespace KZONE.Service
         #endregion
 
         #region Process Start JobReport
-        private void ProcessStartJobReport(Equipment eq, Job job, eBitResult result, string pathNo, string unitNo)
+        private void ProcessStartJobReport(Equipment eq, Job job, eBitResult result, string pathNo)
         {
             try
             {
-                Trx trx = GetTrxValues(string.Format("{0}_ProcessStartJobReport#{1}", eq.Data.NODENO, pathNo));
+                //Trx trx = GetTrxValues(string.Format("{0}_ProcessStartJobReport#{1}", eq.Data.NODENO, pathNo));
 
 
-                if (trx == null) throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] TRX {1}_ProcessStartJobReport{2} IN PLCFmt.xml!", eq.Data.NODENO, eq.Data.NODENO, pathNo));
+                //if (trx == null) throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] TRX {1}_ProcessStartJobReport{2} IN PLCFmt.xml!", eq.Data.NODENO, eq.Data.NODENO, pathNo));
+
+
+                Block ProcessStartReportBlock = eipTagAccess.ReadBlockValues("SD_EQToCIM_JobEvent_03_01_00", "ProcessStartReportBlock");
+
+                Block ProcessStartReportSubBlock = eipTagAccess.ReadBlockValues("SD_EQToCIM_JobEvent_03_01_00", "ProcessStartReportSubBlock");
+
 
                 string timerID = string.Format("{0}_{1}_{2}", eq.Data.NODENO, pathNo, ProcessStartJobReportTimeout);
 
@@ -10485,51 +10504,49 @@ namespace KZONE.Service
 
                 if (result == eBitResult.OFF)
                 {
-                    trx.ClearTrxWith0();
-                    trx[0][1][0].Value = "0";
-                    trx.TrackKey = UtilityMethod.GetAgentTrackKey();
-                    SendToPLC(trx);
+                    eipTagAccess.WriteItemValue("SD_EQToCIM_JobEvent_03_01_00", "JobEvent", "ProcessStartReport", "false");
+
                     LogInfo(MethodBase.GetCurrentMethod().Name + "()",
                         string.Format("[EQUIPMENT={0}] [BC <- EC][{1}] BIT=[OFF] Process Start Job Report#{2}.",
-                            eq.Data.NODENO, trx.TrackKey, pathNo));
+                            eq.Data.NODENO, DateTime.Now.ToString("yyyyMMddHHmmssfff"), pathNo));
 
                     return;
                 }
-                job.ProStratTime = DateTime.Now;
+                ProcessStartReportBlock[0].Value = job.JobID;
+                ProcessStartReportBlock[1].Value = job.LotSequenceNumber;
+                ProcessStartReportBlock[2].Value = job.SlotSequenceNumber;
 
-                trx[0][0][0].Value = job.Cassette_Sequence_No;
-                trx[0][0][1].Value = job.Job_Sequence_No;
-                trx[0][0][2].Value = job.GlassID_or_PanelID;
-                trx[0][0][3].Value = unitNo;
-                trx[0][0][4].Value = "0";
-                trx[0][0][5].Value = "0";
-                string processStartTime = job.ProStratTime.ToString("yyyyMMddHHmmss");
-                trx[0][0][6].Value = processStartTime.Substring(0, 4);
-                trx[0][0][7].Value = processStartTime.Substring(4, 2);
-                trx[0][0][8].Value = processStartTime.Substring(6, 2);
-                trx[0][0][9].Value = processStartTime.Substring(8, 2);
-                trx[0][0][10].Value = processStartTime.Substring(10, 2);
-                trx[0][0][11].Value = processStartTime.Substring(12, 2);
+                ProcessStartReportSubBlock[0].Value = job.CurrentUnitNo.ToString();
+                ProcessStartReportSubBlock[1].Value = "1";
+                ProcessStartReportSubBlock[2].Value = DateTime.Now.ToString("yyyyMMddHHmmssfff").Substring(0, 4);
+                ProcessStartReportSubBlock[3].Value = DateTime.Now.ToString("yyyyMMddHHmmssfff").Substring(4, 2);
+                ProcessStartReportSubBlock[4].Value = DateTime.Now.ToString("yyyyMMddHHmmssfff").Substring(6, 2);
+                ProcessStartReportSubBlock[5].Value = DateTime.Now.ToString("yyyyMMddHHmmssfff").Substring(8, 2);
+                ProcessStartReportSubBlock[6].Value = DateTime.Now.ToString("yyyyMMddHHmmssfff").Substring(10, 2);
+                ProcessStartReportSubBlock[7].Value = DateTime.Now.ToString("yyyyMMddHHmmssfff").Substring(12, 2);
+
+                eipTagAccess.WriteBlockValues("SD_EQToCIM_JobEvent_03_01_00", ProcessStartReportBlock);
+                eipTagAccess.WriteBlockValues("SD_EQToCIM_JobEvent_03_01_00", ProcessStartReportSubBlock);
+
 
                 if (eq.File.CIMMode == eBitResult.ON)
                 {
                     Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T1].GetInteger(),
                         new System.Timers.ElapsedEventHandler(ProcessStartJobReportTimeoutAction), UtilityMethod.GetAgentTrackKey());
 
-                    trx[0][1][0].Value = "1";
-                    trx[0][1].OpDelayTimeMS = 500;
+                    eipTagAccess.WriteItemValue("SD_EQToCIM_JobEvent_03_01_00", "JobEvent", "ProcessStartReport", "true");
+
+                    job.ProStratTime = DateTime.Now;
 
                     ObjectManager.JobManager.AddJob(job);
                 }
                 else
                 {
-                    trx[0][1][0].Value = "0";
+                    eipTagAccess.WriteItemValue("SD_EQToCIM_JobEvent_03_01_00", "JobEvent", "ProcessStartReport", "false");
                 }
-                trx.TrackKey = UtilityMethod.GetAgentTrackKey(); ;
-                SendToPLC(trx);
 
                 LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                    string.Format("[EQUIPMENT={0}] [BC <- EC][{1}]  Process Start Job Report#{2} =[{3}].", eq.Data.NODENO, trx.TrackKey, pathNo, "ON"));
+                    string.Format("[EQUIPMENT={0}] [BC <- EC][{1}]  Process Start Job Report#{2} =[{3}].", eq.Data.NODENO, DateTime.Now.ToString("yyyyMMddHHmmssfff"), pathNo, "ON"));
 
             }
             catch (System.Exception ex)
@@ -10557,7 +10574,7 @@ namespace KZONE.Service
                 LogWarn(MethodBase.GetCurrentMethod().Name + "()",
                     string.Format("[EQUIPMENT={0}] [BC - EC][{1}] Process Start Job Report#{2} TIMEOUT.", sArray[0], trackKey, sArray[1]));
 
-                ProcessStartJobReport(eqp, null, eBitResult.OFF, sArray[1], "0");
+               // ProcessStartJobReport(eqp, null, eBitResult.OFF, sArray[1], "0");
             }
             catch (Exception ex)
             {
@@ -10595,7 +10612,7 @@ namespace KZONE.Service
                     return;
                 }
 
-                ProcessStartJobReport(eqp, null, eBitResult.OFF, pathNo, "0");
+                //ProcessStartJobReport(eqp, null, eBitResult.OFF, pathNo, "0");
 
 
                 #region 建立timer
@@ -10645,14 +10662,18 @@ namespace KZONE.Service
         #endregion
 
         #region Process End Job Report
-        private void ProcessEndJobReport(Equipment eq, Job job, eBitResult result, string pathNo, string unitNo)
+        private void ProcessEndJobReport(Equipment eq, Job job, eBitResult result, string pathNo)
         {
             try
             {
-                Trx trx = GetTrxValues(string.Format("{0}_ProcessEndJobReport#{1}", eq.Data.NODENO, pathNo));
+                //Trx trx = GetTrxValues(string.Format("{0}_ProcessEndJobReport#{1}", eq.Data.NODENO, pathNo));
 
 
-                if (trx == null) throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] TRX {1}_ProcessEndJobReport#{2} IN PLCFmt.xml!", eq.Data.NODENO, eq.Data.NODENO, pathNo));
+                //if (trx == null) throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] TRX {1}_ProcessEndJobReport#{2} IN PLCFmt.xml!", eq.Data.NODENO, eq.Data.NODENO, pathNo));
+
+                Block ProcessEndReportBlock = eipTagAccess.ReadBlockValues("SD_EQToCIM_JobEvent_03_01_00", "ProcessEndReportBlock");
+
+                Block ProcessEndReportSubBlock = eipTagAccess.ReadBlockValues("SD_EQToCIM_JobEvent_03_01_00", "ProcessEndReportSubBlock");
 
                 string timerID = string.Format("{0}_{1}_{2}", eq.Data.NODENO, pathNo, ProcessEndJobReportTimeout);
 
@@ -10663,53 +10684,48 @@ namespace KZONE.Service
 
                 if (result == eBitResult.OFF)
                 {
-                    trx.ClearTrxWith0();
-                    trx[0][1][0].Value = "0";
-                    trx.TrackKey = UtilityMethod.GetAgentTrackKey();
-                    SendToPLC(trx);
+                    eipTagAccess.WriteItemValue("SD_EQToCIM_JobEvent_03_01_00", "JobEvent", "ProcessEndReport", "false");
                     LogInfo(MethodBase.GetCurrentMethod().Name + "()",
                         string.Format("[EQUIPMENT={0}] [BC <- EC][{1}] BIT=[OFF] Process End Job Report#{2} .",
-                            eq.Data.NODENO, trx.TrackKey, pathNo));
+                            eq.Data.NODENO, DateTime.Now.ToString("yyyyMMddHHmmssfff"), pathNo));
 
                     return;
                 }
+                ProcessEndReportBlock[0].Value = job.JobID;
+                ProcessEndReportBlock[1].Value = job.LotSequenceNumber;
+                ProcessEndReportBlock[2].Value = job.SlotSequenceNumber;
 
-                job.ProEndTime = DateTime.Now;
+                ProcessEndReportSubBlock[0].Value = job.CurrentUnitNo.ToString();
+                ProcessEndReportSubBlock[1].Value = "1";
+                ProcessEndReportSubBlock[2].Value = DateTime.Now.ToString("yyyyMMddHHmmssfff").Substring(0, 4);
+                ProcessEndReportSubBlock[3].Value = DateTime.Now.ToString("yyyyMMddHHmmssfff").Substring(4, 2);
+                ProcessEndReportSubBlock[4].Value = DateTime.Now.ToString("yyyyMMddHHmmssfff").Substring(6, 2);
+                ProcessEndReportSubBlock[5].Value = DateTime.Now.ToString("yyyyMMddHHmmssfff").Substring(8, 2);
+                ProcessEndReportSubBlock[6].Value = DateTime.Now.ToString("yyyyMMddHHmmssfff").Substring(10, 2);
+                ProcessEndReportSubBlock[7].Value = DateTime.Now.ToString("yyyyMMddHHmmssfff").Substring(12, 2);
 
-                trx[0][0][0].Value = job.Cassette_Sequence_No;
-                trx[0][0][1].Value = job.Job_Sequence_No;
-                trx[0][0][2].Value = job.GlassID_or_PanelID;
-                trx[0][0][3].Value = unitNo;
-                trx[0][0][4].Value = "0";
-                trx[0][0][5].Value = "0";
-                string processEndTime = job.ProEndTime.ToString("yyyyMMddHHmmss");
-                trx[0][0][6].Value = processEndTime.Substring(0, 4);
-                trx[0][0][7].Value = processEndTime.Substring(4, 2);
-                trx[0][0][8].Value = processEndTime.Substring(6, 2);
-                trx[0][0][9].Value = processEndTime.Substring(8, 2);
-                trx[0][0][10].Value = processEndTime.Substring(10, 2);
-                trx[0][0][11].Value = processEndTime.Substring(12, 2);
+                eipTagAccess.WriteBlockValues("SD_EQToCIM_JobEvent_03_01_00", ProcessEndReportBlock);
+                eipTagAccess.WriteBlockValues("SD_EQToCIM_JobEvent_03_01_00", ProcessEndReportSubBlock);
 
                 if (eq.File.CIMMode == eBitResult.ON)
                 {
                     Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T1].GetInteger(),
                         new System.Timers.ElapsedEventHandler(ProcessEndJobReportTimeoutAction), UtilityMethod.GetAgentTrackKey());
 
-                    trx[0][1][0].Value = "1";
-                    trx[0][1].OpDelayTimeMS = 500;
+                    eipTagAccess.WriteItemValue("SD_EQToCIM_JobEvent_03_01_00", "JobEvent", "ProcessEndReport", "true");
 
+                    job.ProEndTime = DateTime.Now;
 
                     ObjectManager.JobManager.AddJob(job);
                 }
                 else
                 {
-                    trx[0][1][0].Value = "0";
+                    eipTagAccess.WriteItemValue("SD_EQToCIM_JobEvent_03_01_00", "JobEvent", "ProcessEndReport", "false");
                 }
-                trx.TrackKey = UtilityMethod.GetAgentTrackKey(); ;
-                SendToPLC(trx);
+
 
                 LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                    string.Format("[EQUIPMENT={0}] [BC <- EC][{1}]  Process End Job Report#{2} =[{3}].", eq.Data.NODENO, trx.TrackKey, pathNo, "ON"));
+                    string.Format("[EQUIPMENT={0}] [BC <- EC][{1}]  Process End Job Report#{2} =[{3}].", eq.Data.NODENO, DateTime.Now.ToString("yyyyMMddHHmmssfff"), pathNo, "ON"));
 
             }
             catch (System.Exception ex)
@@ -10737,7 +10753,7 @@ namespace KZONE.Service
                 LogWarn(MethodBase.GetCurrentMethod().Name + "()",
                     string.Format("[EQUIPMENT={0}] [BC - EC][{1}] Process End Job Report#{2} TIMEOUT.", sArray[0], trackKey, sArray[1]));
 
-                ProcessEndJobReport(eqp, null, eBitResult.OFF, sArray[1], "0");
+                //ProcessEndJobReport(eqp, null, eBitResult.OFF, sArray[1], "0");
             }
             catch (Exception ex)
             {
@@ -10775,7 +10791,7 @@ namespace KZONE.Service
                     return;
                 }
 
-                ProcessEndJobReport(eqp, null, eBitResult.OFF, pathNo, "0");
+                //ProcessEndJobReport(eqp, null, eBitResult.OFF, pathNo, "0");
 
 
                 #region 建立timer
@@ -10821,7 +10837,85 @@ namespace KZONE.Service
                 LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
             }
         }
+        private void CPCTankChangeReportTimeoutAction(object subject, System.Timers.ElapsedEventArgs e)
+        {
+            UserTimer timer = subject as UserTimer;
+            string tmp = timer.TimerId;
+            string trackKey = timer.State.ToString();
+            string[] sArray = tmp.Split('_');
+            Trx trx = GetTrxValues("L3_TankChangeReport");
+            trx[0][1][0].Value = "0";
+            trx.TrackKey = trackKey;
+            SendToPLC(trx);
+            LogWarn(MethodBase.GetCurrentMethod().Name + "()", string.Format("[EQUIPMNET={0}] [EC -> BC][{1}] Tank Change Report T1 Timeout", sArray[0], trackKey));
+        }
+        private void CPCForceCleanOutCommandTimeoutAction(object subject, System.Timers.ElapsedEventArgs e)
+        {
+            UserTimer timer = subject as UserTimer;
+            string tmp = timer.TimerId;
+            string trackKey = timer.State.ToString();
+            string[] sArray = tmp.Split('_');
 
+            Trx trx = GetTrxValues("L3_EQDEquipmentRunModeSetCommand");
+            trx[0][1][0].Value = "0";
+            trx.TrackKey = trackKey;
+            SendToPLC(trx);
+
+            LogInfo(MethodBase.GetCurrentMethod().Name + "()", string.Format("[EQUIPMNET={0}] [EQ <- BC][{1}] Force Clean Out Command Bit Off", sArray[0], trackKey));
+        }
+        private void CPCGlassNGMarkReportTimeoutAction(object subject, System.Timers.ElapsedEventArgs e)
+        {
+            UserTimer timer = subject as UserTimer;
+            string tmp = timer.TimerId;
+            string trackKey = timer.State.ToString();
+            string[] sArray = tmp.Split('_');
+            Trx trx = GetTrxValues("L3_GlassNGMarkReport");
+            trx[0][1][0].Value = "0";
+            trx.TrackKey = trackKey;
+            SendToPLC(trx);
+            E2BTimeoutCommand(eBitResult.ON, "T1");
+            LogWarn(MethodBase.GetCurrentMethod().Name + "()", string.Format("[EQUIPMENT={0}] [EC -> BC][{1}] Glass NG Mark Report T1 Timeout", sArray[0], trackKey));
+        }
+        public void E2BTimeoutCommand(eBitResult bitResult, string Name)
+        {
+            try
+            {
+                Trx trx = GetTrxValues("L3_E2BTimeoutCommand");
+                if (trx == null)
+                {
+                    throw new Exception(string.Format("CAN'T FIND EQUIPMENT_NO=[{0}] TRX {1}_E2BTimeoutCommand IN PLCFmt.xml!", "L3", "L3"));
+                }
+                string timerID = string.Format("L3_{0}_TimeoutCommandBitAutoReset", Name);
+                if (Timermanager.IsAliveTimer(timerID))
+                {
+                    Timermanager.TerminateTimer(timerID);
+                }
+                if (bitResult == eBitResult.OFF)
+                {
+                    trx.ClearTrxWith0();
+                    trx.TrackKey = UtilityMethod.GetAgentTrackKey();
+                    SendToPLC(trx);
+                    LogInfo(MethodBase.GetCurrentMethod().Name + "()", string.Format("[EQUIPMENT={0}] [EQ <- EC][{1}] BIT=[OFF] E2B Timeout Command", "L3", trx.TrackKey));
+                    return;
+                }
+                string cmdName = Name + "_Timeout_Command";
+                if (trx[0][0].Items.AllKeys.ToList<string>().Contains(cmdName))
+                {
+                    trx[0][0][cmdName].Value = "1";
+                    trx.TrackKey = UtilityMethod.GetAgentTrackKey();
+                    SendToPLC(trx);
+                   // Timermanager.CreateTimer(timerID, false, 3000, new System.Timers.ElapsedEventHandler(E2BTimeoutCommandTimeoutAction), UtilityMethod.GetAgentTrackKey());
+
+                    LogInfo(MethodBase.GetCurrentMethod().Name + "()", string.Format("[EQUIPMENT={0}] [EQ <- EC][{1}] BIT=[ON] E2B Timeout Command", "L3", trx.TrackKey));
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
         #endregion
 
         #region SendingGlassDataReport
@@ -11867,7 +11961,7 @@ namespace KZONE.Service
                                         {
                                             //ok
                                             trx[0][0]["ReturnCode"].Value = "1";
-                                            CPCEquipmentRunModeSetCommand(eq, pauseCommand, eBitResult.ON);
+                                           // CPCEquipmentRunModeSetCommand(eq, pauseCommand, eBitResult.ON);
                                         }
                                         else
                                         {
@@ -11891,7 +11985,7 @@ namespace KZONE.Service
                                             {
                                                 //ok
                                                 trx[0][0]["ReturnCode"].Value = "1";
-                                                CPCEquipmentRunModeSetCommand(eq, pauseCommand, eBitResult.ON);
+                                               // CPCEquipmentRunModeSetCommand(eq, pauseCommand, eBitResult.ON);
                                             }
                                             else
                                             {
@@ -15372,7 +15466,7 @@ namespace KZONE.Service
                     MaterialEntity material = ObjectManager.MaterialManager.GetMaterialByID(eqpNo, materialID);
                     if (material == null)
                     {
-                        CPCMaterialStatusChangeReport(eBitResult.ON, inputData);
+                        //CPCMaterialStatusChangeReport(eBitResult.ON, inputData);
                         eq.File.ReportMaterial.MaterialId = materialID;
                         eq.File.ReportMaterial.MaterialStatus = (eMaterialStatus)int.Parse(materialStatus);
                         eq.File.ReportMaterial.MaterialType = (eMaterialType)int.Parse(materialType);
@@ -15385,7 +15479,7 @@ namespace KZONE.Service
                         if (material.MaterialId.Trim() != materialID || material.MaterialStatus != (eMaterialStatus)int.Parse(materialStatus)
                             || material.MaterialType != (eMaterialType)int.Parse(materialType) || material.PRID != PRID || material.Weight != int.Parse(PRWeight))
                         {
-                            CPCMaterialStatusChangeReport(eBitResult.ON, inputData);
+                            //CPCMaterialStatusChangeReport(eBitResult.ON, inputData);
                             eq.File.ReportMaterial.MaterialId = materialID;
                             eq.File.ReportMaterial.MaterialStatus = (eMaterialStatus)int.Parse(materialStatus);
                             eq.File.ReportMaterial.MaterialType = (eMaterialType)int.Parse(materialType);
@@ -15532,7 +15626,7 @@ namespace KZONE.Service
                 string trackKey = timer.State.ToString();
                 string[] sArray = tmp.Split('_');
 
-                CPCMaterialStatusChangeReport(eBitResult.OFF, null);
+                //CPCMaterialStatusChangeReport(eBitResult.OFF, null);
                 LogWarn(MethodBase.GetCurrentMethod().Name + "()",
                     string.Format("[EQUIPMENT={0}] [EC -> BC][{1}] Material Status Change Report T1 TIMEOUT.", sArray[0], trackKey, sArray[1]));
                 EQMaterialStatusChangeReportReply(eBitResult.ON, "2");
@@ -15627,7 +15721,7 @@ namespace KZONE.Service
                         eqpNo, inputData.TrackKey));
                     return;
                 }
-                CPCMaterialStatusChangeReport(eBitResult.OFF, null);
+                //CPCMaterialStatusChangeReport(eBitResult.OFF, null);
                 string returnCode = inputData[0][0][1].Value.Trim();
                 string unitNo = inputData[0][0][0].Value.Trim();
                 string msg = string.Empty;
@@ -15720,7 +15814,7 @@ namespace KZONE.Service
                 string materialPosition = inputData[0][0][1].Value;
                 if (eq.File.CIMMode == eBitResult.ON)
                 {
-                    CPCMaterialValidationRequest(eBitResult.ON, materialID, materialPosition);
+                    //CPCMaterialValidationRequest(eBitResult.ON, materialID, materialPosition);
                     Timermanager.CreateTimer(timerID, false, 10000,
                         new System.Timers.ElapsedEventHandler(EQMaterialValidationRequestTimeoutAction), UtilityMethod.GetAgentTrackKey());
                 }
@@ -15801,7 +15895,7 @@ namespace KZONE.Service
                 string trackKey = timer.State.ToString();
                 string[] sArray = tmp.Split('_');
 
-                CPCMaterialValidationRequest(eBitResult.OFF, "", "");
+                //CPCMaterialValidationRequest(eBitResult.OFF, "", "");
                 EQRequestMaterialFlag = false;
                 LogWarn(MethodBase.GetCurrentMethod().Name + "()",
                     string.Format("[EQUIPMENT={0}] [EC -> BC][{1}] Material Validation Request T1 TIMEOUT.", sArray[0], trackKey, sArray[1]));
@@ -15874,7 +15968,7 @@ namespace KZONE.Service
                     return;
                 }
 
-                CPCMaterialValidationRequest(eBitResult.OFF, "", "");
+                //CPCMaterialValidationRequest(eBitResult.OFF, "", "");
                 CPCMaterialValidationRequestReply(inputData, eBitResult.ON);
                 LogInfo(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BC Material Validation Request Reply Bit=[{2}] ReturnCode=[{3}][{4}].",
@@ -16127,11 +16221,11 @@ namespace KZONE.Service
                 {
                     if (line.Data.FABTYPE != "CELL")
                     {
-                        CPCDummyGlassRequest(eBitResult.ON, dummyGlassCount, dummyType, targetLocalNumber, recipeID);
+                        //CPCDummyGlassRequest(eBitResult.ON, dummyGlassCount, dummyType, targetLocalNumber, recipeID);
                     }
                     else
                     {
-                        CPCDummyGlassRequestEQP(eBitResult.ON, dummyGlassCount, dummyType, targetLocalNumber, recipeID, DummyTargetBufferNo, DummySlotNo);
+                        //CPCDummyGlassRequestEQP(eBitResult.ON, dummyGlassCount, dummyType, targetLocalNumber, recipeID, DummyTargetBufferNo, DummySlotNo);
                     }
                     Timermanager.CreateTimer(timerID, false, 10000,
                         new System.Timers.ElapsedEventHandler(EQDummyGlassRequestTimeoutAction), UtilityMethod.GetAgentTrackKey());
@@ -16173,7 +16267,7 @@ namespace KZONE.Service
                 string tmp = timer.TimerId;
                 string trackKey = timer.State.ToString();
                 string[] sArray = tmp.Split('_');
-                CPCDummyGlassRequest(eBitResult.OFF, "", "", "", "");
+               // CPCDummyGlassRequest(eBitResult.OFF, "", "", "", "");
                 CPCDummyGlassRequestReply(eBitResult.ON, "2");
                 LogWarn(MethodBase.GetCurrentMethod().Name + "()",
                     string.Format("[EQUIPMENT={0}] [EC -> BC][{1}] Dummy Glass Request T1 TIMEOUT.", sArray[0], trackKey));
@@ -16216,7 +16310,7 @@ namespace KZONE.Service
                 string returnCode = inputData[0][0][0].Value.Trim();
                 if (eq.File.CIMMode == eBitResult.ON)
                 {
-                    CPCDummyGlassRequest(eBitResult.OFF, "", "", "", "");
+                    //CPCDummyGlassRequest(eBitResult.OFF, "", "", "", "");
                     CPCDummyGlassRequestReply(eBitResult.ON, returnCode);
                     Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
                         new System.Timers.ElapsedEventHandler(BCDummyGlassRequestReplyTimeoutAction), UtilityMethod.GetAgentTrackKey());
@@ -16361,7 +16455,7 @@ namespace KZONE.Service
                 {
                     msg = "VCR Reading Fail, Miss Match With Job Data Job ID";
                 }
-                CPCVCREventReport(eBitResult.ON, jobID, cassetteSequenceNo, slotSequenceNo, unitNo, VCRNo, VCRResult, msg);
+                //CPCVCREventReport(eBitResult.ON, jobID, cassetteSequenceNo, slotSequenceNo, unitNo, VCRNo, VCRResult, msg);
                 Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T1].GetInteger(),
                     new System.Timers.ElapsedEventHandler(EQVCREventReportTimeoutAction), UtilityMethod.GetAgentTrackKey());
 
@@ -16403,7 +16497,7 @@ namespace KZONE.Service
                 string tmp = timer.TimerId;
                 string trackKey = timer.State.ToString();
                 string[] sArray = tmp.Split('_');
-                CPCVCREventReport(eBitResult.OFF, "", "0", "0", "0", "0", "0", "");
+                //CPCVCREventReport(eBitResult.OFF, "", "0", "0", "0", "0", "0", "");
                 LogWarn(MethodBase.GetCurrentMethod().Name + "()",
                     string.Format("[EQUIPMENT={0}] [EC -> BC][{1}] EQ VCR Event Report T1 TIMEOUT.", sArray[0], trackKey));
             }
@@ -16489,7 +16583,7 @@ namespace KZONE.Service
                             eqpNo, inputData.TrackKey, eBitResult));
                     return;
                 }
-                CPCVCREventReport(eBitResult.OFF, "", "0", "0", "0", "0", "0", "");
+                //CPCVCREventReport(eBitResult.OFF, "", "0", "0", "0", "0", "0", "");
                 Timermanager.CreateTimer(timerID, false, ParameterManager[eParameterName.T2].GetInteger(),
                     new System.Timers.ElapsedEventHandler(BCVCREventReportReplyTimeoutAction), UtilityMethod.GetAgentTrackKey());
 
