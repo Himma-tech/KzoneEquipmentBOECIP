@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.66" />
+    <PackageReference Include="FreeRedis" Version="1.4.0" />
+    <PackageReference Include="FreeRedis.DistributedCache" Version="1.4.0" />
+    <PackageReference Include="MessagePipe" Version="1.8.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.6" />
+    <PackageReference Include="Microsoft.IdentityModel.Protocols" Version="8.12.1" />
+    <PackageReference Include="MiniExcel" Version="1.41.2" />
+    <PackageReference Include="MySql.Data" Version="9.3.0" />
+    <PackageReference Include="MySqlConnector" Version="2.4.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="NLog" Version="5.5.0" />
+    <PackageReference Include="NPOI" Version="2.7.3" />
+    <PackageReference Include="Polly" Version="8.6.1" />
+    <PackageReference Include="Polly.Core" Version="8.6.1" />
+    <PackageReference Include="Prism.Core" Version="9.0.537" />
+    <PackageReference Include="Quartz" Version="3.14.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageReference Include="ServiceStack.Redis" Version="8.8.0" />
+    <PackageReference Include="SharpCompress" Version="0.40.0" />
+    <PackageReference Include="SqlSugar" Version="5.1.4.196" />
+    <PackageReference Include="StackExchange.Redis" Version="2.8.41" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.6" />
+    <PackageReference Include="System.Management" Version="9.0.6" />
+    <PackageReference Include="System.Reactive.Runtime.Remoting" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Windows.Forms">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Windows.Forms.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Helper\Log\LogEventArg.cs">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Pages\Views\" />
+  </ItemGroup>
+
+</Project>
