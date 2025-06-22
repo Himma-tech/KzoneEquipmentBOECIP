@@ -1,11 +1,10 @@
-﻿using Himma.Common.Communication.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Himma.Common.Communication.DAL
+namespace Himma.Common.Helper.Log
 {
     /// <summary>
     /// Copyright (c) 2020 All Rights Reserved.	
@@ -13,7 +12,12 @@ namespace Himma.Common.Communication.DAL
     /// 创建人： Himma
     /// 创建时间：2020/6/15 22:20:25
     /// </summary>
-    public class BasSignalInfoDAL : SugarHelper<BasSignalInfoModel>
+    /// <summary>
+    /// 日志事件类
+    /// </summary>
+    public class LogEventArg : EventArgs
     {
+        public string Message { get; set; }
+        public string LogType { get; set; }
     }
 }

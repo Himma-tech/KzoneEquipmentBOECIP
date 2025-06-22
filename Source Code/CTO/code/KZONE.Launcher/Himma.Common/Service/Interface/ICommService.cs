@@ -9,8 +9,8 @@ namespace Himma.Common.Service.Interface
     /// <summary>
     /// Copyright (c) 2020 All Rights Reserved.	
     /// 描述：
-    /// 创建人： Henick
-    /// 创建时间：2020/4/24 13:57:04
+    /// 创建人： Himma
+    /// 创建时间：2020/6/15 22:20:25
     /// </summary>
     public interface ICommService
     {

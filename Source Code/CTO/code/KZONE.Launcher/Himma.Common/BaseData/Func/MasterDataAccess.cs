@@ -23,6 +23,12 @@ using Himma.Common.Log;
 
 namespace Himma.Common.BaseData.Func
 {
+    /// <summary>
+    /// Copyright (c) 2020 All Rights Reserved.	
+    /// 描述：
+    /// 创建人： Himma
+    /// 创建时间：2020/6/15 22:20:25
+    /// </summary>
     //public class MasterDataAccess
     //{
     //    #region Query related functions
@@ -67,7 +73,7 @@ namespace Himma.Common.BaseData.Func
     //        }
     //    }
 
-      
+
     //    /// <summary>
     //    /// 系统参数查询
     //    /// </summary>
@@ -92,7 +98,7 @@ namespace Himma.Common.BaseData.Func
     //            var sql = @"SELECT PLC_NO PLCNo, PLC_IP IPAddress, PLC_NAME PLCName,
     //                      LOCALAMSNETID localAmsNetId,TARGETAMSNETID targetAmsNetId,
     //                    PLC_PORT IpPort, PLC_TYPE PlcType,USED_FLAG UsedFlag,USED_FLAG as IsEnabled,USED_POOL UsedPool,
-				//		CONNC_NUM ConnectionNum,RETRAY_NUM RetryNum,RETRAY_INTTIME RetryInteralTime
+    //		CONNC_NUM ConnectionNum,RETRAY_NUM RetryNum,RETRAY_INTTIME RetryInteralTime
     //                    FROM `bas_plc` WHERE used_flag != 3 and PLC_TYPE = @type order by used_flag desc;";
 
     //            return DapperHelper.QueryList<T>(sql, new { type = pLCType.ToString() });
@@ -143,7 +149,7 @@ namespace Himma.Common.BaseData.Func
     //        }
     //    }
 
-       
+
 
     //    public List<dynamic> GetDrivesInfo()
     //    {
@@ -159,7 +165,7 @@ namespace Himma.Common.BaseData.Func
     //        }
     //    }
 
-      
+
     //    /// <summary>
     //    /// 生成虚拟号码
     //    /// </summary>
@@ -227,7 +233,7 @@ namespace Himma.Common.BaseData.Func
     //        }
     //    }
 
-       
+
 
     //    /// <summary>
     //    /// 获取指定炉腔待出水含量的检测任务
@@ -491,7 +497,7 @@ namespace Himma.Common.BaseData.Func
 
     //    #region call func or sp
 
-        
+
 
     //    public void CallJobSP()
     //    {
@@ -544,18 +550,18 @@ namespace Himma.Common.BaseData.Func
     //    #region GetPlc
 
 
-       
+
     //    #endregion GetPlc
 
     //    #region GetStation
 
-       
+
 
     //    #endregion GetStation
 
     //    #region GetTask
 
-      
+
     //    /// <summary>
     //    /// 删除上料任务
     //    /// </summary>
@@ -852,7 +858,7 @@ namespace Himma.Common.BaseData.Func
     //        return DapperHelper.QueryOne<string>(sql, null);
     //    }
 
-       
+
 
     //    /// <summary>
     //    /// 获取调度机器人当前综合状态
@@ -971,7 +977,7 @@ namespace Himma.Common.BaseData.Func
     //        }
     //    }
 
-      
+
 
 
     //    /// <summary>
@@ -1019,7 +1025,7 @@ namespace Himma.Common.BaseData.Func
     //            return new List<dynamic>();
     //    }
 
-      
+
 
 
 

@@ -16,16 +16,19 @@ using Himma.Common.DAL.BizDAL;
 using Himma.Common.Service.Interface;
 using Himma.Common.DAL.Variable;
 using Himma.Common.Helper.Log;
+using Prism.Ioc;
+using Prism.Events;
+using Prism.Mvvm;
 
 namespace Himma.Common.Pages.ViewModels
     {
-        /// <summary>
-        /// Copyright (c) 2020 All Rights Reserved.
-        /// 描述：主界面逻辑
-        /// 创建人： Henick
-        /// 创建时间：2020/4/3 8:46:16
-        /// </summary>
-        public class ViewMonitorViewModel : BindableBase
+    /// <summary>
+    /// Copyright (c) 2020 All Rights Reserved.	
+    /// 描述：
+    /// 创建人： Himma
+    /// 创建时间：2020/6/15 22:20:25
+    /// </summary>
+    public class ViewMonitorViewModel : BindableBase
         {
             private readonly IEventAggregator _eventAggregator;
             private TaskFactory taskFactory = new TaskFactory();

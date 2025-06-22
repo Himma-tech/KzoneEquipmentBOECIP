@@ -4,7 +4,12 @@ using System.Threading;
 
 namespace Himma.Common.ObjectPool
 {
-
+    /// <summary>
+    /// Copyright (c) 2020 All Rights Reserved.	
+    /// 描述：
+    /// 创建人： Himma
+    /// 创建时间：2020/6/15 22:20:25
+    /// </summary>
     public class Object<T> : IDisposable
     {
         public static Object<T> InitWith(IObjectPool<T> pool, int id, T value)

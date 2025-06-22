@@ -10,8 +10,8 @@ namespace Himma.Common.Communication.Model
     /// <summary>
     /// Copyright (c) 2020 All Rights Reserved.	
     /// 描述：
-    /// 创建人： Henick
-    /// 创建时间：2020/4/26 15:08:14
+    /// 创建人： Himma
+    /// 创建时间：2020/6/15 22:20:25
     /// </summary>
     [SugarTable("bas_signal_info")]
     public class BasSignalInfoModel

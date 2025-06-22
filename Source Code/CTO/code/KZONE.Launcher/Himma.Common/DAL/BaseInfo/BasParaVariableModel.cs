@@ -11,8 +11,8 @@ namespace Himma.Common.DAL.BaseInfo
     /// <summary>
     /// Copyright (c) 2020 All Rights Reserved.	
     /// 描述：产品数据配置表
-    /// 创建人： Henick
-    /// 创建时间：2020/4/13 10:35:33
+    /// 创建人： Himma
+    /// 创建时间：2020/6/15 22:20:25
     /// </summary>
     [SugarTable("bas_para_variable")]
     public class BasParaVariableModel

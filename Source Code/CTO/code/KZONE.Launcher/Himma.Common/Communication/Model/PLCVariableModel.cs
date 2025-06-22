@@ -11,8 +11,11 @@ namespace Himma.Common.Communication.Model
     public class PLCVariableModel : ICloneable
     {
         /// <summary>
-        /// PLC地址 用来区分到底是哪个plc推送的 这个地方存在缺陷 应该是根据PLC连接来区分
-        /// </summary>
+        /// Copyright (c) 2020 All Rights Reserved.	
+        /// 描述：
+        /// 创建人： Himma
+        /// 创建时间：2020/6/15 22:20:25
+        /// </summary>>
         public string PLCIPAddress { get; set; }
         public Guid TasKId { get; set; }
         private string _variableDescription;
@@ -145,20 +148,25 @@ namespace Himma.Common.Communication.Model
             //this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
             //this.PropertyChanged?.BeginInvoke(this, new PropertyChangedEventArgs(name), null, null);
             //this.PropertyChanged?.BeginInvoke(this.Clone(), new PropertyChangedEventArgs(name), null, null);
-            this.PropertyChanged?.Invoke(null, this.CloneMe());
+            //this.PropertyChanged?.Invoke(null, this.CloneMe());
             //GlobalMessagePipe.GetAsyncPublisher<PLCVariableModel>().PublishAsync(this.CloneMe());
         }
 
         public object Clone()
         {
-            return CloneMe();
+            throw new NotImplementedException();
         }
-        public PLCVariableModel CloneMe()
-        {
-            var _cl = Newtonsoft.Json.JsonConvert.DeserializeObject<PLCVariableModel>(Newtonsoft.Json.JsonConvert.SerializeObject(this));
-            _cl.TasKId = Guid.NewGuid();
-            return _cl;
-        }
+
+        //public object Clone()
+        //{
+        //    return CloneMe();
+        //}
+        //public PLCVariableModel CloneMe()
+        //{
+        //    var _cl = Newtonsoft.Json.JsonConvert.DeserializeObject<PLCVariableModel>(Newtonsoft.Json.JsonConvert.SerializeObject(this));
+        //    _cl.TasKId = Guid.NewGuid();
+        //    return _cl;
+        //}
     }
     /// <summary>
     /// PLC信号触发的业务处理类型

@@ -31,6 +31,12 @@ using System.Globalization;
 using Himma.Common.Log;
 namespace Himma.Common.Business.Base
 {
+    /// <summary>
+    /// Copyright (c) 2020 All Rights Reserved.	
+    /// 描述：
+    /// 创建人： Himma
+    /// 创建时间：2020/6/15 22:20:25
+    /// </summary>
     public class BaseBll : IBusiness
     {
         //#region **Properties**

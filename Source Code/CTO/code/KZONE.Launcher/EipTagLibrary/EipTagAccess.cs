@@ -10,6 +10,12 @@ using System.Text;
 
 namespace EipTagLibrary
 {
+    /// <summary>
+    /// Copyright (c) 2025 All Rights Reserved.	
+    /// 描述：EIP标签访问类
+    /// 创建人： Himma
+    /// 创建时间：2025/6/15 13:14:52
+    /// </summary>
     public enum VariableType
     {
         TIMER = 1, COUNTER = 2, CHANNEL = 3, UINT_BCD = 4, UDINT_BCD = 5, ULINT_BCD = 6,

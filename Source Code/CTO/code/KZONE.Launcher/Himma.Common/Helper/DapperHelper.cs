@@ -14,6 +14,12 @@ using Himma.Common.Log;
 
 namespace Himma.Common
 {
+    /// <summary>
+    /// Copyright (c) 2020 All Rights Reserved.	
+    /// 描述：
+    /// 创建人： Himma
+    /// 创建时间：2020/6/15 22:20:25
+    /// </summary>
     public class DapperHelper
     {
         //private static string _connectionString = ConfigurationManager.AppSettings["ConnectionStr"];
@@ -490,9 +496,9 @@ namespace Himma.Common
 
         //}
 
-        private static void LogError(Exception ex, string sql, object param = null)
-        {
-            LogHelper.Error($@"SQL脚本执行发生异常，异常原因：{ex}, SQL: {sql} 参数：{JsonConvert.SerializeObject(param)}", _logName);
-        }
+        //private static void LogError(Exception ex, string sql, object param = null)
+        //{
+        //    LogHelper.Error($@"SQL脚本执行发生异常，异常原因：{ex}, SQL: {sql} 参数：{JsonConvert.SerializeObject(param)}", _logName);
+        //}
     }
 }

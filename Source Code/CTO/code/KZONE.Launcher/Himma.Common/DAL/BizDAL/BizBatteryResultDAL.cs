@@ -10,9 +10,9 @@ namespace Himma.Common.DAL.BizDAL
 {
     /// <summary>
     /// Copyright (c) 2020 All Rights Reserved.	
-    /// 描述：电芯结果表
-    /// 创建人： Henick
-    /// 创建时间：2020/4/13 11:18:58
+    /// 描述：
+    /// 创建人： Himma
+    /// 创建时间：2020/6/15 22:20:25
     /// </summary>
     public class BizBatteryResultDAL : SugarHelper<BizBatteryResultModel>
     {

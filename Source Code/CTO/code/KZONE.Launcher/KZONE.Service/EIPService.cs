@@ -16,6 +16,12 @@ using KZONE.Work;
 
 namespace KZONE.Service
 {
+    /// <summary>
+    /// Copyright (c) 2025 All Rights Reserved.	
+    /// 描述：EIP服务类
+    /// 创建人： Himma
+    /// 创建时间：2025/6/15 13:14:52
+    /// </summary>
     public partial class EquipmentService : AbstractService
     {
         public static EipTagAccess eipTagAccess;

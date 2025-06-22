@@ -13,9 +13,10 @@ using System.Threading;
 namespace Himma.Common.DAL.Variable
 {
     /// <summary>
-    /// 全局参数
-    /// 版本：1.0
-    /// 更新历史：
+    /// Copyright (c) 2020 All Rights Reserved.	
+    /// 描述：
+    /// 创建人： Himma
+    /// 创建时间：2020/6/15 22:20:25
     /// </summary>
     public class GlobalVariable
     {
