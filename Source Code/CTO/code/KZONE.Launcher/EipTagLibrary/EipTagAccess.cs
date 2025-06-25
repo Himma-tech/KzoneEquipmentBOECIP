@@ -118,7 +118,7 @@ namespace EipTagLibrary
         /// <summary>
         /// 上次读取的值缓存，用于变化检测
         /// </summary>
-        private Dictionary<string, ushort[]> lastValues;
+        private Dictionary<string, short[]> lastValues;
 
         /// <summary>
         /// Tag值变化事件委托
@@ -144,7 +144,7 @@ namespace EipTagLibrary
 
             tagConfig = LoadXmlConfig(xmlConfigPath);
             tagAddressCache = new Dictionary<string, TagAddressInfo>();
-            lastValues = new Dictionary<string, ushort[]>();
+            lastValues = new Dictionary<string, short[]>();
             InitializeTagAddressCache();
             cancellationTokenSource = new CancellationTokenSource();
         }
@@ -163,37 +163,27 @@ namespace EipTagLibrary
         {
             ValidateNotDisposed();
 
-            try
-            {
-                while (!cancellationTokenSource.Token.IsCancellationRequested)
-                {
+            try {
+                while (!cancellationTokenSource.Token.IsCancellationRequested) {
                     var inputGroups = tagConfig.TagGroups
-                        .Where(g => g.Direction.Equals("Input", StringComparison.OrdinalIgnoreCase));
+                        .Where(g => g.Direction.Equals("Output", StringComparison.OrdinalIgnoreCase));
 
-                    foreach (var group in inputGroups)
-                    {
-                        try
-                        {
+                    foreach (var group in inputGroups) {
+                        try {
                             // 读取当前值
                             var rawValues = ReadRawValues(group.Name);
                             //  var convertedValues = ConvertRawValuesToTagGroup(group, rawValues);
 
-                            ushort[] lastRawValues;
-                            if (lastValues.ContainsKey(group.Name))
-                            {
-                                lastRawValues = (ushort[])lastValues[group.Name].Clone();
+                            short[] lastRawValues;
+                            if (lastValues.ContainsKey(group.Name)) {
+                                lastRawValues = (short[])lastValues[group.Name].Clone();
                             }
-                            else
-                            {
-                                lastRawValues = new ushort[rawValues.Length];
+                            else {
+                                lastRawValues = new short[rawValues.Length];
                             }
-                            if (group.Name == "RV_CIMToEQ_RecipeManagement_01_03_00")
-                            { 
-                            
-                            }
+
                             // 检查值变化并触发事件
-                            if (HasValuesChanged(group.Name, rawValues))
-                            {
+                            if (HasValuesChanged(group.Name, rawValues)) {
 
                                 ConvertRawValuesToTagGroup(group, rawValues);
                                 ProcessTagGroupMonitoring(group, lastRawValues);
@@ -202,8 +192,7 @@ namespace EipTagLibrary
                             }
 
                         }
-                        catch (Exception ex)
-                        {
+                        catch (Exception ex) {
                             Console.WriteLine($"Error reading TagGroup {group.Name}: {ex.Message}");
                         }
                     }
@@ -211,17 +200,14 @@ namespace EipTagLibrary
                     await Task.Delay(intervalMs, cancellationTokenSource.Token);
                 }
             }
-            catch (OperationCanceledException)
-            {
+            catch (OperationCanceledException) {
                 // 正常取消，不需要处理
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Console.WriteLine($"Monitoring error: {ex.Message}");
                 throw;
             }
         }
-
         /// <summary>
         /// 停止监控
         /// </summary>
@@ -231,150 +217,162 @@ namespace EipTagLibrary
         }
 
         /// <summary>
-        /// 从PLC读取并转换原始数据为short数组
+        /// 从PLC读取并转换原始数据为short数组，保证字节顺序和位准确，支持W区ASCII类型
         /// </summary>
         /// <param name="groupName">TagGroup名称</param>
         /// <returns>转换后的short数组</returns>
-        /// <exception cref="NotSupportedException">
-        /// 当读取到不支持的数据类型时抛出
-        /// </exception>
-        /// <exception cref="OverflowException">
-        /// 当数值转换发生溢出时抛出
-        /// </exception>
-        /// <remarks>
-        /// 此方法支持以下数据类型的转换：
-        /// - 有符号整数：short(INT)、int(DINT)、long(LINT)
-        /// - 无符号整数：ushort(UINT)、uint(UDINT)、ulong(ULINT)
-        /// - 浮点数：float(REAL)、double(LREAL)
-        /// - 布尔值：bool(BOOL)
-        /// - 字符串：string(STRING)
-        /// 所有类型最终都会被转换为short数组
-        /// </remarks>
-        private ushort[] ReadRawValues(string groupName)
+        /// <exception cref="NotSupportedException">当读取到不支持的数据类型时抛出</exception>
+        /// <exception cref="OverflowException">当数值转换发生溢出时抛出</exception>
+        private short[] ReadRawValues(string groupName)
         {
             var obj = variableCompolet.ReadVariable(groupName);
 
-            // 如果直接是short数组，直接返回
-            if (obj is ushort[] shortArray)
-            {
+            if (obj == null)
+                throw new Exception($"ReadVariable returned null for group '{groupName}'");
+
+            // 先处理单独的short[]类型
+            if (obj is short[] shortArray) {
                 return shortArray;
             }
-          
-            // 判断是否为数组类型
-            if (!obj.GetType().IsArray)
-            {
-                throw new NotSupportedException($"Expected array type but got {obj.GetType().Name}");
+
+            // 处理单个short值（如读取单个INT）
+            if (obj is short shortValue) {
+                return new short[] { shortValue };
             }
 
-            var array = (Array)obj;
-            Type elementType = array.GetType().GetElementType();
-
-            // 判断是否为结构体数组
-            if (elementType.IsClass && elementType != typeof(string))
-            {
-                throw new NotSupportedException($"Complex type arrays are not supported: {elementType.Name}");
+            // 处理ushort[]数组
+            if (obj is ushort[] ushortArray) {
+                return Array.ConvertAll(ushortArray, item => unchecked((short)item));
             }
 
-            // 获取变量类型
-            VariableType varType;
-            if (elementType == typeof(short))
-            {
-                varType = VariableType.INT;
-            }
-            else if (elementType == typeof(int))
-            {
-                varType = VariableType.INT;
-            }
-            else if (elementType == typeof(long))
-            {
-                varType = VariableType.LINT;
-            }
-            else if (elementType == typeof(float))
-            {
-                varType = VariableType.REAL;
-            }
-            else if (elementType == typeof(double))
-            {
-                varType = VariableType.LREAL;
-            }
-            else if (elementType == typeof(bool))
-            {
-                varType = VariableType.BOOL;
-            }
-            else if (elementType == typeof(string))
-            {
-                varType = VariableType.STRING;
-            }
-            else if (elementType == typeof(ushort))
-            {
-                varType = VariableType.UINT;
-            }
-            else if (elementType == typeof(uint))
-            {
-                varType = VariableType.UDINT;
-            }
-            else if (elementType == typeof(ulong))
-            {
-                varType = VariableType.ULINT;
-            }
-            else
-            {
-                throw new NotSupportedException($"Unsupported array element type: {elementType.Name}");
+            // 处理单个ushort值
+            if (obj is ushort ushortValue) {
+                return new short[] { unchecked((short)ushortValue) };
             }
 
-            // 根据变量类型进行转换
-            try
-            {
-                switch (varType)
-                {
-                    case VariableType.INT:
-                        //return (ushort[])array;
-                        int[] intArray1 = (int[])array;
-                        return Array.ConvertAll(intArray1, item => (ushort)item);
+            // 处理int[]数组，直接截断为short（谨慎使用，确认标签类型）
+            if (obj is int[] intArray) {
+                var result = new short[intArray.Length];
+                for (int i = 0; i < intArray.Length; i++) {
+                    result[i] = unchecked((short)intArray[i]);
+                }
+                return result;
+            }
 
-                    case VariableType.UINT:
-                        ushort[] ushortArray = (ushort[])array;
-                        return Array.ConvertAll(ushortArray, item => (ushort)item);
+            // 处理单个int值
+            if (obj is int intValue) {
+                return new short[] { unchecked((short)intValue) };
+            }
 
-                    case VariableType.DINT:
-                    case VariableType.UDINT:
-                        int[] intArray = (int[])array;
-                        return Array.ConvertAll(intArray, item => (ushort)item);
-                      //  return Array.ConvertAll(intArray, item => Convert.ToInt16(item));
+            // 处理字符串（ASCII）类型：转换字符串为对应short数组
+            if (obj is string str) {
+                // 这里用Encoding.ASCII编码，也可以改成Encoding.UTF8或其他需要的编码
+                byte[] bytes = System.Text.Encoding.ASCII.GetBytes(str);
 
-                    //case VariableType.LINT:
-                    //case VariableType.ULINT:
-                    //    long[] longArray = (long[])array;
-                    //    return Array.ConvertAll(longArray, item => Convert.ToInt16(item));
+                int shortCount = (bytes.Length + 1) / 2;
+                short[] result = new short[shortCount];
 
-                    //case VariableType.REAL:
-                    //    float[] floatArray = (float[])array;
-                    //    return Array.ConvertAll(floatArray, item => Convert.ToInt16(item));
+                for (int i = 0; i < shortCount; i++) {
+                    // 低字节
+                    byte low = bytes[i * 2];
+                    // 高字节，如果越界则补0
+                    byte high = (i * 2 + 1) < bytes.Length ? bytes[i * 2 + 1] : (byte)0;
 
-                    //case VariableType.LREAL:
-                    //    double[] doubleArray = (double[])array;
-                    //    return Array.ConvertAll(doubleArray, item => Convert.ToInt16(item));
+                    // 组合成short，低字节在低位，高字节在高位
+                    result[i] = (short)((high << 8) | low);
+                }
 
-                    //case VariableType.BOOL:
-                    //    bool[] boolArray = (bool[])array;
-                    //    return Array.ConvertAll(boolArray, item => Convert.ToInt16(item));
+                return result;
+            }
 
-                    //case VariableType.STRING:
-                    //    string[] stringArray = (string[])array;
-                    //    return Array.ConvertAll(stringArray, item => Convert.ToInt16(item));
+            // 处理数组类型
+            if (obj.GetType().IsArray) {
+                var array = (Array)obj;
+                Type elementType = array.GetType().GetElementType();
 
-                    default:
-                        throw new NotSupportedException($"Unsupported variable type: {varType}");
+                if (elementType == typeof(short)) {
+                    return (short[])array;
+                }
+                else if (elementType == typeof(ushort)) {
+                    ushort[] uArr = (ushort[])array;
+                    return Array.ConvertAll(uArr, item => unchecked((short)item));
+                }
+                else if (elementType == typeof(int)) {
+                    int[] iArr = (int[])array;
+                    var result = new short[iArr.Length];
+                    for (int i = 0; i < iArr.Length; i++) {
+                        result[i] = unchecked((short)iArr[i]);
+                    }
+                    return result;
+                }
+                else if (elementType == typeof(uint)) {
+                    uint[] uIntArr = (uint[])array;
+                    var result = new short[uIntArr.Length * 2];
+                    for (int i = 0; i < uIntArr.Length; i++) {
+                        uint val = uIntArr[i];
+                        result[2 * i] = unchecked((short)(val & 0xFFFF));
+                        result[2 * i + 1] = unchecked((short)((val >> 16) & 0xFFFF));
+                    }
+                    return result;
+                }
+                else if (elementType == typeof(float)) {
+                    float[] fArr = (float[])array;
+                    var result = new short[fArr.Length * 2];
+                    for (int i = 0; i < fArr.Length; i++) {
+                        byte[] bytes = BitConverter.GetBytes(fArr[i]);
+                        result[2 * i] = BitConverter.ToInt16(bytes, 0);
+                        result[2 * i + 1] = BitConverter.ToInt16(bytes, 2);
+                    }
+                    return result;
+                }
+                else if (elementType == typeof(double)) {
+                    double[] dArr = (double[])array;
+                    var result = new short[dArr.Length * 4];
+                    for (int i = 0; i < dArr.Length; i++) {
+                        byte[] bytes = BitConverter.GetBytes(dArr[i]);
+                        result[4 * i] = BitConverter.ToInt16(bytes, 0);
+                        result[4 * i + 1] = BitConverter.ToInt16(bytes, 2);
+                        result[4 * i + 2] = BitConverter.ToInt16(bytes, 4);
+                        result[4 * i + 3] = BitConverter.ToInt16(bytes, 6);
+                    }
+                    return result;
+                }
+                else if (elementType == typeof(bool)) {
+                    bool[] bArr = (bool[])array;
+                    int shortCount = (bArr.Length + 15) / 16;
+                    var result = new short[shortCount];
+                    for (int i = 0; i < bArr.Length; i++) {
+                        if (bArr[i]) {
+                            int wordIndex = i / 16;
+                            int bitIndex = i % 16;
+                            result[wordIndex] |= (short)(1 << bitIndex);
+                        }
+                    }
+                    return result;
+                }
+                else if (elementType == typeof(string)) {
+                    // 字符串数组，拼接所有字符串后转换
+                    var sb = new System.Text.StringBuilder();
+                    foreach (string s in array) {
+                        sb.Append(s);
+                    }
+                    string allStr = sb.ToString();
+                    byte[] bytes = System.Text.Encoding.ASCII.GetBytes(allStr);
+                    int shortCount = (bytes.Length + 1) / 2;
+                    short[] result = new short[shortCount];
+                    for (int i = 0; i < shortCount; i++) {
+                        byte low = bytes[i * 2];
+                        byte high = (i * 2 + 1) < bytes.Length ? bytes[i * 2 + 1] : (byte)0;
+                        result[i] = (short)((high << 8) | low);
+                    }
+                    return result;
+                }
+                else {
+                    throw new NotSupportedException($"Unsupported array element type: {elementType.Name}");
                 }
             }
-            catch (OverflowException ex)
-            {
-                throw new OverflowException($"Value overflow when converting {varType} {groupName} to INT16", ex);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error converting {varType} array to INT16 array", ex);
-            }
+
+            throw new NotSupportedException($"Unsupported data type: {obj.GetType().Name}");
         }
 
         // 获取指定TagGroup的最新值
@@ -530,8 +528,7 @@ namespace EipTagLibrary
         /// </remarks>
         private void ProcessArrayItem(TagGroup tagGroup, Block block, ArrayItem arrayItem)
         {
-            for (int i = 0; i < arrayItem.Count; i++)
-            {
+            for (int i = 0; i < arrayItem.Count; i++) {
                 string itemName = $"{arrayItem.Name}[{i}]";
                 string tagAddress = $"{tagGroup.Name}.{block.Type}.{itemName}";
                 int itemOffset = arrayItem.BaseOffset + (i * arrayItem.Item.Length);
@@ -572,6 +569,7 @@ namespace EipTagLibrary
             };
         }
 
+
         /// <summary>
         /// 计算PLC地址
         /// </summary>
@@ -587,8 +585,7 @@ namespace EipTagLibrary
         private string CalculateAddress(int absoluteOffset, string area, string format, int bitOffset = -1)
         {
             string address = $"{area}{absoluteOffset}";
-            if (format == "BIT" && bitOffset >= 0)
-            {
+            if (format == "BIT" && bitOffset >= 0) {
                 address += $".{bitOffset}";
             }
             return address;
@@ -598,18 +595,15 @@ namespace EipTagLibrary
         {
             ValidateNotDisposed();
 
-            if (!tagAddressCache.TryGetValue(tagAddress, out var tagInfo))
-            {
+            if (!tagAddressCache.TryGetValue(tagAddress, out var tagInfo)) {
                 throw new ArgumentException($"Tag address '{tagAddress}' not found in configuration");
             }
 
-            try
-            {
+            try {
                 object value = variableCompolet.ReadVariable(tagInfo.Address);
                 return ConvertValue<T>(value, tagInfo.Item.Format);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 throw new Exception($"Failed to read tag '{tagAddress}' at address '{tagInfo.Address}': {ex.Message}", ex);
             }
         }
@@ -618,28 +612,23 @@ namespace EipTagLibrary
         {
             ValidateNotDisposed();
 
-            if (!tagAddressCache.TryGetValue(tagAddress, out var tagInfo))
-            {
+            if (!tagAddressCache.TryGetValue(tagAddress, out var tagInfo)) {
                 throw new ArgumentException($"Tag address '{tagAddress}' not found in configuration");
             }
 
-            try
-            {
+            try {
                 object convertedValue = ConvertToTargetType(value, tagInfo.Item.Format);
                 variableCompolet.WriteVariable(tagInfo.Address, convertedValue);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 throw new Exception($"Failed to write tag '{tagAddress}' at address '{tagInfo.Address}': {ex.Message}", ex);
             }
         }
 
         private T ConvertValue<T>(object value, string format)
         {
-            try
-            {
-                switch (format)
-                {
+            try {
+                switch (format) {
                     case "BIT":
                         return (T)Convert.ChangeType(value, typeof(bool));
                     case "INT":
@@ -653,18 +642,15 @@ namespace EipTagLibrary
                         throw new NotSupportedException($"Unsupported format: {format}");
                 }
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 throw new Exception($"Failed to convert value from format '{format}' to type '{typeof(T).Name}'", ex);
             }
         }
 
         private object ConvertToTargetType(object value, string format)
         {
-            try
-            {
-                switch (format)
-                {
+            try {
+                switch (format) {
                     case "BIT":
                         return Convert.ToBoolean(value);
                     case "INT":
@@ -678,102 +664,157 @@ namespace EipTagLibrary
                         throw new NotSupportedException($"Unsupported format: {format}");
                 }
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 throw new Exception($"Failed to convert value to format '{format}'", ex);
             }
         }
 
         /// <summary>
-        /// 将原始数据转换为TagGroup的值数组
+        /// 将原始short数组转换为TagGroup中各Item对应的值，支持BIT、数组及多种格式
         /// </summary>
         /// <param name="group">TagGroup对象</param>
-        /// <param name="rawValues">原始short数组</param>
-        /// <returns>转换后的对象数组</returns>
-        /// <remarks>
-        /// 根据每个Item的格式将原始数据转换为相应的类型。
-        /// 支持数组项和位操作的特殊处理。
-        /// </remarks>
-        object lock1 = new object();
-        private object[] ConvertRawValuesToTagGroup(TagGroup group, ushort[] rawValues)
+        /// <param name="rawValues">PLC读取到的原始short数组</param>
+        /// <returns>转换后的对象数组（长度为TagGroup.Size）</returns>
+        private object[] ConvertRawValuesToTagGroup(TagGroup group, object rawValues)
         {
-            lock (lock1)
-            {
-                var result = new object[rawValues.Length];
-                int currentOffset = 0;
+            var result = new object[group.Size];
 
-                foreach (var block in group.Blocks)
-                {
-                    if (block.Type == "JobDataRequestReplyBlock")
-                    {
+            foreach (var block in group.Blocks) {
+                int blockBaseOffset = block.Offset;
 
+                foreach (var item in block.Items) {
+                    int baseOffset = blockBaseOffset + int.Parse(item.Offset);
+
+                    if (item.Format.ToUpper() == "BIT") {
+                        string[] parts = item.Offset.Split(':');
+                        if (parts.Length != 2)
+                            throw new ArgumentException($"Invalid BIT offset for {item.Name}");
+
+                        int wordOffsetBase = int.Parse(parts[0]);
+                        int bitOffsetBase = int.Parse(parts[1]);
+
+                        bool bitValue = ReadBitValue(rawValues, blockBaseOffset + wordOffsetBase, bitOffsetBase);
+                        item.Value = bitValue;
+                        result[blockBaseOffset + wordOffsetBase] = bitValue;
                     }
-                    currentOffset = block.Offset;
-                    int wordOffset = 0;
-
-
-
-                    foreach (var item in block.Items)
-                    {
-
-                        if (item is ArrayItem arrayItem)
-                        {
-                            ProcessArrayItem(arrayItem, rawValues, result, ref currentOffset);
-                        }
-                        else
-                        {
-                            if (item.Format == "BIT")
-                            {
-                                string[] offsetParts = item.Offset.Split(':');
-
-                                int owordOffset = int.Parse(offsetParts[0]);
-                                if(offsetParts.Length==1)
-                                {
-                                    currentOffset = block.Offset + int.Parse(item.Offset);
-
-                                }
-                                if (owordOffset != wordOffset && offsetParts.Length == 2)
-                                {
-                                    currentOffset = currentOffset + owordOffset;
-                                    wordOffset = owordOffset;
-                                }
-                            }
-                            else
-                            {
-                                if (item.Name == "ProcessingFlagMachineLocalNo")
-                                {
-
-                                }
-
-                                currentOffset = block.Offset + int.Parse(item.Offset);
-                            }
-                            if (currentOffset == 563 )
-                            {
-
-                            }
-
-                            ProcessSingleItem(item, rawValues, result, currentOffset);
-
-                        }
+                    else {
+                        object val = ReadValueByFormat(rawValues, item.Format, baseOffset, item.Length);
+                        item.Value = val;
+                        result[baseOffset] = val;
                     }
                 }
+            }
 
-                return result;
+            return result;
+        }
+        private object ReadValueByFormat(object rawValues, string format, int absoluteWordOffset, int length)
+        {
+            // length单位为short字数量
+
+            if (rawValues is short[] shortArray) {
+                if (absoluteWordOffset + length > shortArray.Length)
+                    throw new IndexOutOfRangeException("shortArray length exceeded");
+
+                switch (format.ToUpper()) {
+                    case "INT":
+                    case "WORD":
+                        return shortArray[absoluteWordOffset];
+                    case "DINT":
+                    case "DWORD":
+                        // 2个short合成int，低位字在前
+                        int low = (ushort)shortArray[absoluteWordOffset];
+                        int high = (ushort)shortArray[absoluteWordOffset + 1];
+                        return (high << 16) | low;
+                    case "REAL": {
+                            // 2个short转float
+                            byte[] bytes = new byte[4];
+                            Buffer.BlockCopy(shortArray, absoluteWordOffset * 2, bytes, 0, 4);
+                            return BitConverter.ToSingle(bytes, 0);
+                        }
+                    // 增加其他格式处理...
+                    default:
+                        throw new NotSupportedException($"Format {format} not supported for short[]");
+                }
+            }
+            else if (rawValues is int[] intArray) {
+                int intIndex = absoluteWordOffset / 2;
+                int shortInInt = absoluteWordOffset % 2;
+
+                if (intIndex >= intArray.Length)
+                    throw new IndexOutOfRangeException("intArray length exceeded");
+
+                switch (format.ToUpper()) {
+                    case "INT": {
+                            // 取对应16位
+                            int val = intArray[intIndex];
+                            ushort wordValue = (shortInInt == 0) ? (ushort)(val & 0xFFFF) : (ushort)((val >> 16) & 0xFFFF);
+                            return (short)wordValue;
+                        }
+                    case "DINT": {
+                            if (shortInInt != 0)
+                                throw new ArgumentException("DINT读取必须从偶数字边界开始");
+                            return intArray[intIndex];
+                        }
+                    case "REAL": {
+                            if (shortInInt != 0)
+                                throw new ArgumentException("REAL读取必须从偶数字边界开始");
+                            byte[] bytes = BitConverter.GetBytes(intArray[intIndex]);
+                            return BitConverter.ToSingle(bytes, 0);
+                        }
+                    // 其他格式根据需求添加
+                    default:
+                        throw new NotSupportedException($"Format {format} not supported for int[]");
+                }
+            }
+            else {
+                throw new NotSupportedException($"Unsupported rawValues type for format read: {rawValues.GetType().Name}");
+            }
+        }
+        /// <summary>
+        /// 读取单个位的方法 
+        /// </summary>
+        /// <param name="rawValues"></param>
+        /// <param name="absoluteWordOffset"></param>
+        /// <param name="bitOffset"></param>
+        /// <returns></returns>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
+        private bool ReadBitValue(object rawValues, int absoluteWordOffset, int bitOffset)
+        {
+            if (rawValues is short[] shortArray) {
+                if (absoluteWordOffset >= shortArray.Length)
+                    throw new IndexOutOfRangeException($"shortArray index {absoluteWordOffset} out of range");
+                return (shortArray[absoluteWordOffset] & (1 << bitOffset)) != 0;
+            }
+            else if (rawValues is ushort[] ushortArray) {
+                if (absoluteWordOffset >= ushortArray.Length)
+                    throw new IndexOutOfRangeException($"ushortArray index {absoluteWordOffset} out of range");
+                return (ushortArray[absoluteWordOffset] & (1 << bitOffset)) != 0;
+            }
+            else if (rawValues is int[] intArray) {
+                int intIndex = absoluteWordOffset / 2;
+                int shortInInt = absoluteWordOffset % 2;
+                if (intIndex >= intArray.Length)
+                    throw new IndexOutOfRangeException($"intArray index {intIndex} out of range");
+
+                int val = intArray[intIndex];
+                int wordValue = (shortInInt == 0) ? (val & 0xFFFF) : ((val >> 16) & 0xFFFF);
+                return (wordValue & (1 << bitOffset)) != 0;
+            }
+            else {
+                throw new NotSupportedException($"Unsupported rawValues type for bit read: {rawValues.GetType().Name}");
             }
         }
 
-        private void ProcessArrayItem(ArrayItem arrayItem, ushort[] rawValues, object[] result, ref int currentIndex)
+        private void ProcessArrayItem(ArrayItem arrayItem, short[] rawValues, object[] result, ref int currentIndex)
         {
-            if (arrayItem.Item.Format == "BIT")
-            {
+            if (arrayItem.Item.Format == "BIT") {
                 string[] offsetParts = arrayItem.Item.Offset.Split(':');
-                if (offsetParts.Length == 2)
-                {
+                if (offsetParts.Length == 2) {
                     int wordOffset = int.Parse(offsetParts[0]);
                     int bitOffset = int.Parse(offsetParts[1]);
 
-                    for (int i = 0; i < arrayItem.Count; i++)
-                    {
+                    for (int i = 0; i < arrayItem.Count; i++) {
                         int totalBits = bitOffset + i;
                         int actualWordOffset = wordOffset + (totalBits / 16);
                         int actualBitOffset = totalBits % 16;
@@ -786,10 +827,8 @@ namespace EipTagLibrary
                 }
                 currentIndex += arrayItem.Count;
             }
-            else
-            {
-                for (int i = 0; i < arrayItem.Count; i++)
-                {
+            else {
+                for (int i = 0; i < arrayItem.Count; i++) {
                     var value = ConvertValueByFormat(arrayItem.Item.Format, rawValues, currentIndex, arrayItem.Item.Length);
                     result[currentIndex] = value;
                     arrayItem.Item.Value = value;  // 更新Value属性
@@ -798,54 +837,35 @@ namespace EipTagLibrary
             }
         }
 
-        private void ProcessSingleItem(ItemBase item, ushort[] rawValues, object[] result,  int currentIndex)
+        private void ProcessSingleItem(ItemBase item, short[] rawValues, object[] result, ref int currentIndex)
         {
-            try
-            {
-                if (item.Format == "BIT")
-                {
-                   
-                   
-                    int wordOffset = 0;
-                    int bitOffset = 0;
-                    string[] offsetParts = item.Offset.Split(':');
-                    if (offsetParts.Length == 2)
-                    {
-                        wordOffset = int.Parse(offsetParts[0]);
-                        bitOffset = int.Parse(offsetParts[1]);
+            if (item.Format == "BIT") {
+                if (currentIndex == 0) {
 
-                        // 读取位值并更新Value属性
-                        bool value = (rawValues[currentIndex] & (1 << bitOffset)) != 0;
-                        result[currentIndex] = value;
-                        item.Value = value;  // 更新Value属性
-                    }
-                    if (offsetParts.Length == 1)
-                    {
-                        item.Value = ConvertValueByFormat(item.Format, rawValues, currentIndex, item.Length);// rawValues[currentIndex];
+                }
+                int wordOffset = 0;
+                int bitOffset = 0;
+                string[] offsetParts = item.Offset.Split(':');
+                if (offsetParts.Length == 2) {
+                    wordOffset = int.Parse(offsetParts[0]);
+                    bitOffset = int.Parse(offsetParts[1]);
 
-
-                    }
-                        // currentIndex = currentIndex+wordOffset;
-                    }
-                else
-                {
-                    if (currentIndex == 563)
-                    {
-
-                    }
-                    if (item.Name == "ProcessingFlagMachineLocalNo")
-                    {
-
-                    }
-                    var value = ConvertValueByFormat(item.Format, rawValues, currentIndex, item.Length);
+                    // 读取位值并更新Value属性
+                    bool value = (rawValues[currentIndex] & (1 << bitOffset)) != 0;
                     result[currentIndex] = value;
                     item.Value = value;  // 更新Value属性
-                  //  currentIndex += item.Length;
                 }
+                // currentIndex = currentIndex+wordOffset;
             }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error processing item '{item.Name}' at offset {currentIndex}: {ex.Message}", ex);
+            else {
+                if (currentIndex == 641) {
+
+                }
+
+                var value = ConvertValueByFormat(item.Format, rawValues, currentIndex, item.Length);
+                result[currentIndex] = value;
+                item.Value = value;  // 更新Value属性
+                currentIndex += item.Length;
             }
         }
 
@@ -872,107 +892,74 @@ namespace EipTagLibrary
         /// <summary>
         /// 根据格式转换值
         /// </summary>
-        /// <param name="format">数据格式</param>
-        /// <param name="rawValues">原始数据数组</param>
-        /// <param name="offset">偏移量</param>
-        /// <param name="length">数据长度</param>
-        /// <param name="offsetStr">位偏移字符串（可选）</param>
-        /// <returns>转换后的值</returns>
-        /// <exception cref="NotSupportedException">
-        /// 当指定了不支持的格式时抛出
-        /// </exception>
-        /// <remarks>
-        /// 支持的格式：
-        /// - BIT：布尔值
-        /// - INT/SINT：16/32位整数
-        /// - FLOAT：32位浮点数
-        /// - ASCII：字符串
-        /// </remarks>
-        private object ConvertValueByFormat(string format, ushort[] rawValues, int offset, int length, string offsetStr = null)
+        private object ConvertValueByFormat(string format, short[] rawValues, int offset, int length, string offsetStr = null)
         {
-            try
-            {
-                switch (format)
-                {
-                    case "BIN":
+            switch (format) {
+                case "BIT":
+                    if (string.IsNullOrEmpty(offsetStr))
+                        return (rawValues[offset / 16] & (1 << (offset % 16))) != 0;
+                    return ConvertBitValue(offsetStr, rawValues);
 
-                       return UshortArrayToBinary(rawValues, offset, length);
+                case "INT":
+                case "SINT":
+                    if (length == 1)
+                        return (int)rawValues[offset];
+                    else if (length == 2)
+                        return (int)((rawValues[offset + 1] << 16) | (rawValues[offset] & 0xFFFF));
 
-                    case "INT":
-                    case "SINT":
-                        if (length == 1)
-                            return (int)rawValues[offset];
-                        else if (length == 2)
-                            return (int)((rawValues[offset] << 16) | (rawValues[offset + 1] & 0xFFFF));
-                        break;
+                    break;
 
-                    case "FLOAT":
-                        if (length == 2)
-                        {
-                            var bytes = new byte[4];
-                            bytes[0] = (byte)(rawValues[offset] & 0xFF);
-                            bytes[1] = (byte)(rawValues[offset] >> 8);
-                            bytes[2] = (byte)(rawValues[offset + 1] & 0xFF);
-                            bytes[3] = (byte)(rawValues[offset + 1] >> 8);
-                            return BitConverter.ToSingle(bytes, 0);
-                        }
-                        break;
+                case "FLOAT":
+                    if (length == 2) {
+                        var bytes = new byte[4];
+                        bytes[0] = (byte)(rawValues[offset] & 0xFF);
+                        bytes[1] = (byte)(rawValues[offset] >> 8);
+                        bytes[2] = (byte)(rawValues[offset + 1] & 0xFF);
+                        bytes[3] = (byte)(rawValues[offset + 1] >> 8);
+                        return BitConverter.ToSingle(bytes, 0);
+                    }
+                    break;
 
-                    case "ASCII":
-                        var chars = new char[length * 2];
-                        for (int i = 0; i < length; i++)
-                        {
-                            chars[i * 2] = (char)(rawValues[offset + i] & 0xFF);
-                            chars[i * 2 + 1] = (char)(rawValues[offset + i] >> 8);
-                        }
-                        return new string(chars).TrimEnd('\0');
-                        
-                    case "LONG":
-                        if (length == 4)
-                        {
-                            long value = (long)(rawValues[offset] & 0xFFFF) |
-                                         (long)(rawValues[offset + 1] & 0xFFFF) << 16 |
-                                         (long)(rawValues[offset + 2] & 0xFFFF) << 32 |
-                                         (long)(rawValues[offset + 3] & 0xFFFF) << 48;
-                            return value;
-                        }
-                        break;
-
-                    case "DOUBLE":
-                        if (length == 4)
-                        {
-                            var bytes = new byte[8];
-                            bytes[0] = (byte)(rawValues[offset] & 0xFF);
-                            bytes[1] = (byte)(rawValues[offset] >> 8);
-                            bytes[2] = (byte)(rawValues[offset + 1] & 0xFF);
-                            bytes[3] = (byte)(rawValues[offset + 1] >> 8);
-                            bytes[4] = (byte)(rawValues[offset + 2] & 0xFF);
-                            bytes[5] = (byte)(rawValues[offset + 2] >> 8);
-                            bytes[6] = (byte)(rawValues[offset + 3] & 0xFF);
-                            bytes[7] = (byte)(rawValues[offset + 3] >> 8);
-                            return BitConverter.ToDouble(bytes, 0);
-                        }
-                        break;
-                }
-
-                throw new NotSupportedException($"Unsupported format: {format}");
+                case "ASCII":
+                    var chars = new char[length * 2];
+                    for (int i = 0; i < length; i++) {
+                        chars[i * 2] = (char)(rawValues[offset + i] & 0xFF);
+                        chars[i * 2 + 1] = (char)(rawValues[offset + i] >> 8);
+                    }
+                    return new string(chars).TrimEnd('\0');
             }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error converting value at offset {offset} to format {format}", ex);
-            }
+
+            throw new NotSupportedException($"Unsupported format: {format}");
+        }
+        /// <summary>
+        /// 读取位值辅助方法
+        /// </summary>
+        private bool ConvertBitValue(string offsetStr, short[] rawValues)
+        {
+            var parts = offsetStr.Split(':');
+            if (parts.Length != 2)
+                throw new ArgumentException($"Invalid BIT offset format: {offsetStr}");
+
+            int wordOffset = int.Parse(parts[0]);
+            int bitOffset = int.Parse(parts[1]);
+
+            if (wordOffset >= rawValues.Length)
+                throw new IndexOutOfRangeException($"Word offset {wordOffset} exceeds rawValues length {rawValues.Length}");
+
+            if (bitOffset < 0 || bitOffset > 15)
+                throw new ArgumentException($"Bit offset {bitOffset} must be between 0 and 15");
+
+            return (rawValues[wordOffset] & (1 << bitOffset)) != 0;
         }
 
-      
 
         /// <summary>
         /// 检查值是否发生变化
         /// </summary>
-        private bool HasValuesChanged(string groupName, ushort[] currentValues)
+        private bool HasValuesChanged(string groupName, short[] currentValues)
         {
             // 如果是第一次读取，直接返回true
-            if (!lastValues.ContainsKey(groupName))
-            {
+            if (!lastValues.ContainsKey(groupName)) {
                 lastValues[groupName] = currentValues.ToArray();
                 return true;
             }
@@ -981,17 +968,14 @@ namespace EipTagLibrary
             bool hasChanges = false;
 
             // 检查长度是否一致
-            if (lastValueArray.Length != currentValues.Length)
-            {
+            if (lastValueArray.Length != currentValues.Length) {
                 lastValues[groupName] = currentValues.ToArray();
                 return true;
             }
 
             // 逐个比较值
-            for (int i = 0; i < currentValues.Length; i++)
-            {
-                if (AreValuesEqual(lastValueArray[i], currentValues[i]))
-                {
+            for (int i = 0; i < currentValues.Length; i++) {
+                if (AreValuesEqual(lastValueArray[i], currentValues[i])) {
                     hasChanges = true;
                     // 更新变化的值
                     lastValueArray[i] = currentValues[i];
@@ -999,8 +983,7 @@ namespace EipTagLibrary
             }
 
             // 如果有变化，更新lastValues
-            if (hasChanges)
-            {
+            if (hasChanges) {
                 //  lastValues[groupName] = lastValueArray;
             }
 
@@ -1018,13 +1001,11 @@ namespace EipTagLibrary
                 return false;
 
             // 处理数组类型
-            if (value1 is Array arr1 && value2 is Array arr2)
-            {
+            if (value1 is Array arr1 && value2 is Array arr2) {
                 if (arr1.Length != arr2.Length)
                     return false;
 
-                for (int i = 0; i < arr1.Length; i++)
-                {
+                for (int i = 0; i < arr1.Length; i++) {
                     if (!AreValuesEqual(arr1.GetValue(i), arr2.GetValue(i)))
                         return false;
                 }
@@ -1032,12 +1013,10 @@ namespace EipTagLibrary
             }
 
             // 处理浮点数
-            if (value1 is float f1 && value2 is float f2)
-            {
+            if (value1 is float f1 && value2 is float f2) {
                 return Math.Abs(f1 - f2) < float.Epsilon;
             }
-            if (value1 is double d1 && value2 is double d2)
-            {
+            if (value1 is double d1 && value2 is double d2) {
                 return Math.Abs(d1 - d2) < double.Epsilon;
             }
 
@@ -1057,14 +1036,11 @@ namespace EipTagLibrary
         private int GetBlockTotalLength(Block block)
         {
             int totalLength = 0;
-            foreach (var item in block.Items)
-            {
-                if (item is ArrayItem arrayItem)
-                {
+            foreach (var item in block.Items) {
+                if (item is ArrayItem arrayItem) {
                     totalLength += arrayItem.Count * arrayItem.Item.Length;
                 }
-                else
-                {
+                else {
                     totalLength += item.Length;
                 }
             }
@@ -1076,8 +1052,7 @@ namespace EipTagLibrary
         /// </summary>
         private void ValidateNotDisposed()
         {
-            if (disposed)
-            {
+            if (disposed) {
                 throw new ObjectDisposedException(nameof(EipTagAccess));
             }
         }
@@ -1093,25 +1068,20 @@ namespace EipTagLibrary
         /// </remarks>
         public void Dispose()
         {
-            if (!disposed)
-            {
-                try
-                {
+            if (!disposed) {
+                try {
                     StopMonitoring();
                     cancellationTokenSource?.Dispose();
 
-                    if (variableCompolet != null)
-                    {
+                    if (variableCompolet != null) {
                         variableCompolet.Active = false;
                         variableCompolet.Dispose();
                     }
                 }
-                catch (Exception)
-                {
+                catch (Exception) {
                     // Ignore disposal errors
                 }
-                finally
-                {
+                finally {
                     disposed = true;
                 }
             }
@@ -1123,18 +1093,16 @@ namespace EipTagLibrary
         /// <param name="group">要监控的TagGroup</param>
         /// <param name="convertedValues">转换后的值数组</param>
         /// <returns>如果有值变化返回true，否则返回false</returns>
-        private bool ProcessTagGroupMonitoring(TagGroup group, ushort[] convertedValues)
+        private bool ProcessTagGroupMonitoring(TagGroup group, short[] convertedValues)
         {
             bool hasChanges = false;
             int currentIndex = 0;
 
-            foreach (var block in group.Blocks)
-            {
-                //if (!ShouldMonitorBlock(block))
-                //{
-                //    currentIndex += GetBlockTotalLength(block);
-                //    continue;
-                //}
+            foreach (var block in group.Blocks) {
+                if (!ShouldMonitorBlock(block)) {
+                    currentIndex += GetBlockTotalLength(block);
+                    continue;
+                }
 
                 currentIndex = ProcessBlockMonitoring(group.Name, block, convertedValues, currentIndex, ref hasChanges);
             }
@@ -1151,24 +1119,22 @@ namespace EipTagLibrary
         /// <param name="startIndex">起始索引</param>
         /// <param name="hasChanges">值变化标志</param>
         /// <returns>处理后的当前索引</returns>
-        private int ProcessBlockMonitoring(string groupName, Block block, ushort[] convertedValues, int startIndex, ref bool hasChanges)
+        private int ProcessBlockMonitoring(string groupName, Block block, short[] convertedValues, int startIndex, ref bool hasChanges)
         {
             int currentIndex = startIndex;
 
-            foreach (var item in block.Items)
-            {
-                if (item is ArrayItem arrayItem)
-                {
+            foreach (var item in block.Items) {
+                if (item is ArrayItem arrayItem) {
                     currentIndex = ProcessArrayItemMonitoring(groupName, block, arrayItem, convertedValues, currentIndex, ref hasChanges);
                 }
-                else
-                {
+                else {
                     currentIndex = ProcessSingleItemMonitoring(groupName, block, item, convertedValues, currentIndex, ref hasChanges);
                 }
             }
 
             return currentIndex;
         }
+
 
         /// <summary>
         /// 处理单个项的数据变化监控
@@ -1177,7 +1143,7 @@ namespace EipTagLibrary
             string groupName,
             Block block,
             ItemBase item,
-            ushort[] convertedValues,
+            short[] convertedValues,
             int currentIndex,
             ref bool hasChanges)
         {
@@ -1185,30 +1151,21 @@ namespace EipTagLibrary
             int wordOffset = 0;
             int bitOffset = 0;
 
-            if (item.Format == "BIT")
-            {
-                if (item.Name == "RecipeParameterRequestCommand")
-                { 
-                
-                }
-
+            if (item.Format == "BIT") {
                 // 解析位偏移量
                 string[] offsetParts = item.Offset.Split(':');
 
-                if (offsetParts.Length == 2)
-                {
+                if (offsetParts.Length == 2) {
                     wordOffset = int.Parse(offsetParts[0]);
                     bitOffset = int.Parse(offsetParts[1]);
 
                     // 获取字值并转换为short
-                    //short wordValue = Convert.ToInt16(convertedValues[block.Offset + wordOffset]);
-                    short wordValue = Convert.ToInt16(convertedValues[wordOffset * 16 + bitOffset]);
+                    short wordValue = Convert.ToInt16(convertedValues[block.Offset + wordOffset]);
 
                     // 获取指定位的布尔值
                     bool bitValue = (wordValue & (1 << bitOffset)) != 0;
                     bool oldValue = (bool)item.Value;
-                    if (item.Value != null && oldValue != (bitValue))
-                    {
+                    if (item.Value != null && oldValue != (bitValue)) {
                         ProcessBitItem(
                             groupName,
                             block.Type,
@@ -1231,24 +1188,21 @@ namespace EipTagLibrary
             string groupName,
             Block block,
             ArrayItem arrayItem,
-            ushort[] convertedValues,
+            short[] convertedValues,
             int currentIndex,
             ref bool hasChanges)
         {
-            if (arrayItem.Item.Format == "BIT")
-            {
+            if (arrayItem.Item.Format == "BIT") {
                 // 解析位偏移量
                 string[] offsetParts = arrayItem.Item.Offset.Split(':');
                 int baseWordOffset = 0;
                 int baseBitOffset = 0;
 
-                if (offsetParts.Length == 2)
-                {
+                if (offsetParts.Length == 2) {
                     baseWordOffset = int.Parse(offsetParts[0]);
                     baseBitOffset = int.Parse(offsetParts[1]);
 
-                    for (int i = 0; i < arrayItem.Count; i++)
-                    {
+                    for (int i = 0; i < arrayItem.Count; i++) {
                         // 计算实际的位偏移
                         int totalBits = baseBitOffset + i;
                         int actualWordOffset = baseWordOffset + (totalBits / 16);
@@ -1260,8 +1214,7 @@ namespace EipTagLibrary
                         // 获取指定位的布尔值
                         bool bitValue = (wordValue & (1 << actualBitOffset)) != 0;
 
-                        if (ShouldNotifyValueChange(arrayItem.Item, bitValue))
-                        {
+                        if (ShouldNotifyValueChange(arrayItem.Item, bitValue)) {
                             ProcessBitItem(
                                 groupName,
                                 block.Type,
@@ -1289,8 +1242,7 @@ namespace EipTagLibrary
         private bool ShouldMonitorBlock(Block block)
         {
             return block.Type.EndsWith("Report", StringComparison.OrdinalIgnoreCase) ||
-                   block.Type.EndsWith("Reply", StringComparison.OrdinalIgnoreCase) ||
-                   block.Type.EndsWith("Command", StringComparison.OrdinalIgnoreCase);
+                   block.Type.EndsWith("Reply", StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -1310,6 +1262,7 @@ namespace EipTagLibrary
 
             return !AreValuesEqual(item.Value, value);
         }
+
 
         /// <summary>
         /// 处理BIT类型的Item数据
@@ -1333,11 +1286,9 @@ namespace EipTagLibrary
             int bitOffset,
             int arrayIndex = -1)
         {
-            try
-            {
+            try {
                 // 验证偏移量范围
-                if (bitOffset < 0 || bitOffset > 15)
-                {
+                if (bitOffset < 0 || bitOffset > 15) {
                     throw new ArgumentException($"Bit offset {bitOffset} must be between 0 and 15");
                 }
 
@@ -1355,8 +1306,7 @@ namespace EipTagLibrary
                     arrayIndex
                 ));
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Console.WriteLine($"Error processing BIT item {item.Name}: {ex.Message}");
             }
         }
@@ -1371,18 +1321,16 @@ namespace EipTagLibrary
         {
             ValidateNotDisposed();
 
-            try
-            {
+            try {
                 // 查找指定的TagGroup
                 var group = tagConfig.TagGroups.FirstOrDefault(g =>
                     g.Name.Equals(groupName, StringComparison.OrdinalIgnoreCase));
 
                 if (group == null)
                     throw new ArgumentException($"TagGroup '{groupName}' not found");
-                // 读取原始数据
-                ushort[] rawValues = ReadRawValues(group.Name); //(short[])variableCompolet.ReadVariable(groupName);
 
-                ConvertRawValuesToTagGroup(group, rawValues);
+                // 读取原始数据
+                short[] rawValues = ReadRawValues(group.Name);
 
                 // 查找指定的Block
                 var block = group.Blocks.FirstOrDefault(b =>
@@ -1391,20 +1339,77 @@ namespace EipTagLibrary
                 if (block == null)
                     throw new ArgumentException($"Block '{blockType}' not found in TagGroup '{groupName}'");
 
+                // 计算Block的起始位置
+                int currentIndex = block.Offset;
 
+                // 更新Block中所有Items的值
+                foreach (var item in block.Items) {
+                    if (item is ArrayItem arrayItem) {
+                        if (arrayItem.Item.Format == "BIT") {
+                            string[] offsetParts = arrayItem.Item.Offset.Split(':');
+                            if (offsetParts.Length == 2) {
+                                int wordOffset = int.Parse(offsetParts[0]);
+                                int bitOffset = int.Parse(offsetParts[1]);
 
-                //}
+                                var boolArray = new bool[arrayItem.Count];
+                                for (int i = 0; i < arrayItem.Count; i++) {
+                                    int totalBits = bitOffset + i;
+                                    int actualWordOffset = wordOffset + (totalBits / 16);
+                                    int actualBitOffset = totalBits % 16;
+
+                                    boolArray[i] = (rawValues[currentIndex + actualWordOffset] & (1 << actualBitOffset)) != 0;
+                                }
+                                arrayItem.Item.Value = boolArray;
+                            }
+                            currentIndex += arrayItem.Count; // 位数组长度即为位数
+                        }
+                        else {
+                            var arrayValues = new object[arrayItem.Count];
+                            int startIndex = currentIndex + arrayItem.BaseOffset; // 计算数组实际起始索引
+                            for (int i = 0; i < arrayItem.Count; i++) {
+                                arrayValues[i] = ConvertValueByFormat(
+                                    arrayItem.Item.Format,
+                                    rawValues,
+                                    startIndex + i * arrayItem.Item.Length,
+                                    arrayItem.Item.Length
+                                );
+                            }
+                            arrayItem.Item.Value = arrayValues;
+                            currentIndex += arrayItem.Count * arrayItem.Item.Length;
+                        }
+                    }
+                    else {
+                        if (item.Format == "BIT") {
+                            string[] offsetParts = item.Offset.Split(':');
+                            if (offsetParts.Length == 2) {
+                                int wordOffset = int.Parse(offsetParts[0]);
+                                int bitOffset = int.Parse(offsetParts[1]);
+
+                                item.Value = (rawValues[currentIndex + wordOffset] & (1 << bitOffset)) != 0;
+                            }
+                            currentIndex += item.Length; // 位类型长度通常为1字
+                        }
+                        else {
+                            item.Value = ConvertValueByFormat(
+                                item.Format,
+                                rawValues,
+                                currentIndex,
+                                item.Length
+                            );
+                            currentIndex += item.Length;
+                        }
+                    }
+                }
 
                 return block;
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 throw new Exception($"Error reading block values for {groupName}.{blockType}: {ex.Message}", ex);
             }
         }
 
         /// <summary>
-        /// 读取单个Item的值
+        /// 读取单个Item的值，支持SimpleItem和ArrayItem
         /// </summary>
         /// <param name="groupName">TagGroup名称</param>
         /// <param name="blockType">Block类型</param>
@@ -1414,271 +1419,230 @@ namespace EipTagLibrary
         {
             ValidateNotDisposed();
 
-            try
-            {
+            try {
                 // 查找指定的TagGroup和Block
                 var group = tagConfig.TagGroups.FirstOrDefault(g =>
                     g.Name.Equals(groupName, StringComparison.OrdinalIgnoreCase));
-
                 if (group == null)
                     throw new ArgumentException($"TagGroup '{groupName}' not found");
 
                 var block = group.Blocks.FirstOrDefault(b =>
                     b.Type.Equals(blockType, StringComparison.OrdinalIgnoreCase));
-
                 if (block == null)
                     throw new ArgumentException($"Block '{blockType}' not found in TagGroup '{groupName}'");
 
-                // 读取当前值
-                var rawValues = ReadRawValues(groupName);
-                int currentIndex = block.Offset;
-                // 查找并读取指定的Item
+                // 读取原始数据
+                short[] rawValues = ReadRawValues(groupName);
 
-                ConvertRawValuesToTagGroup(group, rawValues);
-
-                //
-                var item = block.Items.FirstOrDefault(i =>
-                    i.Name.Equals(itemName, StringComparison.OrdinalIgnoreCase));
-
+                // 查找SimpleItem或ArrayItem
+                var item = block.Items.FirstOrDefault(i => i.Name.Equals(itemName, StringComparison.OrdinalIgnoreCase));
                 if (item == null)
                     throw new ArgumentException($"Item '{itemName}' not found in block '{blockType}'");
-                return item.Value;
+                int blockIndex = block.Index;
+                int blockBaseOffset = block.Offset;
 
-                //// 查找并读取指定的Item
-                //foreach (var item in block.Items)
-                //{
-                //    if (item is ArrayItem arrayItem)
-                //    {
-                //        if (arrayItem.Name == itemName)
-                //        {
-                //            if (arrayItem.Item.Format == "BIT")
-                //            {
-                //                var boolArray = new bool[arrayItem.Count];
-                //                string[] offsetParts = arrayItem.Item.Offset.Split(':');
-                //                if (offsetParts.Length == 2)
-                //                {
-                //                    int wordOffset = int.Parse(offsetParts[0]);
-                //                    int bitOffset = int.Parse(offsetParts[1]);
+                // 处理ArrayItem
+                if (item is ArrayItem arrayItem) {
+                    if (arrayItem.Item.Format == "BIT") {
+                        // 位数组读取
+                        string[] offsetParts = arrayItem.Item.Offset.Split(':');
+                        if (offsetParts.Length != 2)
+                            throw new ArgumentException($"Invalid BIT offset format for array item '{itemName}'");
 
-                //                    for (int i = 0; i < arrayItem.Count; i++)
-                //                    {
-                //                        int totalBits = bitOffset + i;
-                //                        int actualWordOffset = wordOffset + (totalBits / 16);
-                //                        int actualBitOffset = totalBits % 16;
-                //                        boolArray[i] = (rawValues[actualWordOffset] & (1 << actualBitOffset)) != 0;
-                //                    }
-                //                }
-                //                arrayItem.Item.Value = boolArray;
-                //                return boolArray;
-                //            }
-                //            else
-                //            {
-                //                var values = new object[arrayItem.Count];
-                //                for (int i = 0; i < arrayItem.Count; i++)
-                //                {
-                //                    values[i] = ConvertValueByFormat(
-                //                        arrayItem.Item.Format,
-                //                        rawValues,
-                //                        currentIndex + i * arrayItem.Item.Length,
-                //                        arrayItem.Item.Length
-                //                    );
-                //                }
-                //                arrayItem.Item.Value = values;
-                //                return values;
-                //            }
-                //        }
-                //        currentIndex += arrayItem.Count * arrayItem.Item.Length;
-                //    }
-                //    else if (item.Name == itemName)
-                //    {
-                //        if (item.Format == "BIT")
-                //        {
-                //            string[] offsetParts = item.Offset.Split(':');
-                //            if (offsetParts.Length == 2)
-                //            {
-                //                int wordOffset = int.Parse(offsetParts[0]);
-                //                int bitOffset = int.Parse(offsetParts[1]);
-                //                bool value = (rawValues[wordOffset] & (1 << bitOffset)) != 0;
-                //                item.Value = value;
-                //                return value;
-                //            }
-                //        }
-                //        else
-                //        {
-                //            var value = ConvertValueByFormat(item.Format, rawValues, currentIndex, item.Length);
-                //            item.Value = value;
-                //            return value;
-                //        }
-                //    }
-                //    currentIndex += item is ArrayItem arr ? arr.Count * arr.Item.Length : item.Length;
-                //}
+                        int wordOffsetBase = int.Parse(offsetParts[0]);
+                        int bitOffsetBase = int.Parse(offsetParts[1]);
 
-                //throw new ArgumentException($"Item '{itemName}' not found in block '{blockType}'");
+                        bool[] boolArray = new bool[arrayItem.Count];
+                        for (int i = 0; i < arrayItem.Count; i++) {
+                            int totalBitIndex = bitOffsetBase + i;
+                            int actualWordOffset = wordOffsetBase + (totalBitIndex / 16);
+                            int actualBitOffset = totalBitIndex % 16;
+
+                            int rawIndex = blockBaseOffset + actualWordOffset;
+                            if (rawIndex >= rawValues.Length)
+                                throw new IndexOutOfRangeException($"RawValues index {rawIndex} out of range");
+
+                            boolArray[i] = (rawValues[rawIndex] & (1 << actualBitOffset)) != 0;
+                        }
+                        arrayItem.Item.Value = boolArray;
+                        return boolArray;
+                    }
+                    else {
+                        // 其他数组类型
+                        object[] arrayValues = new object[arrayItem.Count];
+                        int startIndex = blockBaseOffset + arrayItem.BaseOffset;
+                        for (int i = 0; i < arrayItem.Count; i++) {
+                            int valueOffset = startIndex + i * arrayItem.Item.Length;
+                            if (valueOffset >= rawValues.Length)
+                                throw new IndexOutOfRangeException($"RawValues index {valueOffset} out of range");
+
+                            arrayValues[i] = ConvertValueByFormat(arrayItem.Item.Format, rawValues, valueOffset, arrayItem.Item.Length);
+                        }
+                        arrayItem.Item.Value = arrayValues;
+                        return arrayValues;
+                    }
+                }
+                else {
+                    // SimpleItem处理
+                    if (item.Format == "BIT") {
+                        string[] offsetParts = item.Offset.Split(':');
+                        if (offsetParts.Length != 2)
+                            throw new ArgumentException($"Invalid BIT offset format for item '{itemName}'");
+
+                        int wordOffset = int.Parse(offsetParts[0]);
+                        int bitOffset = int.Parse(offsetParts[1]);
+
+                        int rawIndex = blockBaseOffset + wordOffset;
+                        if (rawIndex >= rawValues.Length)
+                            throw new IndexOutOfRangeException($"RawValues index {rawIndex} out of range");
+
+                        bool bitValue = (rawValues[rawIndex] & (1 << bitOffset)) != 0;
+                        item.Value = bitValue;
+                        return bitValue;
+                    }
+                    else {
+                        int valueOffset = blockIndex + blockBaseOffset + int.Parse(item.Offset);
+                        if (valueOffset >= rawValues.Length)
+                            throw new IndexOutOfRangeException($"RawValues index {valueOffset} out of range");
+
+                        var val = ConvertValueByFormat(item.Format, rawValues, valueOffset, item.Length);
+                        item.Value = val;
+                        return val;
+                    }
+                }
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 throw new Exception($"Error reading item value: {ex.Message}", ex);
             }
         }
 
         /// <summary>
-        /// 写入单个Item的值
+        /// 写入单个Item的值（支持BIT位和数组）
         /// </summary>
         /// <param name="groupName">TagGroup名称</param>
         /// <param name="blockType">Block类型</param>
         /// <param name="itemName">Item名称</param>
-        /// <param name="value">要写入的值</param>
+        /// <param name="value">要写入的值（bool、bool[]、object[]、单值等）</param>
         public void WriteItemValue(string groupName, string blockType, string itemName, object value)
         {
             ValidateNotDisposed();
 
-            try
-            {
-                // 查找指定的TagGroup和Block
+            try {
+                // 查找指定的TagGroup
                 var group = tagConfig.TagGroups.FirstOrDefault(g =>
                     g.Name.Equals(groupName, StringComparison.OrdinalIgnoreCase));
-
                 if (group == null)
                     throw new ArgumentException($"TagGroup '{groupName}' not found");
 
+                // 查找指定的Block
                 var block = group.Blocks.FirstOrDefault(b =>
                     b.Type.Equals(blockType, StringComparison.OrdinalIgnoreCase));
-
                 if (block == null)
                     throw new ArgumentException($"Block '{blockType}' not found in TagGroup '{groupName}'");
 
-                // 读取当前值
-                // short[] rawValues = (short[])variableCompolet.ReadVariable(groupName);
-                ushort[] rawValues = ReadRawValues(groupName);
+                // 读取当前PLC数据，short[]格式
+                short[] rawValuesShort = ReadRawValues(groupName);
+                if (rawValuesShort == null || rawValuesShort.Length == 0)
+                    throw new InvalidOperationException("Failed to read raw PLC values.");
+
+                // 转成ushort[]方便无符号位操作
+                ushort[] rawValues = Array.ConvertAll(rawValuesShort, v => unchecked((ushort)v));
+
                 int currentIndex = block.Offset;
-
-                // 查找并更新指定的Item
                 bool itemFound = false;
-                int wordOffset = 0;
-                foreach (var item in block.Items)
-                {
-                    if (item is ArrayItem arrayItem && arrayItem.Name == itemName)
-                    {
+
+                foreach (var item in block.Items) {
+                    if (item is ArrayItem arrayItem && arrayItem.Name.Equals(itemName, StringComparison.OrdinalIgnoreCase)) {
                         itemFound = true;
-                        if (arrayItem.Item.Format == "BIT")
-                        {
-                            if (value is bool[] boolArray)
-                            {
-                                if (boolArray.Length != arrayItem.Count)
-                                    throw new ArgumentException($"Array length mismatch. Expected {arrayItem.Count}, got {boolArray.Length}");
 
-                                string[] offsetParts = arrayItem.Item.Offset.Split(':');
-                                if (offsetParts.Length == 2)
-                                {
-                                    wordOffset = int.Parse(offsetParts[0]);
-                                    int bitOffset = int.Parse(offsetParts[1]);
+                        if (arrayItem.Item.Format.ToUpper() == "BIT") {
+                            // BIT数组必须传入bool[]
+                            if (!(value is bool[] boolArray))
+                                throw new ArgumentException("Value must be bool[] for BIT array item");
 
-                                    for (int i = 0; i < arrayItem.Count; i++)
-                                    {
-                                        int totalBits = bitOffset + i;
-                                        int actualWordOffset = wordOffset + (totalBits / 16);
-                                        int actualBitOffset = totalBits % 16;
+                            if (boolArray.Length != arrayItem.Count)
+                                throw new ArgumentException($"Array length mismatch for BIT array item. Expected {arrayItem.Count}, got {boolArray.Length}");
 
-                                        if (boolArray[i])
-                                            rawValues[actualWordOffset] |= (ushort)(1 << actualBitOffset);
-                                        else
-                                            rawValues[actualWordOffset] &= (ushort)~(1 << actualBitOffset);
-                                    }
-                                }
+                            string[] offsetParts = arrayItem.Item.Offset.Split(':');
+                            if (offsetParts.Length != 2)
+                                throw new ArgumentException("Invalid offset format for BIT array item");
+
+                            int wordOffset = int.Parse(offsetParts[0]);
+                            int bitOffset = int.Parse(offsetParts[1]);
+
+                            for (int i = 0; i < arrayItem.Count; i++) {
+                                int totalBits = bitOffset + i;
+                                int actualWordOffset = wordOffset + (totalBits / 16);
+                                int actualBitOffset = totalBits % 16;
+
+                                ushort mask = (ushort)(1 << actualBitOffset);
+
+                                if (boolArray[i])
+                                    rawValues[actualWordOffset] |= mask;
+                                else
+                                    rawValues[actualWordOffset] &= (ushort)~mask;
                             }
-                            else
-                                throw new ArgumentException("Value must be bool[] for BIT array");
                         }
-                        else
-                        {
-                            if (value is object[] values)
-                            {
-                                if (values.Length != arrayItem.Count)
-                                    throw new ArgumentException($"Array length mismatch. Expected {arrayItem.Count}, got {values.Length}");
+                        else {
+                            // 非BIT数组，必须传object[]，长度匹配
+                            if (!(value is object[] values))
+                                throw new ArgumentException("Value must be object[] for array item");
 
-                                for (int i = 0; i < arrayItem.Count; i++)
-                                {
-                                    WriteValueToRawData(
-                                        arrayItem.Item.Format,
-                                        values[i],
-                                        rawValues,
-                                        currentIndex + i * arrayItem.Item.Length, arrayItem.Item.Length
-                                    );
-                                }
-                                arrayItem.Item.Value = values;
+                            if (values.Length != arrayItem.Count)
+                                throw new ArgumentException($"Array length mismatch for array item. Expected {arrayItem.Count}, got {values.Length}");
+
+                            for (int i = 0; i < arrayItem.Count; i++) {
+                                int writeIndex = currentIndex + i * arrayItem.Item.Length;
+                                WriteValueToRawData(arrayItem.Item.Format, values[i], rawValues, writeIndex);
                             }
-                            else
-                                throw new ArgumentException("Value must be array for array item");
+                            arrayItem.Item.Value = values;
                         }
                         break;
                     }
-                    else if (item.Name == itemName)
-                    {
-                        lock (rawValues)
-                        {
-                            itemFound = true;
+                    else if (item.Name.Equals(itemName, StringComparison.OrdinalIgnoreCase)) {
+                        itemFound = true;
 
-                            if (item.Format == "BIT"&& item.Offset.Split(':').Length == 2)
-                            {
-                                string[] offsetParts = item.Offset.Split(':');
+                        if (item.Format.ToUpper() == "BIT") {
+                            string[] offsetParts = item.Offset.Split(':');
+                            if (offsetParts.Length != 2)
+                                throw new ArgumentException("Invalid offset format for BIT item");
 
-                                int owordOffset = int.Parse(offsetParts[0]);
+                            int wordOffset = int.Parse(offsetParts[0]);
+                            int bitOffset = int.Parse(offsetParts[1]);
 
-                                if (owordOffset != wordOffset)
-                                {
-                                    currentIndex = block.Offset + owordOffset;
-                                    wordOffset = owordOffset;
-                                }
-                            }
+                            currentIndex = block.Offset + wordOffset;
+
+                            bool bitValue = Convert.ToBoolean(value);
+                            ushort mask = (ushort)(1 << bitOffset);
+
+                            if (bitValue)
+                                rawValues[currentIndex] |= mask;
                             else
-                            {
-                                currentIndex = block.Offset + int.Parse(item.Offset);
-                            }
+                                rawValues[currentIndex] &= (ushort)~mask;
 
-                            if (item.Format == "BIT"&& item.Offset.Split(':').Length == 2)
-                            {
-                                string[] offsetParts = item.Offset.Split(':');
-                                if (offsetParts.Length == 2)
-                                {
-                                    wordOffset = int.Parse(offsetParts[0]);
-
-                                    
-                                    int bitOffset = int.Parse(offsetParts[1]);
-
-                                    bool bitValue = Convert.ToBoolean(value);
-
-                                    var offset = wordOffset * 16 + bitOffset;
-
-                                    if (bitValue)
-                                        rawValues[offset] |= (ushort)(1 << bitOffset);
-                                    else
-                                        rawValues[offset] &= (ushort)~(1 << bitOffset);
-                                    item.Value = bitValue;
-                                }
-                            }
-                            else
-                            {
-                                WriteValueToRawData(item.Format, value, rawValues, currentIndex, item.Length);
-                                item.Value = value;
-                            }
-                            break;
+                            item.Value = bitValue;
                         }
+                        else {
+                            int offsetInt = int.Parse(item.Offset);
+                            currentIndex = block.Index + block.Offset + offsetInt;
+
+                            WriteValueToRawData(item.Format, value, rawValues, currentIndex);
+                            item.Value = value;
+                        }
+                        break;
                     }
-                    // currentIndex += item is ArrayItem arr ? arr.Count * arr.Item.Length : item.Length;
                 }
 
                 if (!itemFound)
                     throw new ArgumentException($"Item '{itemName}' not found in block '{blockType}'");
 
-                // 写回PLC
+                // 写回PLC，直接传 ushort[] 数组，避免转换异常
                 variableCompolet.WriteVariable(groupName, rawValues);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 throw new Exception($"Error writing item value: {ex.Message}", ex);
             }
         }
-
         /// <summary>
         /// 写入整个Block的数据
         /// </summary>
@@ -1688,8 +1652,196 @@ namespace EipTagLibrary
         {
             ValidateNotDisposed();
 
-            try
-            {
+            try {
+                // 查找指定TagGroup
+                var group = tagConfig.TagGroups.FirstOrDefault(g =>
+                    g.Name.Equals(groupName, StringComparison.OrdinalIgnoreCase));
+
+                if (group == null)
+                    throw new ArgumentException($"TagGroup '{groupName}' not found");
+
+                // 查找Block
+                var existingBlock = group.Blocks.FirstOrDefault(b =>
+                    b.Type.Equals(block.Type, StringComparison.OrdinalIgnoreCase));
+
+                if (existingBlock == null)
+                    throw new ArgumentException($"Block '{block.Type}' not found in TagGroup '{groupName}'");
+
+                // 读取PLC当前数据，short[] -> ushort[]
+                short[] rawValuesShort = ReadRawValues(groupName);
+                if (rawValuesShort == null || rawValuesShort.Length == 0)
+                    throw new InvalidOperationException("Failed to read raw PLC values.");
+
+                ushort[] rawValues = Array.ConvertAll(rawValuesShort, v => unchecked((ushort)v));
+
+                int currentIndex = block.Offset;
+
+                foreach (var item in block.Items) {
+                    if (item is ArrayItem arrayItem) {
+                        if (arrayItem.Item.Format.ToUpper() == "BIT") {
+                            // BIT数组写入bool[]值
+                            if (arrayItem.Item.Value is bool[] boolArray) {
+                                string[] offsetParts = arrayItem.Item.Offset.Split(':');
+                                if (offsetParts.Length != 2)
+                                    throw new ArgumentException($"Invalid BIT offset format for array item '{arrayItem.Name}'");
+
+                                int wordOffset = int.Parse(offsetParts[0]);
+                                int bitOffset = int.Parse(offsetParts[1]);
+
+                                for (int i = 0; i < arrayItem.Count; i++) {
+                                    int totalBits = bitOffset + i;
+                                    int actualWordOffset = wordOffset + (totalBits / 16);
+                                    int actualBitOffset = totalBits % 16;
+
+                                    ushort mask = (ushort)(1 << actualBitOffset);
+
+                                    if (boolArray[i])
+                                        rawValues[actualWordOffset] |= mask;
+                                    else
+                                        rawValues[actualWordOffset] &= (ushort)~mask;
+                                }
+                            }
+                            else {
+                                throw new ArgumentException($"BIT array item '{arrayItem.Name}' value must be bool[]");
+                            }
+
+                            // BIT数组按位存储，currentIndex按位数增加
+                            currentIndex += arrayItem.Count;
+                        }
+                        else {
+                            // 非BIT数组写入object[]值
+                            if (arrayItem.Item.Value is object[] values) {
+                                if (values.Length != arrayItem.Count)
+                                    throw new ArgumentException($"Array length mismatch for array item '{arrayItem.Name}'. Expected {arrayItem.Count}, got {values.Length}");
+
+                                for (int i = 0; i < arrayItem.Count; i++) {
+                                    int writeIndex = currentIndex + i * arrayItem.Item.Length;
+                                    WriteValueToRawData(arrayItem.Item.Format, values[i], rawValues, writeIndex);
+                                }
+                            }
+                            else {
+                                throw new ArgumentException($"Array item '{arrayItem.Name}' value must be object[]");
+                            }
+
+                            currentIndex += arrayItem.Count * arrayItem.Item.Length;
+                        }
+                    }
+                    else {
+                        // 单个Item处理
+                        if (item.Format.ToUpper() == "BIT") {
+                            if (item.Value != null) {
+                                string[] offsetParts = item.Offset.Split(':');
+                                if (offsetParts.Length != 2)
+                                    throw new ArgumentException($"Invalid BIT offset format for item '{item.Name}'");
+
+                                int wordOffset = int.Parse(offsetParts[0]);
+                                int bitOffset = int.Parse(offsetParts[1]);
+
+                                bool bitValue = Convert.ToBoolean(item.Value);
+                                ushort mask = (ushort)(1 << bitOffset);
+
+                                if (bitValue)
+                                    rawValues[wordOffset] |= mask;
+                                else
+                                    rawValues[wordOffset] &= (ushort)~mask;
+                            }
+
+                            currentIndex += item.Length;
+                        }
+                        else {
+                            if (item.Value != null) {
+                                WriteValueToRawData(item.Format, item.Value, rawValues, currentIndex);
+                            }
+
+                            currentIndex += item.Length;
+                        }
+                    }
+                }
+
+                // 写回PLC，直接传 ushort[]，避免转换异常
+                variableCompolet.WriteVariable(groupName, rawValues);
+            }
+            catch (Exception ex) {
+                throw new Exception($"Error writing block values for {groupName}.{block.Type}: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// 根据格式写入单个值到 rawValues 数组指定索引（ushort[]）
+        /// </summary>
+        /// <param name="format">数据格式，如 INT, UINT, FLOAT 等</param>
+        /// <param name="value">要写入的值</param>
+        /// <param name="rawValues">ushort[] 原始数据数组</param>
+        /// <param name="index">写入起始索引</param>
+        private void WriteValueToRawData(string format, object value, ushort[] rawValues, int index)
+        {
+            switch (format.ToUpper()) {
+                case "INT":
+                case "SHORT": {
+                        short v = Convert.ToInt16(value);
+                        rawValues[index] = unchecked((ushort)v);
+                        break;
+                    }
+                case "UINT":
+                case "USHORT": {
+                        ushort v = Convert.ToUInt16(value);
+                        rawValues[index] = v;
+                        break;
+                    }
+                case "DINT":
+                case "INT32":
+                case "LONG": {
+                        int v = Convert.ToInt32(value);
+                        rawValues[index] = unchecked((ushort)(v & 0xFFFF));
+                        rawValues[index + 1] = unchecked((ushort)((v >> 16) & 0xFFFF));
+                        break;
+                    }
+                case "UDINT":
+                case "UINT32":
+                case "ULONG": {
+                        uint v = Convert.ToUInt32(value);
+                        rawValues[index] = unchecked((ushort)(v & 0xFFFF));
+                        rawValues[index + 1] = unchecked((ushort)((v >> 16) & 0xFFFF));
+                        break;
+                    }
+                case "FLOAT": {
+                        float v = Convert.ToSingle(value);
+                        byte[] bytes = BitConverter.GetBytes(v);
+                        rawValues[index] = BitConverter.ToUInt16(bytes, 0);
+                        rawValues[index + 1] = BitConverter.ToUInt16(bytes, 2);
+                        break;
+                    }
+                case "DOUBLE": {
+                        double v = Convert.ToDouble(value);
+                        byte[] bytes = BitConverter.GetBytes(v);
+                        rawValues[index] = BitConverter.ToUInt16(bytes, 0);
+                        rawValues[index + 1] = BitConverter.ToUInt16(bytes, 2);
+                        rawValues[index + 2] = BitConverter.ToUInt16(bytes, 4);
+                        rawValues[index + 3] = BitConverter.ToUInt16(bytes, 6);
+                        break;
+                    }
+                case "BYTE": {
+                        byte v = Convert.ToByte(value);
+                        rawValues[index] = v;
+                        break;
+                    }
+                case "WORD": {
+                        ushort v = Convert.ToUInt16(value);
+                        rawValues[index] = v;
+                        break;
+                    }
+                default:
+                    throw new NotSupportedException($"Unsupported data format: {format}");
+            }
+        }
+        /// <summary>
+        /// 写入数组项的值
+        /// </summary>
+        public void WriteArrayItemValue(string groupName, string blockType, string arrayItemName, int index, object value)
+        {
+            ValidateNotDisposed();
+
+            try {
                 // 查找指定的TagGroup
                 var group = tagConfig.TagGroups.FirstOrDefault(g =>
                     g.Name.Equals(groupName, StringComparison.OrdinalIgnoreCase));
@@ -1697,286 +1849,66 @@ namespace EipTagLibrary
                 if (group == null)
                     throw new ArgumentException($"TagGroup '{groupName}' not found");
 
-                // 验证Block是否属于该TagGroup
-                var existingBlock = group.Blocks.FirstOrDefault(b =>
-                    b.Type.Equals(block.Type, StringComparison.OrdinalIgnoreCase));
+                // 查找指定的Block
+                var block = group.Blocks.FirstOrDefault(b =>
+                    b.Type.Equals(blockType, StringComparison.OrdinalIgnoreCase));
 
-                if (existingBlock == null)
-                    throw new ArgumentException($"Block '{block.Type}' not found in TagGroup '{groupName}'");
+                if (block == null)
+                    throw new ArgumentException($"Block '{blockType}' not found in TagGroup '{groupName}'");
 
-                // 读取当前值
-                var rawValues = ReadRawValues(groupName);
-                int currentIndex = block.Offset;
+                // 查找指定的ArrayItem
+                var arrayItem = block.Items.OfType<ArrayItem>().FirstOrDefault(i =>
+                    i.Name.Equals(arrayItemName, StringComparison.OrdinalIgnoreCase));
 
-                // 更新Block中的所有Items
-                foreach (var item in block.Items)
-                {
-                    if (item is ArrayItem arrayItem)
-                    {
-                        if (arrayItem.Item.Format == "BIT")
-                        {
-                            if (arrayItem.Item.Value is bool[] boolArray)
-                            {
-                                string[] offsetParts = arrayItem.Item.Offset.Split(':');
-                                if (offsetParts.Length == 2)
-                                {
-                                    int wordOffset = int.Parse(offsetParts[0]);
-                                    int bitOffset = int.Parse(offsetParts[1]);
+                if (arrayItem == null)
+                    throw new ArgumentException($"ArrayItem '{arrayItemName}' not found in Block '{blockType}'");
 
-                                    for (int i = 0; i < arrayItem.Count; i++)
-                                    {
-                                        int totalBits = bitOffset + i;
-                                        int actualWordOffset = wordOffset + (totalBits / 16);
-                                        int actualBitOffset = totalBits % 16;
+                if (index < 0 || index >= arrayItem.Count)
+                    throw new ArgumentOutOfRangeException(nameof(index), $"Index {index} is out of range for ArrayItem '{arrayItemName}'");
 
-                                        if (boolArray[i])
-                                            rawValues[actualWordOffset] |= (ushort)(1 << actualBitOffset);
-                                        else
-                                            rawValues[actualWordOffset] &= (ushort)~(1 << actualBitOffset);
-                                    }
-                                }
-                            }
-                            currentIndex += arrayItem.Count;
-                        }
+                // 读取当前值 short[]
+                short[] rawValuesShort = ReadRawValues(groupName);
+                if (rawValuesShort == null || rawValuesShort.Length == 0)
+                    throw new InvalidOperationException("Failed to read raw PLC values.");
+
+                // 转换为 ushort[] 方便位操作
+                ushort[] rawValues = Array.ConvertAll(rawValuesShort, v => unchecked((ushort)v));
+
+                // 计算实际偏移量
+                int baseOffset = block.Offset + arrayItem.BaseOffset;
+
+                if (arrayItem.Item.Format.ToUpper() == "BIT") {
+                    string[] offsetParts = arrayItem.Item.Offset.Split(':');
+                    if (offsetParts.Length == 2) {
+                        int wordOffset = int.Parse(offsetParts[0]);
+                        int bitOffset = int.Parse(offsetParts[1]);
+                        int totalBits = bitOffset + index;
+                        int actualWordOffset = baseOffset + wordOffset + (totalBits / 16);
+                        int actualBitOffset = totalBits % 16;
+
+                        bool bitValue = Convert.ToBoolean(value);
+                        ushort mask = (ushort)(1 << actualBitOffset);
+
+                        if (bitValue)
+                            rawValues[actualWordOffset] |= mask;
                         else
-                        {
-                            if (arrayItem.Item.Value is object[] values)
-                            {
-                                for (int i = 0; i < arrayItem.Count && i < values.Length; i++)
-                                {
-                                    WriteValueToRawData(
-                                        arrayItem.Item.Format,
-                                        values[i],
-                                        rawValues,
-                                        currentIndex + i * arrayItem.Item.Length, arrayItem.Item.Length
-                                    );
-                                }
-                            }
-                            currentIndex += arrayItem.Count * arrayItem.Item.Length;
-                        }
+                            rawValues[actualWordOffset] &= (ushort)~mask;
                     }
-                    else
-                    {
-                        if (item.Format == "BIT"&& item.Offset.Split(':').Length == 2)
-                        {
-                            string[] offsetParts = item.Offset.Split(':');
-                            if (item.Value != null)
-                            {
-                               // string[] offsetParts = item.Offset.Split(':');
-                                if (offsetParts.Length == 2)
-                                {
-                                    int wordOffset = int.Parse(offsetParts[0]);
-                                    int bitOffset = int.Parse(offsetParts[1]);
-
-                                    bool bitValue = Convert.ToBoolean(item.Value);
-                                    if (bitValue)
-                                        rawValues[block.Offset + wordOffset] |= (ushort)(1 << bitOffset);
-                                    else
-                                        rawValues[block.Offset + wordOffset] &= (ushort)~(1 << bitOffset);
-
-                                    currentIndex = block.Offset + int.Parse(offsetParts[0]);
-                                }
-                            }
-                         
-                        }
-                        else
-                        {
-                            if (item.Value != null)
-                            {
-                               
-                                WriteValueToRawData(
-                                    item.Format,
-                                    item.Value,
-                                    rawValues,
-                                    currentIndex,
-                                    item.Length
-                                );
-                            }
-                            currentIndex += item.Length;
-                        }
+                    else {
+                        throw new FormatException($"Invalid BIT offset format: {arrayItem.Item.Offset}");
                     }
                 }
+                else {
+                    int actualOffset = baseOffset + (index * arrayItem.Item.Length);
+                    WriteValueToRawData(arrayItem.Item.Format, value, rawValues, actualOffset);
+                }
 
-                // 写回PLC
-                variableCompolet.WriteVariable(groupName, rawValues);
+                // 写回PLC前转换为 short[]
+                short[] rawValuesToWrite = Array.ConvertAll(rawValues, v => unchecked((short)v));
+                variableCompolet.WriteVariable(groupName, rawValuesToWrite);
             }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error writing block values for {groupName}.{block.Type}: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// 将值写入原始数据数组
-        /// </summary>
-        /// <param name="format">数据格式</param>
-        /// <param name="value">要写入的值</param>
-        /// <param name="rawValues">原始数据数组</param>
-        /// <param name="offset">写入位置的偏移量</param>
-        /// <exception cref="NotSupportedException">
-        /// 当指定了不支持的数据格式时抛出
-        /// </exception>
-        /// <remarks>
-        /// 支持的格式包括：
-        /// - INT/SINT：写入16位整数
-        /// - FLOAT：写入32位浮点数
-        /// - ASCII：写入ASCII字符串
-        /// - BIT：写入布尔值
-        /// </remarks>
-        private void WriteValueToRawData(string format, object value, ushort[] rawValues, int offset)
-        {
-            switch (format)
-            {
-                case "INT":
-                case "SINT":
-                    rawValues[offset] = Convert.ToUInt16(value);
-                    break;
-
-                case "FLOAT":
-                    var bytes = BitConverter.GetBytes(Convert.ToSingle(value));
-                    rawValues[offset] = BitConverter.ToUInt16(bytes, 0);
-                    rawValues[offset + 1] = BitConverter.ToUInt16(bytes, 2);
-                    break;
-
-                case "ASCII":
-                    string strValue = value.ToString();
-                    for (int i = 0; i < strValue.Length && i < rawValues.Length * 2; i += 2)
-                    {
-                        ushort charValue = 0;
-                        charValue |= (ushort)(strValue[i] & 0xFF);
-                        if (i + 1 < strValue.Length)
-                            charValue |= (ushort)((strValue[i + 1] & 0xFF) << 8);
-                        rawValues[offset + i / 2] = charValue;
-                    }
-                    break;
-
-                default:
-                    throw new NotSupportedException($"Unsupported format: {format}");
-            }
-        }
-        private void WriteValueToRawData(string format, object value, ushort[] rawValues, int offset, int length)
-        {
-            // 清空从offset到offset + length的数据
-            for (int i = offset; i < offset + length && i < rawValues.Length; i++)
-            {
-                rawValues[i] = 0;
-            }
-
-            switch (format)
-            {
-                case "BIN":
-                    if (length < 1)
-                    {
-                        throw new ArgumentException("length must be at least 1 for BIT format", nameof(length));
-                    }
-                    if (!(value is string bitString) || bitString.Length < length)
-                    {
-                        throw new ArgumentException("value must be a valid binary string of at least length", nameof(value));
-                    }
-                    // 确保二进制字符串长度是16的倍数
-                    if (bitString.Length % 16 != 0)
-                    {
-                        throw new ArgumentException("二进制字符串长度必须是16的倍数");
-                    }
-
-                    // 计算需要解析的 ushort 数量
-                    int ushortCount = bitString.Length / 16;
-
-
-
-                    int j = 0;
-                    for (int i = offset; i < offset + length; i++)
-                    {
-                        string sub = bitString.Substring(j * 16, 16);
-                        rawValues[i] = Convert.ToUInt16(sub, 2);
-                        j++;
-                    }
-
-                    break;
-
-                case "INT":
-                case "SINT":
-                    if (length < 1)
-                    {
-                        throw new ArgumentException("length must be at least 1 for INT or SINT format", nameof(length));
-                    }
-                    if (offset >= rawValues.Length)
-                    {
-                        throw new ArgumentOutOfRangeException("offset", "指定的偏移量超出了 rawValues 的范围");
-                    }
-                    rawValues[offset] = Convert.ToUInt16(value);
-                    break;
-
-                case "FLOAT":
-                    if (length < 2)
-                    {
-                        throw new ArgumentException("length must be at least 2 for FLOAT format", nameof(length));
-                    }
-                    if (offset + 1 >= rawValues.Length)
-                    {
-                        throw new ArgumentOutOfRangeException("offset", "指定的偏移量超出了 rawValues 的范围");
-                    }
-                    var floatBytes = BitConverter.GetBytes(Convert.ToSingle(value));
-                    rawValues[offset] = BitConverter.ToUInt16(floatBytes, 0);
-                    rawValues[offset + 1] = BitConverter.ToUInt16(floatBytes, 2);
-                    break;
-
-                case "DOUBLE":
-                    if (length < 4)
-                    {
-                        throw new ArgumentException("length must be at least 4 for DOUBLE format", nameof(length));
-                    }
-                    if (offset + 3 >= rawValues.Length)
-                    {
-                        throw new ArgumentOutOfRangeException("offset", "指定的偏移量超出了 rawValues 的范围");
-                    }
-                    var doubleBytes = BitConverter.GetBytes(Convert.ToDouble(value));
-                    rawValues[offset] = BitConverter.ToUInt16(doubleBytes, 0);
-                    rawValues[offset + 1] = BitConverter.ToUInt16(doubleBytes, 2);
-                    rawValues[offset + 2] = BitConverter.ToUInt16(doubleBytes, 4);
-                    rawValues[offset + 3] = BitConverter.ToUInt16(doubleBytes, 6);
-                    break;
-
-                case "LONG":
-                    if (length < 4)
-                    {
-                        throw new ArgumentException("length must be at least 4 for LONG format", nameof(length));
-                    }
-                    if (offset + 3 >= rawValues.Length)
-                    {
-                        throw new ArgumentOutOfRangeException("offset", "指定的偏移量超出了 rawValues 的范围");
-                    }
-                    var longBytes = BitConverter.GetBytes(Convert.ToInt64(value));
-                    rawValues[offset] = BitConverter.ToUInt16(longBytes, 0);
-                    rawValues[offset + 1] = BitConverter.ToUInt16(longBytes, 2);
-                    rawValues[offset + 2] = BitConverter.ToUInt16(longBytes, 4);
-                    rawValues[offset + 3] = BitConverter.ToUInt16(longBytes, 6);
-                    break;
-
-                case "ASCII":
-                    string strValue = value.ToString();
-                    int maxChars = Math.Min(length * 2, strValue.Length);
-                    for (int i = 0; i < maxChars; i += 2)
-                    {
-                        ushort charValue = 0;
-                        charValue |= (ushort)(strValue[i] & 0xFF);
-                        if (i + 1 < maxChars)
-                        {
-                            charValue |= (ushort)((strValue[i + 1] & 0xFF) << 8);
-                        }
-                        if (offset + i / 2 < rawValues.Length)
-                        {
-                            rawValues[offset + i / 2] = charValue;
-                        }
-                        else
-                        {
-                            throw new ArgumentOutOfRangeException("offset", "指定的偏移量超出了 rawValues 的范围");
-                        }
-                    }
-                    break;
-
-                default:
-                    throw new NotSupportedException($"Unsupported format: {format}");
+            catch (Exception ex) {
+                throw new Exception($"Error writing array item value for {groupName}.{blockType}.{arrayItemName}[{index}]: {ex.Message}", ex);
             }
         }
 
