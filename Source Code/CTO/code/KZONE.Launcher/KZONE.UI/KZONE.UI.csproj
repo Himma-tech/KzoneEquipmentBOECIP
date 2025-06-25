@@ -158,6 +158,9 @@
     <Compile Include="FormRecipeValidationResult.Designer.cs">
       <DependentUpon>FormRecipeValidationResult.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmEIPTest.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FrmAgent.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -429,6 +432,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormRecipeValidationResult.resx">
       <DependentUpon>FormRecipeValidationResult.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmEIPTest.resx">
+      <DependentUpon>FrmEIPTest.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmAgent.resx">
       <DependentUpon>FrmAgent.cs</DependentUpon>
