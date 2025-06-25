@@ -166,7 +166,8 @@ namespace EipTagLibrary
             try {
                 while (!cancellationTokenSource.Token.IsCancellationRequested) {
                     var inputGroups = tagConfig.TagGroups
-                        .Where(g => g.Direction.Equals("Output", StringComparison.OrdinalIgnoreCase));
+                        .Where(g => g.Direction.Equals("Output", StringComparison.OrdinalIgnoreCase)
+                        || g.Direction.Equals("Input", StringComparison.OrdinalIgnoreCase));
 
                     foreach (var group in inputGroups) {
                         try {
