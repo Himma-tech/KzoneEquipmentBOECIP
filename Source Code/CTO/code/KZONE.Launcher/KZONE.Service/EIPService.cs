@@ -539,12 +539,14 @@ namespace KZONE.Service
                
 
 
-                Thread.Sleep(100);
+          
                 eipTagAccess.WriteItemValue(
                    "SD_EQToCIM_Status_05_01_00",
                    "Machine_Status_Event",
                    "Loading_Stop_Request",
                    false);
+
+
 
                 LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "Inline Loading Stop:" + returnCode.ToString());
