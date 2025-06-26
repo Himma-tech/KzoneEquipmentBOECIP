@@ -674,39 +674,148 @@ namespace EipTagLibrary
         /// 将原始short数组转换为TagGroup中各Item对应的值，支持BIT、数组及多种格式
         /// </summary>
         /// <param name="group">TagGroup对象</param>
-        /// <param name="rawValues">PLC读取到的原始short数组</param>
-        /// <returns>转换后的对象数组（长度为TagGroup.Size）</returns>
-        private object[] ConvertRawValuesToTagGroup(TagGroup group, object rawValues)
+        /// <param name="rawValuesObj">PLC读取到的原始short数组，object类型</param>
+        /// <returns>转换后的对象数组，包含每个Item转换后的值，顺序对应Block内Items顺序</returns>
+        private object[] ConvertRawValuesToTagGroup(TagGroup group, object rawValuesObj)
         {
-            var result = new object[group.Size];
+            if (group == null)
+                throw new ArgumentNullException(nameof(group));
+            if (rawValuesObj == null)
+                throw new ArgumentNullException(nameof(rawValuesObj));
+
+            if (!(rawValuesObj is short[] rawValuesShort))
+                throw new ArgumentException("rawValues must be of type short[]");
+
+            // 转为ushort方便无符号处理和位运算
+            ushort[] rawValues = Array.ConvertAll(rawValuesShort, v => unchecked((ushort)v));
+
+            // 统计所有Items总数，结果数组容量
+            var allItems = group.Blocks.SelectMany(b => b.Items).ToList();
+            object[] result = new object[allItems.Count];
+
+            int idx = 0; // 结果数组索引
 
             foreach (var block in group.Blocks) {
                 int blockBaseOffset = block.Offset;
 
                 foreach (var item in block.Items) {
-                    int baseOffset = blockBaseOffset + int.Parse(item.Offset);
+                    try {
+                        if (string.IsNullOrWhiteSpace(item.Offset))
+                            throw new ArgumentException($"Item '{item.Name}' Offset is null or empty");
 
-                    if (item.Format.ToUpper() == "BIT") {
-                        string[] parts = item.Offset.Split(':');
-                        if (parts.Length != 2)
-                            throw new ArgumentException($"Invalid BIT offset for {item.Name}");
+                        if (item.Format.ToUpper() == "BIT") {
+                            // BIT格式偏移形如 "wordOffset:bitOffset"
+                            string[] parts = item.Offset.Split(':');
+                            if (parts.Length != 2)
+                                throw new ArgumentException($"Invalid BIT offset format for Item '{item.Name}', Offset '{item.Offset}'");
 
-                        int wordOffsetBase = int.Parse(parts[0]);
-                        int bitOffsetBase = int.Parse(parts[1]);
+                            if (!int.TryParse(parts[0], out int wordOffsetBase))
+                                throw new ArgumentException($"Invalid word offset in BIT Item '{item.Name}', Offset '{item.Offset}'");
 
-                        bool bitValue = ReadBitValue(rawValues, blockBaseOffset + wordOffsetBase, bitOffsetBase);
-                        item.Value = bitValue;
-                        result[blockBaseOffset + wordOffsetBase] = bitValue;
+                            if (!int.TryParse(parts[1], out int bitOffsetBase))
+                                throw new ArgumentException($"Invalid bit offset in BIT Item '{item.Name}', Offset '{item.Offset}'");
+
+                            int wordIndex = blockBaseOffset + wordOffsetBase;
+                            if (wordIndex < 0 || wordIndex >= rawValues.Length)
+                                throw new IndexOutOfRangeException($"Word offset {wordIndex} out of rawValues range for Item '{item.Name}'");
+
+                            bool bitValue = ((rawValues[wordIndex] & (1 << bitOffsetBase)) != 0);
+                            item.Value = bitValue;
+                            result[idx++] = bitValue;
+                        }
+                        else {
+                            // 非BIT格式，Offset应为数字字符串
+                            if (!int.TryParse(item.Offset, out int offset))
+                                throw new ArgumentException($"Invalid Offset format for Item '{item.Name}', Offset '{item.Offset}'");
+
+                            int baseOffset = blockBaseOffset + offset;
+
+                            // 调用辅助方法读取对应格式数据
+                            object val = ReadValueByFormat(rawValues, item.Format, baseOffset, item.Length);
+                            item.Value = val;
+                            result[idx++] = val;
+                        }
                     }
-                    else {
-                        object val = ReadValueByFormat(rawValues, item.Format, baseOffset, item.Length);
-                        item.Value = val;
-                        result[baseOffset] = val;
+                    catch (Exception ex) {
+                        // 记录异常，继续处理后续Items，避免单个异常中断整体
+                        Console.WriteLine($"Error converting Item '{item.Name}' (Offset='{item.Offset}'): {ex.Message}");
+                        item.Value = null;
+                        result[idx++] = null;
                     }
                 }
             }
 
             return result;
+        }
+        /// <summary>
+        /// 根据格式，从ushort数组读取指定偏移和长度的数据
+        /// </summary>
+        /// <param name="rawValues">ushort[] 数据数组</param>
+        /// <param name="format">数据格式</param>
+        /// <param name="offset">起始偏移（ushort索引）</param>
+        /// <param name="length">长度（单位为ushort个数）</param>
+        /// <returns>读取的值，类型根据format决定</returns>
+        private object ReadValueByFormat(ushort[] rawValues, string format, int offset, int length)
+        {
+            if (offset < 0 || offset + length > rawValues.Length)
+                throw new IndexOutOfRangeException("ReadValueByFormat: offset and length out of range");
+
+            switch (format.ToUpper()) {
+                case "INT":
+                case "SHORT":
+                    return unchecked((short)rawValues[offset]);
+                case "UINT":
+                case "USHORT":
+                    return rawValues[offset];
+                case "DINT":
+                case "INT32":
+                case "LONG": {
+                        if (length < 2) throw new ArgumentException("DINT length must be >= 2");
+                        int low = rawValues[offset];
+                        int high = rawValues[offset + 1];
+                        return (high << 16) | low;
+                    }
+                case "UDINT":
+                case "UINT32":
+                case "ULONG": {
+                        if (length < 2) throw new ArgumentException("UDINT length must be >= 2");
+                        uint low = rawValues[offset];
+                        uint high = rawValues[offset + 1];
+                        return (high << 16) | low;
+                    }
+                case "FLOAT": {
+                        if (length < 2) throw new ArgumentException("FLOAT length must be >= 2");
+                        byte[] bytes = new byte[4];
+                        Array.Copy(BitConverter.GetBytes(rawValues[offset]), 0, bytes, 0, 2);
+                        Array.Copy(BitConverter.GetBytes(rawValues[offset + 1]), 0, bytes, 2, 2);
+                        return BitConverter.ToSingle(bytes, 0);
+                    }
+                case "DOUBLE": {
+                        if (length < 4) throw new ArgumentException("DOUBLE length must be >= 4");
+                        byte[] bytes = new byte[8];
+                        for (int i = 0; i < 4; i++) {
+                            byte[] temp = BitConverter.GetBytes(rawValues[offset + i]);
+                            Array.Copy(temp, 0, bytes, i * 2, 2);
+                        }
+                        return BitConverter.ToDouble(bytes, 0);
+                    }
+                case "BYTE":
+                    return (byte)(rawValues[offset] & 0xFF);
+                case "WORD":
+                    return rawValues[offset];
+                case "ASCII": {
+                        int byteCount = length * 2;
+                        byte[] bytes = new byte[byteCount];
+                        for (int i = 0; i < length; i++) {
+                            ushort val = rawValues[offset + i];
+                            bytes[i * 2] = (byte)(val & 0xFF);
+                            bytes[i * 2 + 1] = (byte)((val >> 8) & 0xFF);
+                        }
+                        return System.Text.Encoding.ASCII.GetString(bytes).TrimEnd('\0');
+                    }
+                default:
+                    throw new NotSupportedException($"Unsupported format: {format}");
+            }
         }
         private object ReadValueByFormat(object rawValues, string format, int absoluteWordOffset, int length)
         {
@@ -1502,7 +1611,8 @@ namespace EipTagLibrary
                         return bitValue;
                     }
                     else {
-                        int valueOffset = blockIndex + blockBaseOffset + int.Parse(item.Offset);
+                        //int valueOffset = blockIndex + blockBaseOffset + int.Parse(item.Offset);
+                        int valueOffset = blockIndex + int.Parse(item.Offset);
                         if (valueOffset >= rawValues.Length)
                             throw new IndexOutOfRangeException($"RawValues index {valueOffset} out of range");
 
@@ -1625,8 +1735,8 @@ namespace EipTagLibrary
                         }
                         else {
                             int offsetInt = int.Parse(item.Offset);
-                            currentIndex = block.Index + block.Offset + offsetInt;
-
+                            //currentIndex = block.Index + block.Offset + offsetInt;
+                            currentIndex = block.Index + offsetInt;
                             WriteValueToRawData(item.Format, value, rawValues, currentIndex);
                             item.Value = value;
                         }
@@ -1770,7 +1880,7 @@ namespace EipTagLibrary
         /// <summary>
         /// 根据格式写入单个值到 rawValues 数组指定索引（ushort[]）
         /// </summary>
-        /// <param name="format">数据格式，如 INT, UINT, FLOAT 等</param>
+        /// <param name="format">数据格式，如 INT, UINT, FLOAT, ASCII 等</param>
         /// <param name="value">要写入的值</param>
         /// <param name="rawValues">ushort[] 原始数据数组</param>
         /// <param name="index">写入起始索引</param>
@@ -1831,10 +1941,34 @@ namespace EipTagLibrary
                         rawValues[index] = v;
                         break;
                     }
+                case "ASCII": {
+                        if (value == null)
+                            throw new ArgumentNullException(nameof(value), "ASCII format value cannot be null.");
+
+                        string strValue = value.ToString();
+                        byte[] asciiBytes = System.Text.Encoding.ASCII.GetBytes(strValue);
+
+                        // 每个 ushort 存两个字节
+                        int ushortCountNeeded = (asciiBytes.Length + 1) / 2;
+
+                        // 防止越界写入
+                        if (index + ushortCountNeeded > rawValues.Length)
+                            throw new ArgumentOutOfRangeException(nameof(index), "Not enough space in rawValues array for ASCII string.");
+
+                        for (int i = 0; i < ushortCountNeeded; i++) {
+                            byte lowByte = asciiBytes[i * 2];
+                            byte highByte = (i * 2 + 1 < asciiBytes.Length) ? asciiBytes[i * 2 + 1] : (byte)0;
+
+                            rawValues[index + i] = (ushort)(lowByte | (highByte << 8));
+                        }
+
+                        break;
+                    }
                 default:
                     throw new NotSupportedException($"Unsupported data format: {format}");
             }
         }
+
         /// <summary>
         /// 写入数组项的值
         /// </summary>

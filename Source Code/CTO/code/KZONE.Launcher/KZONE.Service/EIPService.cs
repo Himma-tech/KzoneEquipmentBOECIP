@@ -26,14 +26,17 @@ namespace KZONE.Service
     {
         public static EipTagAccess eipTagAccess;
         private CancellationTokenSource monitoringCts;
+        private System.Timers.Timer heartbeatTimer; // 定义心跳计时器
+        private bool isHeartBeatActive = false; // 当前状态标识
         //启动EIP
         public bool StartEIP()
         {
             try
             {
+              
                 eipTagAccess = new EipTagAccess("EipTag_Config.xml");
                 eipTagAccess.OnTagValueChanged += EipTagAccess_OnTagValueChanged;
-
+                StartHeartbeatSignal();
                 // 通过异步方式启动监控
                 monitoringCts = new CancellationTokenSource();
                 Task.Factory.StartNew(() =>
@@ -56,6 +59,25 @@ namespace KZONE.Service
                 return false;
             }
         }
+        /// <summary>
+        /// EQToCIM_Hearet
+        /// </summary>
+        private void StartHeartbeatSignal()
+        {
+            heartbeatTimer = new System.Timers.Timer(4000); // 设置为每 4 秒触发一次
+            heartbeatTimer.Elapsed += OnHeartbeatTimerElapsed;
+            heartbeatTimer.AutoReset = true; // 重复触发
+            heartbeatTimer.Enabled = true; // 启动计时器
+        }
+        /// <summary>
+        /// EQToCIM_Hearet
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnHeartbeatTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            HandleMachineHeartBeatSignal();
+        }
 
         /// <summary>
         /// 处理Tag值变化事件
@@ -70,6 +92,78 @@ namespace KZONE.Service
                     {
                         switch (e.Item.Name)
                         {
+
+
+                            //20250625
+
+                            #region Machine to Machine Event 分别是1、2、6、7项
+                            //1.Inline Loading Stop Request
+                            case "Loading_Stop_Request": HandleInlineLoadingStopRequestReply(e); break;
+
+                            //2.Transfer Stop Request
+                            case "Transfer_Stop_Request": HandleTransfer_Stop_RequestRequestReply(e); break;
+                            //6.Job Manual Move Report
+                            case "Job_Manual_Move_Report": HandleJobManualMoveReportReplyEx(e); break;
+                            //7.Set First Or Last Job Command  Reply
+                            case "Set_First_Or_Last_Job_Command": HandleSetFirstOrLastJobCommandReply(e); break;
+
+                            #endregion
+
+                            #region Machine Status Event 分别是8、9、10、11、12、15、16项
+                            //8.Machine_Heart_Beat_Signal
+                            //case "Machine_Heart_Beat_Signal": HandleMachineHeartBeatSignalReply(e); break;
+                            //9.CIM Mode
+                            case "CIM_Mode": HandleCIM_ModeRequestReply(e); break;
+                            //10.Upstream Inline Mode
+                            case "Upstream_Inline_Mode": HandleUpstream_Inline_ModeRequestReply(e); break;
+                            //11.Downstream Inline Mode
+                            case "Downstream_Inline_Mode": HandleDownstream_Inline_ModeRequestReply(e); break;
+                            //12.Local Alarm State
+                            case "Local_Alarm_State": HandleLocalAlarmStateReply(e); break;
+                            //15.Auto Recipe Change Mode
+                            case "Auto_Recipe_Change_Mode": HandleAuto_Recipe_Change_ModeReply(e); break;
+                            //16.Ionizer Status Report
+                            case "Ionizer_Status_Report": HandleIonizer_Status_ReportReply(e); break;
+
+                            #endregion
+
+
+                            #region 对EV_Reply的处理 Machine to Machine Event 分别是1、2、6、7项
+                            //1.Inline Loading Stop Request
+
+
+                            //2.Transfer Stop Request
+
+                            //6.Job Manual Move Report
+
+                            //7.Set First Or Last Job Command  Reply
+
+
+                            #endregion
+
+                            #region 对EV_Reply的处理 Machine Status Event 分别是8、9、10、11、12、15、16项
+                            //8.Machine_Heart_Beat_Signal
+                            //case "Machine_Heart_Beat_Signal": HandleMachineHeartBeatSignalReply(e); break;
+                            //9.CIM Mode
+
+                            //10.Upstream Inline Mode
+
+                            //11.Downstream Inline Mode
+
+                            //12.Local Alarm State
+
+                            //15.Auto Recipe Change Mode
+
+                            //16.Ionizer Status Report
+
+
+                            #endregion
+
+
+
+
+
+
                             // Commands
 
                             #region //EAS Command
@@ -297,7 +391,7 @@ namespace KZONE.Service
                             case "SV_Report_Time_Change_Command": HandleSVReportTimeChangeCommandReply(e); break;
                             case "EAP_Heart_Beat_Signal": HandleEAPHeartBeatSignalReply(e); break;//no reply
                             //EAS Special Command
-                            case "Set_First_Or_Last_Job_Command": HandleSetFirstOrLastJobCommandReply(e); break;//no reply
+                          
                             case "Material Check Request": HandleMaterialCheckRequestReply(e); break;
                             case "Material Control Request": HandleMaterialControlRequestReply(e); break;//no reply
                             case "Loading_Stop_Change_Command": HandleLoadingStopChangeCommandReply(e); break;
@@ -305,19 +399,18 @@ namespace KZONE.Service
                             case "Job_Reservation_Command": HandleJobReservationCommandReply(e); break;
                             //TEST FOR LTM
                             //Machine to Machine Event
-                            case "InlineLoadingStopRequest": HandleInlineLoadingStopRequestReply(e); break;
+                        
                             //case "Lot End Glass Report":break;//not found
                             //case "Lot First Glass Report": break;
                             case "XFEDDownSignal": HandleXFEDDownSignalReply(e); break;
-                            case "Job_Manual_Move_Report": HandleJobManualMoveReportReplyEx(e); break;
+                           
                             //case "Set_First_Or_Last_Job_Command": break;//repeat
                             //Machine Status Event
                             case "Machine_Heart_Beat_Signal": HandleMachineHeartBeatSignalReply(e); break;//no reply
-                            case "Upstream_Inline_Mode": HandleUpstreamInlineModeReply(e); break;//no reply
-                            case "Local_Alarm_State": HandleLocalAlarmStateReply(e); break;//no reply
+                         
                             case "VCR Status Report": HandleVCRStatusReportReply(e); break;
                             case "VCR Mismatch Report": HandleVCRMismatchReportReply(e); break;
-                            case "Auto_Recipe_Change_Mode": HandleAutoRecipeChangeModeReply(e); break;//no reply
+                         
                             case "Ionizer Status Report": HandleIonizerStatusReportReplyEx(e); break;
                             case "File_Path_Info_Request": HandleFilePathInfoRequestReply(e); break;
                             //Job Event
@@ -418,6 +511,367 @@ namespace KZONE.Service
                 LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
             }
         }
+        /// <summary>
+        /// 1.Inline Loading Stop RequestHandle
+        /// </summary>
+        /// <param name="e"></param>
+        private void HandleInlineLoadingStopRequestReply(TagValueChangedEventArgs e)
+        {
+            try {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Machine_Status_Event",
+                    "Loading_Stop_Request",
+                    true);
+
+                eipTagAccess.WriteItemValue(
+                  "SD_EQToCIM_Status_05_01_00",
+                  "Loading_Stop_Request_Block",
+                  "Loading_Stop_Status",
+                1);
+
+                eipTagAccess.WriteItemValue(
+                  "SD_EQToCIM_Status_05_01_00",
+                  "Loading_Stop_Request_Block",
+                  "Loading_Stop_Reason_Code",
+                2);
+               
+
+
+                Thread.Sleep(100);
+                eipTagAccess.WriteItemValue(
+                   "SD_EQToCIM_Status_05_01_00",
+                   "Machine_Status_Event",
+                   "Loading_Stop_Request",
+                   false);
+
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
+                    "Inline Loading Stop:" + returnCode.ToString());
+            }
+            catch (Exception ex) {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+        /// <summary>
+        /// 2.Transfer Stop Request
+        /// </summary>
+        /// <param name="e"></param>
+        private void HandleTransfer_Stop_RequestRequestReply(TagValueChangedEventArgs e)
+        {
+            try {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Machine_Status_Event",
+                    "Loading_Stop_Request",
+                    true);
+
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "EAS_Command_Reply",
+                    "Loading_Stop_Change_Command_Reply",
+                    true);
+
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_ProcessSVData_05_01_00",
+                    "Loading_Stop_Request_Block",
+                    "Loading_Stop_Status",
+                    "RUN");
+
+                eipTagAccess.WriteItemValue(
+                   "SD_EQToCIM_Status_05_01_00",
+                   "Loading_Stop_Change_Command_Reply_Block",
+                   "Return_Code",
+                  0);
+
+
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
+                    "Transfer Stop Request:" + returnCode.ToString());
+            }
+            catch (Exception ex) {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+        /// <summary>
+        /// 6.Job Manual Move Report
+        /// </summary>
+        /// <param name="e"></param>
+        private void HandleJobManualMoveReportReplyEx(TagValueChangedEventArgs e)
+        {
+            try {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_JobEvent01_05_01_00",
+                    "Machine_Job_Event",
+                    "Job_Manual_Move_Report",
+                    true);
+
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_JobEvent01_05_01_00",
+                    "Job_Manual_Move_Report_Block",
+                    "JobID",
+                    "No.1");
+
+                eipTagAccess.WriteItemValue(
+                   "SD_EQToCIM_JobEvent01_05_01_00",
+                   "Job_Manual_Move_Report_Block",
+                   "Lot_Sequence_Number",
+                   1);
+                eipTagAccess.WriteItemValue(
+                  "SD_EQToCIM_JobEvent01_05_01_00",
+                  "Job_Manual_Move_Report_Block",
+                  "Slot_Sequence_Number",
+                  2);
+                eipTagAccess.WriteItemValue(
+                   "SD_EQToCIM_JobEvent01_05_01_00",
+                   "Job_Manual_Move_Report_Block",
+                   "Job_Position",
+                   0);
+
+
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
+                    "Job Manual Move Report:" + returnCode.ToString());
+            }
+            catch (Exception ex) {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+        /// <summary>
+        /// 7.Set First Or Last Job Command  Reply
+        /// </summary>
+        /// <param name="e"></param>
+        private void HandleSetFirstOrLastJobCommandReply(TagValueChangedEventArgs e)
+        {
+            try {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "EAS_Command_Reply",
+                    "Set_FirstOr_Last_Job_Command_Reply",
+                    true);
+
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Set_First_Or_Last_Job_Command_Reply_Block",
+                    "Return_Code",
+                    0);
+
+
+
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
+                    "Set First Or Last Job Command  Reply:" + returnCode.ToString());
+            }
+            catch (Exception ex) {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+        /// <summary>
+        /// 8.Machine_Heart_Beat_Signal
+        /// </summary>
+        /// <param name="e"></param>
+        private void HandleMachineHeartBeatSignal()
+        {
+            try {
+                if (!isHeartBeatActive) {
+                    eipTagAccess.WriteItemValue(
+                         "SD_EQToCIM_Status_05_01_00",
+                         "Machine_Status_Event",
+                         "Machine_Heart_Beat_Signal",
+                         true); // 开启心跳信号
+
+                    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
+                            "Started Machine_Heart_Beat_Signal: Code=" + isHeartBeatActive.ToString());
+
+                    isHeartBeatActive = true;   // 更新标记状态为开启
+
+                }
+                else {
+                    eipTagAccess.WriteItemValue(
+                        "SD_EQToCIM_Status_05_01_00",
+                        "Machine_Status_Event",
+                        "Machine_Heart_Beat_Signal",
+                        false); //关闭心跳信号
+
+                    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
+                            "Stopped Machine_Heart_Beat_Signal: Code=" + isHeartBeatActive.ToString());
+
+                    isHeartBeatActive = false;   // 更新标记状态为关闭
+                }
+
+            }
+            catch (Exception ex) {
+                LogError(MethodBase.GetCurrentMethod().Name + "() Exception:", ex);
+            }
+        }
+        /// <summary>
+        /// 9.CIM_Mode
+        /// </summary>
+        /// <param name="e"></param>
+        private void HandleCIM_ModeRequestReply(TagValueChangedEventArgs e)
+        {
+            try {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Machine_Status_Event",
+                    "CIM_Mode",
+                    true);
+
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "EAS_Command_Reply",
+                    "CIM_Mode_Change_Command_Reply",
+                    1);
+
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_ProcessSVData_05_01_00",
+                    "CIM_Mode_Change_Command_Reply_Block",
+                    "Return_Code",
+                    0);
+
+
+
+
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
+                    "CIM_Mode:" + returnCode.ToString());
+            }
+            catch (Exception ex) {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+        /// <summary>
+        /// 10.Upstream Inline Mode
+        /// </summary>
+        /// <param name="e"></param>
+        private void HandleUpstream_Inline_ModeRequestReply(TagValueChangedEventArgs e)
+        {
+            try {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Machine_Status_Event",
+                    "Upstream_Inline_Mode",
+                    true);
+
+
+
+
+
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
+                    "Upstream Inline Mode:" + returnCode.ToString());
+            }
+            catch (Exception ex) {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+        /// <summary>
+        /// 11.Downstream Inline Mode
+        /// </summary>
+        /// <param name="e"></param>
+        private void HandleDownstream_Inline_ModeRequestReply(TagValueChangedEventArgs e)
+        {
+            try {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Machine_Status_Event",
+                    "Downstream_Inline_Mode",
+                    true);
+
+
+
+
+
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
+                    "Downstream Inline Mode:" + returnCode.ToString());
+            }
+            catch (Exception ex) {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+        /// <summary>
+        /// 12.Local Alarm State
+        /// </summary>
+        /// <param name="e"></param>
+        private void HandleLocalAlarmStateReply(TagValueChangedEventArgs e)
+        {
+            try {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Machine_Status_Event",
+                    "Local_Alarm_State",
+                    true);
+
+
+
+
+
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
+                    "Local Alarm State:" + returnCode.ToString());
+            }
+            catch (Exception ex) {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+        /// <summary>
+        /// 15.Auto Recipe Change Mode
+        /// <param name="e"></param>
+        private void HandleAuto_Recipe_Change_ModeReply(TagValueChangedEventArgs e)
+        {
+            try {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Machine_Status_Event",
+                    "Auto_Recipe_Change_Mode",
+                    true);
+
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Set_First_Or_Last_Job_Command_Reply_Block",
+                    "Return_Code",
+                    0);
+
+
+
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
+                    "Auto Recipe Change Mode:" + returnCode.ToString());
+            }
+            catch (Exception ex) {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
+        /// <summary>
+        /// 16.Ionizer Status Report
+        /// </summary>
+        /// <param name="e"></param>
+        private void HandleIonizer_Status_ReportReply(TagValueChangedEventArgs e)
+        {
+            try {
+                int returnCode = 0;
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Machine_Status_Event",
+                    "Ionizer_Status_Report",
+                    true);
+
+                eipTagAccess.WriteItemValue(
+                    "SD_EQToCIM_Status_05_01_00",
+                    "Ionizer Status Report Block",
+                    "Ionizer Status",
+                    0);
+
+
+
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
+                    "Ionizer Status Report:" + returnCode.ToString());
+            }
+            catch (Exception ex) {
+                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
+            }
+        }
 
         private void HandleOperatorLoginReportReplyEx(TagValueChangedEventArgs e)
         {
@@ -430,7 +884,7 @@ namespace KZONE.Service
                     "Machine_Status_Event_Reply",
                     "Operator_Login_Report_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -478,7 +932,7 @@ namespace KZONE.Service
                     "Port_Number",
                     5);
 
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -543,7 +997,7 @@ namespace KZONE.Service
                     7);
 
                 int returnCode = 0;
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "no reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -564,7 +1018,7 @@ namespace KZONE.Service
                     "Machine_Status_Event_Reply",
                     "Date_Time_Request_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -584,7 +1038,7 @@ namespace KZONE.Service
                     "Machine_Status_Event_Reply",
                     "CIM_Message_Confirm_Report_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -605,7 +1059,7 @@ namespace KZONE.Service
                     "Recipe_Event_Reply",
                     "Recipe_Change_Report_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -626,7 +1080,7 @@ namespace KZONE.Service
                     "Recipe_Event_Reply",
                     "Auto_Recipe_Change_Mode_Report_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -646,7 +1100,7 @@ namespace KZONE.Service
                     "Machine_Status_Event_Reply",
                     "Machine_Status_Change_Report_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -666,7 +1120,7 @@ namespace KZONE.Service
                     "Machine_Status_Event_Reply",
                     "Machine_Mode_Change_Report_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -686,7 +1140,7 @@ namespace KZONE.Service
                     "Machine_Status_Event_Reply",
                     "Job_Data_Change_Report_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -705,7 +1159,7 @@ namespace KZONE.Service
                     "Machine_Status_Event_Reply",
                     "Job_Data_Request_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -714,25 +1168,7 @@ namespace KZONE.Service
             }
 
         }
-
-        private void HandleJobManualMoveReportReplyEx(TagValueChangedEventArgs e)
-        {
-            try
-            {
-                int returnCode = 0;
-                eipTagAccess.WriteItemValue(
-                    "RV_CIMToEQ_EventReply_01_05_00",
-                    "Machine_Job_Event_Reply",
-                    "Job_Manual_Move_Report_Reply",
-                    returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                    "reply:" + returnCode.ToString());
-            }
-            catch (Exception ex)
-            {
-                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
-            }
-        }
+       
         private void HandleCancelAbortRequestEventReportReply(TagValueChangedEventArgs e)
         {
             try
@@ -743,7 +1179,7 @@ namespace KZONE.Service
                 //    "Indexer Event Reply",
                 //    "Cancel Abort Request Event Reply",
                 //    returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "no reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -763,7 +1199,7 @@ namespace KZONE.Service
                      "Indexer Event Reply",
                      "CST_Operation_Mode_Change_Report_Reply",
                      returnCode);*/
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "no reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -777,7 +1213,7 @@ namespace KZONE.Service
             try
             {
                 int returnCode = 0;
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "no reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -791,7 +1227,7 @@ namespace KZONE.Service
             try
             {
                 int returnCode = 0;
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -838,7 +1274,7 @@ namespace KZONE.Service
                 //    "SVData",
                 //    "SVData");
 
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -910,7 +1346,7 @@ namespace KZONE.Service
                     "Concentration",
                     8);
 
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -933,7 +1369,7 @@ namespace KZONE.Service
                     "Machine_Material_Status",
                     "Material_Status_Change_Report",
                     true);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "Material_Status_Change_Report:" + true.ToString());
 
                 eipTagAccess.WriteItemValue(
@@ -1000,7 +1436,7 @@ namespace KZONE.Service
                     "Panel_Data_Update_Report",
                     "Panel_Judge_Data_Download_Request",
                     result);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + result.ToString());
 
                 eipTagAccess.WriteItemValue(
@@ -1058,7 +1494,7 @@ namespace KZONE.Service
                     "Panel_Judge_Event",
                     "Panel_Judge_Data_Download_Request",
                     true);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + result.ToString());
 
                 eipTagAccess.WriteItemValue(
@@ -1091,7 +1527,7 @@ namespace KZONE.Service
                     "Oper_ID",
                     "S1");
 
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + result.ToString());
 
             }
@@ -1111,7 +1547,7 @@ namespace KZONE.Service
                     "Variable_Data_Event_Reply",
                     "FAC_Data Report_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1130,7 +1566,7 @@ namespace KZONE.Service
                     "Recipe_Event_Reply",
                     "Recipe_Parameter_Report_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1149,7 +1585,7 @@ namespace KZONE.Service
                     "Recipe_Event_Reply",
                     "Recipe_List_Report_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1168,7 +1604,7 @@ namespace KZONE.Service
                     "Recipe_Event_Reply",
                     "Current_Recipe_Change_Report_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1182,7 +1618,7 @@ namespace KZONE.Service
             try
             {
                 int returnCode = 0;
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1201,7 +1637,7 @@ namespace KZONE.Service
                     "Alarm_Event_Reply",
                     "Alarm_Report#5_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1220,7 +1656,7 @@ namespace KZONE.Service
                     "Alarm_Event_Reply",
                     "Alarm_Report#4_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1239,7 +1675,7 @@ namespace KZONE.Service
                     "Alarm_Event_Reply",
                     "Alarm_Report#3_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1258,7 +1694,7 @@ namespace KZONE.Service
                     "Alarm_Event_Reply",
                     "Alarm_Report#2_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1277,7 +1713,7 @@ namespace KZONE.Service
                     "Alarm_Event_Reply",
                     "Alarm_Report#1_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1296,7 +1732,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Fetched_Out_Job_Report12_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1315,7 +1751,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Fetched_Out_Job_Report11_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1334,7 +1770,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Fetched_Out_Job_Report10_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1353,7 +1789,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Fetched_Out_Job_Report09_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1372,7 +1808,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Fetched_Out_Job_Report08_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1391,7 +1827,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Fetched_Out_Job_Report07_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1410,7 +1846,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Fetched_Out_Job_Report06_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1429,7 +1865,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Fetched_Out_Job_Report05_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1448,7 +1884,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Fetched_Out_Job_Report04_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1467,7 +1903,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Fetched_Out_Job_Report03_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1486,7 +1922,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Fetched_Out_Job_Report02_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1505,7 +1941,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Fetched_Out_Job_Report01_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1524,7 +1960,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Stored_Job_Report12_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1543,7 +1979,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Stored_Job_Report11_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1562,7 +1998,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Stored_Job_Report10_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1581,7 +2017,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Stored_Job_Report09_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1600,7 +2036,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Stored_Job_Report08_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1619,7 +2055,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Stored_Job_Report07_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1638,7 +2074,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Stored_Job_Report06_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1657,7 +2093,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Stored_Job_Report05_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1676,7 +2112,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Stored_Job_Report04_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1695,7 +2131,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Stored_Job_Report03_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1714,7 +2150,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Stored_Job_Report02_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1733,7 +2169,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Stored_Job_Report01_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1752,7 +2188,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Send_Out_Job_Report09_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1771,7 +2207,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Send_Out_Job_Report08_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1790,7 +2226,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Send_Out_Job_Report07_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1809,7 +2245,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Send_Out_Job_Report06_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1828,7 +2264,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Send_Out_Job_Report05_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1847,7 +2283,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Send_Out_Job_Report04_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1866,7 +2302,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Send_Out_Job_Report03_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1885,7 +2321,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Send_Out_Job_Report02_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1905,7 +2341,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Send_Out_Job_Report01_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1924,7 +2360,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Received Job Report09_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1943,7 +2379,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Received Job Report08_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1962,7 +2398,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Received Job Report07_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -1981,7 +2417,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Received Job Report06_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -2000,7 +2436,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Received Job Report05_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -2019,7 +2455,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Received Job Report04_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -2038,7 +2474,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Received Job Report03_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -2057,7 +2493,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Received Job Report02_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -2076,7 +2512,7 @@ namespace KZONE.Service
                     "Machine_Job_Event_Reply",
                     "Received Job Report01_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -2095,7 +2531,7 @@ namespace KZONE.Service
                     "Machine_Status_Event_Reply",
                     "File Path Info Request Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -2109,7 +2545,7 @@ namespace KZONE.Service
             try
             {
                 int returnCode = 0;
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -2128,7 +2564,7 @@ namespace KZONE.Service
                     "Machine_Status_Event_Reply",
                     "VCR_Mismatch_Report_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -2137,26 +2573,14 @@ namespace KZONE.Service
             }
         }
 
-        private void HandleLocalAlarmStateReply(TagValueChangedEventArgs e)
-        {
-            try
-            {
-                int returnCode = 0;
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                    "no reply:" + returnCode.ToString());
-            }
-            catch (Exception ex)
-            {
-                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
-            }
-        }
+       
 
         private void HandleUpstreamInlineModeReply(TagValueChangedEventArgs e)
         {
             try
             {
                 int returnCode = 0;
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "no reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -2169,7 +2593,7 @@ namespace KZONE.Service
         {
             try
             {
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "no reply:" + 0.ToString());
             }
             catch (Exception ex)
@@ -2178,25 +2602,7 @@ namespace KZONE.Service
             }
         }
 
-        private void HandleInlineLoadingStopRequestReply(TagValueChangedEventArgs e)
-        {
-            try
-            {
-                int returnCode = 0;
-                eipTagAccess.WriteItemValue(
-                    "CIMToEQ_Status01_01_05_00",
-                    "Machine_Status_Event_Reply",
-                    "Loading Stop Request Reply",
-                    returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                    "reply:" + returnCode.ToString());
-            }
-            catch (Exception ex)
-            {
-                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
-            }
-        }
-
+        
         private void HandleXFEDDownSignalReply(TagValueChangedEventArgs e)
         {
             try
@@ -2207,7 +2613,7 @@ namespace KZONE.Service
                     "MachineToMachineEventReply",
                     "XFEDDownSignallReply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -2226,7 +2632,7 @@ namespace KZONE.Service
                     "EAS Command Reply",
                     "Job Reservation Command Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -2245,7 +2651,7 @@ namespace KZONE.Service
                     "EAS Command Reply",
                     "Loading Stop Change Command Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -2258,7 +2664,7 @@ namespace KZONE.Service
         {
             try
             {
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "no reply:" + 0.ToString());
             }
             catch (Exception ex)
@@ -2277,7 +2683,7 @@ namespace KZONE.Service
                     "EAS Command Reply",
                     "Material Check Request Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -2286,24 +2692,12 @@ namespace KZONE.Service
             }
         }
 
-        private void HandleSetFirstOrLastJobCommandReply(TagValueChangedEventArgs e)
-        {
-            try
-            {
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
-                    "no reply:" + 0.ToString());
-            }
-            catch (Exception ex)
-            {
-                LogError(MethodBase.GetCurrentMethod().Name + "()", ex);
-            }
-        }
-
+       
         private void HandleEAPHeartBeatSignalReply(TagValueChangedEventArgs e)
         {
             try
             {
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "no reply:" + 0.ToString());
             }
             catch (Exception ex)
@@ -2322,7 +2716,7 @@ namespace KZONE.Service
                     "SV_Report_Time_Change_Command_Reply_Block",
                     "SV Command Return Code",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -2341,7 +2735,7 @@ namespace KZONE.Service
                     "EAS Command Reply",
                     "CV_Report_Time_Change_Command_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -2360,7 +2754,7 @@ namespace KZONE.Service
                     "EAS Command Reply",
                     "CIM_Message_Set_Command_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -2379,7 +2773,7 @@ namespace KZONE.Service
                     "Recipe_Command_Reply",
                     "Recipe_Step_Count_Request_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -2398,7 +2792,7 @@ namespace KZONE.Service
                     "Recipe_Command_Reply",
                     "Recipe_List_Request_Command_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -2417,7 +2811,7 @@ namespace KZONE.Service
                     "Recipe_Command_Reply",
                     "Recipe_Parameter_Request_Command_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -2436,7 +2830,7 @@ namespace KZONE.Service
                     "Recipe_Command_Reply",
                     "Recipe_Register_Check_Command_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -2452,10 +2846,10 @@ namespace KZONE.Service
                 int returnCode = 2;
                 eipTagAccess.WriteItemValue(
                     "SD_EQToCIM_Status_05_01_00",
-                    "EAS Command Reply",
-                    "Machine Mode Change Command Reply",
+                    "EAS_Command_Reply",
+                    "Machine_Mode_Change_Command_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (Exception ex)
@@ -2520,7 +2914,7 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                         string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
                         eqpNo, TrackKey));
 
@@ -2554,7 +2948,7 @@ namespace KZONE.Service
 
                         CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
                                 eq.Data.NODENO, TrackKey, cIMModeCommand));
                     }
@@ -2574,7 +2968,7 @@ namespace KZONE.Service
 
                         CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
                                 eq.Data.NODENO, TrackKey, cIMModeCommand));
                     }
@@ -2634,7 +3028,7 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                         string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
                         eqpNo, TrackKey));
 
@@ -2668,7 +3062,7 @@ namespace KZONE.Service
 
                         CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
                                 eq.Data.NODENO, TrackKey, cIMModeCommand));
                     }
@@ -2688,7 +3082,7 @@ namespace KZONE.Service
 
                         CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
                                 eq.Data.NODENO, TrackKey, cIMModeCommand));
                     }
@@ -2748,7 +3142,7 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                         string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
                         eqpNo, TrackKey));
 
@@ -2782,7 +3176,7 @@ namespace KZONE.Service
 
                         CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
                                 eq.Data.NODENO, TrackKey, cIMModeCommand));
                     }
@@ -2802,7 +3196,7 @@ namespace KZONE.Service
 
                         CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
                                 eq.Data.NODENO, TrackKey, cIMModeCommand));
                     }
@@ -2862,7 +3256,7 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                         string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
                         eqpNo, TrackKey));
 
@@ -2896,7 +3290,7 @@ namespace KZONE.Service
 
                         CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
                                 eq.Data.NODENO, TrackKey, cIMModeCommand));
                     }
@@ -2916,7 +3310,7 @@ namespace KZONE.Service
 
                         CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
                                 eq.Data.NODENO, TrackKey, cIMModeCommand));
                     }
@@ -2976,7 +3370,7 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                         string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
                         eqpNo, TrackKey));
 
@@ -3010,7 +3404,7 @@ namespace KZONE.Service
 
                         CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
                                 eq.Data.NODENO, TrackKey, cIMModeCommand));
                     }
@@ -3030,7 +3424,7 @@ namespace KZONE.Service
 
                         CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
                                 eq.Data.NODENO, TrackKey, cIMModeCommand));
                     }
@@ -3091,7 +3485,7 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                         string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
                         eqpNo, TrackKey));
 
@@ -3125,7 +3519,7 @@ namespace KZONE.Service
 
                         CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
                                 eq.Data.NODENO, TrackKey, cIMModeCommand));
                     }
@@ -3145,7 +3539,7 @@ namespace KZONE.Service
 
                         CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
                                 eq.Data.NODENO, TrackKey, cIMModeCommand));
                     }
@@ -3205,7 +3599,7 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                         string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
                         eqpNo, TrackKey));
 
@@ -3239,7 +3633,7 @@ namespace KZONE.Service
 
                         CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
                                 eq.Data.NODENO, TrackKey, cIMModeCommand));
                     }
@@ -3259,7 +3653,7 @@ namespace KZONE.Service
 
                         CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
                                 eq.Data.NODENO, TrackKey, cIMModeCommand));
                     }
@@ -3319,7 +3713,7 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                         string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
                         eqpNo, TrackKey));
 
@@ -3353,7 +3747,7 @@ namespace KZONE.Service
 
                         CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
                                 eq.Data.NODENO, TrackKey, cIMModeCommand));
                     }
@@ -3373,7 +3767,7 @@ namespace KZONE.Service
 
                         CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
                                 eq.Data.NODENO, TrackKey, cIMModeCommand));
                     }
@@ -3433,7 +3827,7 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                         string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
                         eqpNo, TrackKey));
 
@@ -3467,7 +3861,7 @@ namespace KZONE.Service
 
                         CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
                                 eq.Data.NODENO, TrackKey, cIMModeCommand));
                     }
@@ -3487,7 +3881,7 @@ namespace KZONE.Service
 
                         CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
                                 eq.Data.NODENO, TrackKey, cIMModeCommand));
                     }
@@ -3547,7 +3941,7 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                         string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
                         eqpNo, TrackKey));
 
@@ -3581,7 +3975,7 @@ namespace KZONE.Service
 
                         CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
                                 eq.Data.NODENO, TrackKey, cIMModeCommand));
                     }
@@ -3601,7 +3995,7 @@ namespace KZONE.Service
 
                         CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
                                 eq.Data.NODENO, TrackKey, cIMModeCommand));
                     }
@@ -3662,7 +4056,7 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                         string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
                         eqpNo, TrackKey));
 
@@ -3696,7 +4090,7 @@ namespace KZONE.Service
 
                         CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
                                 eq.Data.NODENO, TrackKey, cIMModeCommand));
                     }
@@ -3716,7 +4110,7 @@ namespace KZONE.Service
 
                         CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
                                 eq.Data.NODENO, TrackKey, cIMModeCommand));
                     }
@@ -3776,7 +4170,7 @@ namespace KZONE.Service
         //                Timermanager.TerminateTimer(timerID);
         //            }
 
-        //            LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //            LogDebug(MethodBase.GetCurrentMethod().Name + "()",
         //                string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
         //                eqpNo, TrackKey));
 
@@ -3810,7 +4204,7 @@ namespace KZONE.Service
 
         //                CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
 
-        //                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
         //                    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
         //                        eq.Data.NODENO, TrackKey, cIMModeCommand));
         //            }
@@ -3830,7 +4224,7 @@ namespace KZONE.Service
 
         //                CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
 
-        //                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
         //                    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
         //                        eq.Data.NODENO, TrackKey, cIMModeCommand));
         //            }
@@ -3890,7 +4284,7 @@ namespace KZONE.Service
         //                Timermanager.TerminateTimer(timerID);
         //            }
 
-        //            LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //            LogDebug(MethodBase.GetCurrentMethod().Name + "()",
         //                string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
         //                eqpNo, TrackKey));
 
@@ -3924,7 +4318,7 @@ namespace KZONE.Service
 
         //                CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
 
-        //                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
         //                    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
         //                        eq.Data.NODENO, TrackKey, cIMModeCommand));
         //            }
@@ -3944,7 +4338,7 @@ namespace KZONE.Service
 
         //                CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
 
-        //                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
         //                    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
         //                        eq.Data.NODENO, TrackKey, cIMModeCommand));
         //            }
@@ -4004,7 +4398,7 @@ namespace KZONE.Service
         //                Timermanager.TerminateTimer(timerID);
         //            }
 
-        //            LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //            LogDebug(MethodBase.GetCurrentMethod().Name + "()",
         //                string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
         //                eqpNo, TrackKey));
 
@@ -4038,7 +4432,7 @@ namespace KZONE.Service
 
         //                CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
 
-        //                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
         //                    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
         //                        eq.Data.NODENO, TrackKey, cIMModeCommand));
         //            }
@@ -4058,7 +4452,7 @@ namespace KZONE.Service
 
         //                CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
 
-        //                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
         //                    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
         //                        eq.Data.NODENO, TrackKey, cIMModeCommand));
         //            }
@@ -4118,7 +4512,7 @@ namespace KZONE.Service
         //                Timermanager.TerminateTimer(timerID);
         //            }
 
-        //            LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //            LogDebug(MethodBase.GetCurrentMethod().Name + "()",
         //                string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
         //                eqpNo, TrackKey));
 
@@ -4152,7 +4546,7 @@ namespace KZONE.Service
 
         //                CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
 
-        //                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
         //                    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
         //                        eq.Data.NODENO, TrackKey, cIMModeCommand));
         //            }
@@ -4172,7 +4566,7 @@ namespace KZONE.Service
 
         //                CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
 
-        //                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
         //                    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
         //                        eq.Data.NODENO, TrackKey, cIMModeCommand));
         //            }
@@ -4236,7 +4630,7 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                         string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  CIM Mode Change Command.",
                         eqpNo, TrackKey));
 
@@ -4270,7 +4664,7 @@ namespace KZONE.Service
 
                         CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "1");
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
                                 eq.Data.NODENO, TrackKey, cIMModeCommand));
                     }
@@ -4290,7 +4684,7 @@ namespace KZONE.Service
 
                         CPCCIMModeChangeCommand(eq, TrackKey, eBitResult.ON, "2");
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Mode Change Command CIMModeCommand=[{2}].",
                                 eq.Data.NODENO, TrackKey, cIMModeCommand));
                     }
@@ -4346,7 +4740,7 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                         string.Format("[EQUIPMENT={0}] [BC >- EC][{1}] BIT=[OFF] Message Display Command.",
                         eqpNo, TrackKey));
 
@@ -4399,7 +4793,7 @@ namespace KZONE.Service
                 ObjectManager.EquipmentManager.SaveCIMMessageHistory(cimMessage);
 
 
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] Message Display Command CIM Message ID=[{2}] CIMMessage=[{3}]  .",
                      eq.Data.NODENO, TrackKey, CIMMessageID, CIMMessageData));
 
@@ -4438,7 +4832,7 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                         string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF] Recipe Parameter Request.",
                         eqpNo, TrackKey));
 
@@ -4451,7 +4845,7 @@ namespace KZONE.Service
                 string recipeID = RecipeParameterRequestCommandBlock[0].Value.ToString().Trim();
 
 
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] Recipe Parameter RecipeID=[{2}].",
                      eq.Data.NODENO, TrackKey, recipeID));
 
@@ -4467,7 +4861,7 @@ namespace KZONE.Service
 
                     //RecipeParameterReport(eq, inputData, recipeDic[eq.Data.LINEID][recipeID]);
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                         string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[ON] Recipe Parameter Validation Command Reply OK .",
                             eq.Data.NODENO, TrackKey));
 
@@ -4535,7 +4929,7 @@ namespace KZONE.Service
                     //        Timermanager.TerminateTimer(timerID);
                     //    }
 
-                    //    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     //        string.Format("[EQUIPMENT={0}] [BC >- EC][{1}] BIT=[OFF] CIM Message Clear Command.",
                     //        eqpNo, TrackKey));
 
@@ -4574,7 +4968,7 @@ namespace KZONE.Service
                     ObjectManager.EquipmentManager.UpdateCIMMessage(CIMMessageID, "clear");
 
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] CIM Message Clear Command CIM Message ID=[{2}].",
                          eq.Data.NODENO, TrackKey, CIMMessageID));
 
@@ -4622,7 +5016,7 @@ namespace KZONE.Service
                     //        Timermanager.TerminateTimer(timerID);
                     //    }
 
-                    //    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     //        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  Date Time Calibration Command.",
                     //        eqpNo, TrackKey));
 
@@ -4675,7 +5069,7 @@ namespace KZONE.Service
                     SetPCSystemTime(dateTime);
 
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] Date Time Calibration Command DateTime=[{2}]  .",
                          eq.Data.NODENO, TrackKey, dateTime));
 
@@ -4725,7 +5119,7 @@ namespace KZONE.Service
         //                    Timermanager.TerminateTimer(timerID);
         //                }
 
-        //                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
         //                    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF] Equipment Run Mode Set Command.",
         //                    eqpNo, TrackKey));
 
@@ -4777,7 +5171,7 @@ namespace KZONE.Service
 
         //            #endregion
 
-        //            LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+        //            LogDebug(MethodBase.GetCurrentMethod().Name + "()",
         //                   string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] Equipment Run Mode Set Command RUN Mode=[{2}].",
         //                 eq.Data.NODENO,TrackKey, pauseCommand));
 
@@ -4854,7 +5248,7 @@ namespace KZONE.Service
                     //        Timermanager.TerminateTimer(timerID);
                     //    }
 
-                    //    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     //        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  Set Last Glass Command.",
                     //        eqpNo, TrackKey));
 
@@ -4904,7 +5298,7 @@ namespace KZONE.Service
 
                     #endregion
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] Set Last Glass Command.",
                          eq.Data.NODENO, TrackKey));
                 }
@@ -4960,7 +5354,7 @@ namespace KZONE.Service
                 //if (bitResult == eBitResult.OFF)
                 //{
 
-                //    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //    //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                 //    //   string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] Stop Bit Command Bit=[{2}].",
                 //    // eq.Data.NODENO, TrackKey, "OFF"));
 
@@ -4983,7 +5377,7 @@ namespace KZONE.Service
                 //    }
                 //    ObjectManager.EquipmentManager.EnqueueSave(eq.File);
 
-                //    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                 //       string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] Stop Bit Command Bit=[{2}].",
                 //     eq.Data.NODENO, TrackKey, "ON"));
 
@@ -5000,7 +5394,7 @@ namespace KZONE.Service
                 //    }
                 //    ObjectManager.EquipmentManager.EnqueueSave(eq.File);
 
-                //    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                 //       string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] Stop Bit Command Bit=[{2}].",
                 //     eq.Data.NODENO, TrackKey, "OFF"));
                 //}
@@ -5039,7 +5433,7 @@ namespace KZONE.Service
                 //        Timermanager.TerminateTimer(timerID);
                 //    }
 
-                //    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                 //        string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] Equipment Status Change Report Reply.",
                 //        eqpNo, TrackKey));
 
@@ -5062,7 +5456,7 @@ namespace KZONE.Service
                 //#endregion
 
 
-                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                 //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] Equipment Status Change Report Reply BIT [{2}].",
                 //            eqpNo, TrackKey, bitResult));
             }
@@ -5121,7 +5515,7 @@ namespace KZONE.Service
                     //        Timermanager.TerminateTimer(timerID);
                     //    }
 
-                    //    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     //        string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  Date Time Calibration Command.",
                     //        eqpNo, TrackKey));
 
@@ -5174,7 +5568,7 @@ namespace KZONE.Service
                     SetPCSystemTime(dateTime);
 
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] Date Time Calibration Command DateTime=[{2}]  .",
                          eq.Data.NODENO, TrackKey, dateTime));
 
@@ -5206,7 +5600,7 @@ namespace KZONE.Service
                     "Machine_Status_Event_Reply",
                     "VCR_Status_Report_Reply",
                     returnCode);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     "reply:" + returnCode.ToString());
             }
             catch (System.Exception ex)
@@ -5316,7 +5710,7 @@ namespace KZONE.Service
             try
             {
                 eipTagAccess.WriteItemValue("RV_CIMToEQ_Status01_01_05_00", "Machine_Status_Event_Reply", "Ionizer Status Report Reply", 0);
-                LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                                     "reply:" + 0.ToString());
             }
             catch (System.Exception ex)
@@ -5376,7 +5770,7 @@ namespace KZONE.Service
                     //        Timermanager.TerminateTimer(timerID);
                     //    }
 
-                    //    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     //        string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] Operator Login Logout Report Reply.",
                     //        eqpNo, TrackKey));
 
@@ -5400,7 +5794,7 @@ namespace KZONE.Service
                     //#endregion
 
 
-                    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] Operator Login Logout Report Reply BIT [{2}].",
                     //            eqpNo, TrackKey, bitResult));
                 }
@@ -5533,7 +5927,7 @@ namespace KZONE.Service
                 //        Timermanager.TerminateTimer(timerID);
                 //    }
 
-                //    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                 //        string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] ReceivedJobReportReply.",
                 //        eqpNo, TrackKey));
 
@@ -5554,7 +5948,7 @@ namespace KZONE.Service
                 #endregion
 
 
-                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                 //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] ReceivedJobReportReply BIT [{2}].",
                 //            eqpNo, TrackKey, bitResult));
             }
@@ -5590,7 +5984,7 @@ namespace KZONE.Service
                 //        Timermanager.TerminateTimer(timerID);
                 //    }
 
-                //    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                 //        string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] SentOutJobReportReply.",
                 //        eqpNo, TrackKey));
 
@@ -5611,7 +6005,7 @@ namespace KZONE.Service
                 #endregion
 
 
-                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                 //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] SentOutJobReportReply BIT [{2}].",
                 //            eqpNo, TrackKey, bitResult));
             }
@@ -5646,7 +6040,7 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     //    string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] JobManualMoveReportReply.",
                     //    eqpNo, TrackKey));
 
@@ -5669,7 +6063,7 @@ namespace KZONE.Service
                 #endregion
 
 
-                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                 //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] JobManualMoveReportReply BIT [{2}].",
                 //            eqpNo, TrackKey, bitResult));
             }
@@ -5703,7 +6097,7 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     //    string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] JobDataChangeReportReply.",
                     //    eqpNo, TrackKey));
 
@@ -5726,7 +6120,7 @@ namespace KZONE.Service
                 #endregion
 
 
-                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                 //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] JobDataChangeReportReply BIT [{2}].",
                 //            eqpNo, TrackKey, bitResult));
             }
@@ -5763,7 +6157,7 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                         string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF] Job Data Request Reply.",
                         eqpNo, TrackKey));
                     return;
@@ -5802,7 +6196,7 @@ namespace KZONE.Service
                     {
                         // UpdateJobData(eqp, job, JobDataRequestReplyBlock);
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                                           string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] Job Data Request Reply CST_SEQNO=[{2}] JOB_SEQNO=[{3}] GLASS_ID=[{4}] Return Code=[{5}], Job Data Exsit.",
                                           eqp.Data.NODENO, TrackKey, cstSeq, slotNo, glassID, returncode.ToString()));
 
@@ -5816,7 +6210,7 @@ namespace KZONE.Service
                         //job = CreateJob(cstSeq, slotNo, JobDataRequestReplyBlock);
                         //UpdateJobData(eqp, job, JobDataRequestReplyBlock);
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                                           string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[ON] Job Data Request Reply CST_SEQNO=[{2}] JOB_SEQNO=[{3}] GLASS_ID=[{4}] Return Code=[{5}].",
                                           eqp.Data.NODENO, TrackKey, cstSeq, slotNo, glassID, returncode.ToString()));
 
@@ -5866,7 +6260,7 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     //    string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] ProcessStartJobReportReply.",
                     //    eqpNo, TrackKey));
 
@@ -5889,7 +6283,7 @@ namespace KZONE.Service
                 #endregion
 
 
-                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                 //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] ProcessStartJobReportReply BIT [{2}].",
                 //            eqpNo, TrackKey, bitResult));
             }
@@ -5923,7 +6317,7 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     //    string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] ProcessDataReportReply.",
                     //    eqpNo, TrackKey));
 
@@ -5943,7 +6337,7 @@ namespace KZONE.Service
                 #endregion
 
 
-                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                 //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] ProcessDataReportReply BIT [{2}].",
                 //            eqpNo, TrackKey, bitResult));
             }
@@ -5977,7 +6371,7 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     //    string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] ProcessEndJobReportReply.",
                     //    eqpNo, TrackKey));
 
@@ -6000,7 +6394,7 @@ namespace KZONE.Service
                 #endregion
 
 
-                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                 //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] ProcessEndJobReportReply BIT [{2}].",
                 //            eqpNo, TrackKey, bitResult));
             }
@@ -6036,7 +6430,7 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     //    string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] Equipment Status Change Report Reply.",
                     //    eqpNo, TrackKey));
 
@@ -6060,7 +6454,7 @@ namespace KZONE.Service
                 #endregion
 
 
-                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                 //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] Equipment Status Change Report Reply BIT [{2}].",
                 //            eqpNo, TrackKey, bitResult));
             }
@@ -6095,7 +6489,7 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     //    string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] AutoRecipeChangeModeReportReply.",
                     //    eqpNo, TrackKey));
 
@@ -6117,7 +6511,7 @@ namespace KZONE.Service
                 #endregion
 
 
-                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                 //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] AutoRecipeChangeModeReportReply BIT [{2}].",
                 //            eqpNo, TrackKey, bitResult));
             }
@@ -6152,7 +6546,7 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     //    string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] CurrentRecipeNumberChangeReportReply.",
                     //    eqpNo, TrackKey));
 
@@ -6174,7 +6568,7 @@ namespace KZONE.Service
                 #endregion
 
 
-                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                 //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] CurrentRecipeNumberChangeReportReply BIT [{2}].",
                 //            eqpNo, TrackKey, bitResult));
             }
@@ -6208,7 +6602,7 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     //    string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] RecipeChangeReportReply.",
                     //    eqpNo, TrackKey));
 
@@ -6230,7 +6624,7 @@ namespace KZONE.Service
                 #endregion
 
 
-                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                 //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] RecipeChangeReportReply BIT [{2}].",
                 //            eqpNo, TrackKey, bitResult));
             }
@@ -6270,7 +6664,7 @@ namespace KZONE.Service
                         //    Timermanager.TerminateTimer(timerID);
                         //}
 
-                        //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                         //    string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] BIT=[OFF]  RecipeRegisterCheckCommand.",
                         //    eqpNo, TrackKey));
 
@@ -6289,7 +6683,7 @@ namespace KZONE.Service
 
                         //CPCRecipeRegisterValidationCommandReply(eBitResult.ON, "1");
 
-                        LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                        LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                             string.Format("[EQUIPMENT={0}] [BC <- EC][{1}] BIT=[ON] Recipe Register Validation Command Reply OK .",
                                 eq.Data.NODENO, TrackKey));
 
@@ -6360,7 +6754,7 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     //    string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] FetchedOutJobReport#1Reply.",
                     //    eqpNo, TrackKey));
 
@@ -6385,7 +6779,7 @@ namespace KZONE.Service
                 #endregion
 
 
-                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                 //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}]  FetchedOutJobReport#1Reply BIT [{2}].",
                 //            eqpNo, TrackKey, bitResult));
             }
@@ -6421,7 +6815,7 @@ namespace KZONE.Service
                         Timermanager.TerminateTimer(timerID);
                     }
 
-                    //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                    //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                     //    string.Format("[EQUIPMENT={0}] [EC <- BC][{1}] BIT=[OFF] StoredJobEventReply.",
                     //    eqpNo, TrackKey));
 
@@ -6444,7 +6838,7 @@ namespace KZONE.Service
                 #endregion
 
 
-                //LogInfo(MethodBase.GetCurrentMethod().Name + "()",
+                //LogDebug(MethodBase.GetCurrentMethod().Name + "()",
                 //            string.Format("[EQUIPMENT={0}] [BC -> EC][{1}] StoredJobEventReply BIT [{2}].",
                 //            eqpNo, TrackKey, bitResult));
             }
